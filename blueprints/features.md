@@ -1,0 +1,42 @@
+# Features List
+- [ ] Streaming music instead of downloading
+- [ ] Playlists
+- [ ] Search
+- [ ] Queue
+- [ ] Music controls
+  - [ ] Play/Pause
+  - [ ] Shuffle
+  - [ ] Repeat
+  - [ ] Skip/Previous
+  - [ ] Volume
+- [ ] Music info
+- [ ] Lyrics
+- [ ] Settings
+  - [ ] Theme
+  - [ ] Language
+  - [ ] Cache
+  - [ ] About
+- [ ] Admin Dashboard
+  - [ ] Add/Remove songs
+  - [ ] Add/Remove playlists
+  - [ ] Add/Remove users
+  - [ ] Add/Remove admins
+  - [ ] Add/Remove artists
+  - [ ] Add/Remove albums
+  - [ ] Add/Remove genres
+  - [ ] Add/Remove languages
+  - [ ] Add/Remove themes
+- [ ] User Dashboard
+  - [ ] Like/Dislike songs
+  - [ ] Comment on songs
+  - [ ] Add/Remove playlists
+  - [ ] Register as artist
+- [ ] Artist Dashboard
+  - [ ] Add/Remove songs
+  - [ ] Add/Remove albums
+  - [ ] Add/Remove Playlists
+- [ ] Search Functionality
+  - [ ] Search by song name
+  - [ ] Search by artist name
+  - [ ] Search by playlist name
+  - [ ] Search by album name
