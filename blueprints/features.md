@@ -40,3 +40,6 @@
   - [ ] Search by artist name
   - [ ] Search by playlist name
   - [ ] Search by album name
+
+# Phase 2 Features
+- [ ] Typed Models

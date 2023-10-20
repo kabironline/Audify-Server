@@ -1,0 +1,175 @@
+from core.db import get_session, get_test_session
+from sqlalchemy.orm import Session
+import membership.models.user as user_model
+
+
+def create_or_update_superuser(username, password, test=False):
+    """
+    Creates a superuser with the given username and password.
+
+    It performs the following validations.
+
+    - The provided username adheres to the username format.
+    - The password is not empty or None.
+
+    In case of any validation failure, it raises an exception.
+
+    Before creating the superuser, it checks if there is already a user with
+    the given username. If there is, make that user a superuser. And update the
+    password.
+
+    After the user is successfully created, it returns the user id.
+    """
+
+    # Validate username
+    validate_username(username)
+
+    # Validate password
+    validate_password(password)
+
+    session = get_session() if not test else get_test_session()
+
+    # Check if there is already a user with the given username
+    user = session.query(user_model.User).filter_by(username=username).first()
+    if user:
+        # If there is, make that user a superuser
+        user.is_admin = True
+        user.password = password
+        session.commit()
+        return user.id, False
+
+    # Everything is good. Create the superuser
+    user = user_model.User(
+        username=username,
+        password=password,
+        is_admin=True,
+        bio="",
+        nickname=username
+    )
+
+    session.add(user)
+    session.commit()
+    return user.id, True
+
+
+def create_user(username, password, nickname, bio, test=False):
+    """
+    Creates a user with the given username, password, nickname and bio.
+
+    It performs the following validations.
+
+    - The provided username adheres to the username format.
+    - The password is not empty or None.
+    - The username is not already taken.
+
+    In case of any validation failure, it raises an exception.
+
+    After the user is successfully created, it returns the user id.
+    """
+
+    session = get_session() if not test else get_test_session()
+
+    # Validate username
+    validate_username(username)
+
+    # Validate password
+    validate_password(password)
+
+    # Check if there is already a user with the given username
+    user = session.query(user_model.User).filter_by(username=username).first()
+    if user:
+        raise Exception("Username already taken")
+
+    # Everything is good. Create the user
+    user = user_model.User(
+        username=username,
+        password=password,
+        is_admin=False,
+        bio=bio,
+        nickname=nickname
+    )
+
+    session.add(user)
+    session.commit()
+
+
+def get_user_by_username(username):
+    """
+    Returns the user with the given username.
+
+    If there is no user with the given username, it returns None.
+    """
+    session = get_session()
+    return session.query(user_model.User).filter_by(username=username).first()
+
+
+def validate_username(username):
+    """
+    Validates that that username has the following properties.
+    - It is not empty or None
+    - At least 6 characters long
+    - Contains alphanumeric characters
+    - Contains at least one number
+    - Contains at least one symbol from the following list:
+        - _ (underscore)
+        - '-' (hyphen)
+        - . (period)
+        - @ (at)
+        - $ (dollar)
+
+    """
+    if username is None or username == "":
+        raise Exception("Username cannot be empty")
+
+    if len(username) < 6:
+        raise Exception("Username must be at least 6 characters long")
+
+    if not any(char.isdigit() for char in username):
+        raise Exception("Username must contain at least one number")
+
+    if not any(char.isalpha() for char in username):
+        raise Exception("Username must contain at least one letter")
+
+    if not any(char in ['_', '-', '.', '@', '$'] for char in username):
+        raise Exception(
+            "Username must contain at least one of the following symbols: _ - . @ $")
+
+    return True
+
+
+def validate_password(password):
+    """
+    Validates that that password has the following properties.
+    - It is not empty or None
+    - At least 8 characters long
+    - Contains alphanumeric characters
+    - Contains at least one number
+    - Contains at least one Capital letter
+    - Contains at least one symbol from the following list:
+        - _ (underscore)
+        - '-' (hyphen)
+        - . (period)
+        - @ (at)
+        - $ (dollar)
+
+    """
+    if password is None or password == "":
+        raise Exception("Password cannot be empty")
+
+    if len(password) < 8:
+        raise Exception("Password must be at least 8 characters long")
+
+    if not any(char.isdigit() for char in password):
+        raise Exception("Password must contain at least one number")
+
+    if not any(char.isalpha() for char in password):
+        raise Exception("Password must contain at least one letter")
+
+    if not any(char.isupper() for char in password):
+        raise Exception("Password must contain at least one Capital letter")
+
+    if not any(char in ['_', '-', '.', '@', '$'] for char in password):
+        raise Exception(
+            "Password must contain at least one of the following symbols: _ - . @ $")
+
+    return True
