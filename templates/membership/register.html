@@ -1,0 +1,60 @@
+{% extends 'core.html' %}
+{% block title %}Login{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/membership.css') }}">
+{% endblock %}
+{% block content %}
+<section class="login membership">
+
+  <div class="side-banner">
+    <div class="side-banner__logo">
+      &nbsp;
+    </div>
+    <h1 class="side-banner__text">
+      AUDIFY
+    </h1>
+    <p class="copyright">
+      &copy; Created By Kabir Maniar
+    </p>
+  </div>
+  <div class="form__container">
+    <form action="/register" method="post">
+      <h1 class="form__heading">Register</h1>
+      <div class="form__group">
+        <input type="text" minlength="6" maxlength="20" name="username" id="username" placeholder="Username"
+          class="form__input" required>
+        <label for="username" class="form__label">Username</label>
+      </div>
+      <br>
+      <div class="form__group">
+        <input type="text" minlength="2" maxlength="20" name="nickname" id="nickname" placeholder="Nickname (Optional)"
+          class="form__input">
+        <label for="nickname" class="form__label">Nickname (Optional)</label>
+      </div>
+      <br>
+      <div class="form__group">
+        <textarea maxlength="200" name="bio" id="bio" cols="30" rows="10" class="form__input form__input--bio"
+          placeholder="Bio (Optional)"></textarea>
+        <label for="bio" class="form__label">Bio (Optional, 200 characters maximum) </label>
+      </div>
+      <br>
+      <div class="form__group">
+        <input type="password" minlength="8" name="password" id="password" placeholder="Password"
+          class="form__input form__input--password" required>
+        <label for="password" class="form__label">Password</label>
+      </div>
+      <h3 class="form__alternative">
+        <span class="form__alternative--text">
+          Already have an account?
+        </span>
+        <a href="/login" class="form__alternative--link">Sign In!</a>
+      </h3>
+      <input type="submit" value="Register" class="form__button">
+      {% if error %}
+      <p class="form__error">{{ error }}</p>
+      {% endif %}
+    </form>
+  </div>
+</section>
+
+{% endblock %}

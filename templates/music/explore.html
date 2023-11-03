@@ -1,0 +1,98 @@
+{% extends "base.html"%}
+{% block title %}Explore{% endblock %}
+{% block m_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/explore.css') }}">
+{% endblock %}
+{% block m_content %}
+<section class="section section-options mb-xlarge">
+  <div class="explore-option-container">
+    <a href="/" class="explore-option__item">
+      <div class="explore-option__item--icon">
+        <i class="fas fa-fire"></i>
+      </div>
+      <p class="explore-option__item--text">New Releases</p>
+    </a>
+    <a href="/" class="explore-option__item">
+      <div class="explore-option__item--icon">
+        <i class="fas fa-chart-line"></i>
+      </div>
+      <p class="explore-option__item--text">Charts</p>
+    </a>
+    <a href="/" class="explore-option__item">
+      <div class="explore-option__item--icon">
+        <i class="fas fa-microphone-alt"></i>
+      </div>
+      <p class="explore-option__item--text">Genres</p>
+    </a>
+  </div>
+</section>
+<section class="section section-options">
+  <a href="/" class="heading-link">
+    <h1 class="heading-1">New Releases</h1>
+  </a>
+  <!-- add track carousel -->
+  <div class="track-carousel">
+    {% for n in range(0,5) %}
+    <!-- TODO: Generate this dynamically -->
+    <div class="track-carousel__item">
+      <div class="track-carousel__item--cover">
+        <a href="/" class="">
+          <div>
+            <img src="https://picsum.photos/200?random={{n}}" alt="track Image" class="track-carousel__item--img">
+            <i class="fas fa-play track-carousel__item--play"></i>
+          </div>
+        </a>
+      </div>
+      <div class="track-carousel__item--text">
+        <a href="" class="track-carousel__item--title">track Title</a>
+        <a href="" class="track-carousel__item--artist">Artist</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<section class="section section-top">
+  <a href="/" class="heading-link">
+    <h1 class="heading-1">Top Charts</h1>
+  </a>
+  <div class="track-tiles">
+    {% for n in range(0,12) %}
+    <div class="track-tile">
+      <!-- Add postion of the track in the top charts -->
+      <div class="track-tile__position">
+        <p class="track-tile__position--text">{{ n+1 }}</p>
+      </div>
+      <div class="track-tile__cover">
+        <a href="/" class="">
+          <div>
+            <img src="https://picsum.photos/200?random={{n+10}}" alt="track Image" class="track-tile__cover--img">
+            <i class="fas fa-play track-tile__cover--playbutton"></i>
+          </div>
+        </a>
+      </div>
+      <div class="track-tile__text">
+        <a href="" class="track-tile__text--title">track Title</a>
+        <a href="" class="track-tile__text--artist">Artist</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<section class="section sections-genre">
+  <a href="/" class="heading-link">
+    <h1 class="heading-1">Genres</h1>
+  </a>
+  <div class="genre-tiles">
+    {% for n in range (1,21)%}
+    <a href="/" class="genre-tile genre__link">
+
+      <!-- generate a random color -->
+      <div style="background-color: red ;" class="genre-tile__cover">
+      </div>
+      <p class="genre-tile__text">Genre Name {{n}}</p>
+
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

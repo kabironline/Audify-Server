@@ -1,0 +1,348 @@
+.page-content {
+  padding: 10rem;
+}
+
+.playlist__item {
+  /* width: 100%; */
+  font-size: 2rem;
+  display: flex;
+
+  align-items: center;
+  justify-content: flex-start;
+  color: white;
+  transition: all 0.1s ease-out;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  padding: 1rem;
+  margin-bottom: 1rem;
+
+  &:hover {
+    background-color: var(--color-hover);
+  }
+}
+
+.playlist__link {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+}
+
+.playlist__heading {
+  font-size: 1.6rem;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.playlist__subheading {
+  font-size: 1.2rem;
+  font-weight: light;
+  color: var(--text-label-color);
+}
+
+.playlist__playbutton {
+  font-size: 3rem;
+}
+
+/* TRACK ITEM */
+.track-list {
+  list-style: none;
+}
+
+.track-item {
+  width: 100%;
+  border-bottom: 1px solid var(--color-border-light);
+  display: grid;
+  grid-template-columns: 1fr min-content;
+  align-items: center;
+  text-decoration: none;
+  grid-gap: 2.5rem;
+  padding: 0 2rem;
+
+  &:hover {
+    background-color: var(--color-hover);
+    .track-item__cover--img {
+      filter: brightness(0.5);
+    }
+
+    .track-item__cover--playbutton {
+      opacity: 1;
+    }
+
+    .track-item__cta {
+      opacity: 1;
+    }
+  }
+}
+
+.track-item__link {
+  display: grid;
+  grid-template-columns: 3rem 2fr 1fr 1fr;
+  grid-gap: 2.5rem;
+  align-items: center;
+  height: 5rem;
+  text-decoration: none;
+  color: white;
+  font-size: 1.8rem;
+}
+
+.track-item__cover {
+  width: 3rem;
+  height: 3rem;
+  position: relative;
+}
+
+.track-item__cover--playbutton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  opacity: 0;
+}
+
+.track-item__cover--img {
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+}
+
+.track-item__title {
+  font-weight: bold;
+}
+
+.track-item__artist {
+  font-weight: lighter;
+  color: var(--text-label-color);
+}
+
+.track-item__cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.track-item__cta-link {
+  padding-right: 2rem;
+  color: white;
+  font-size: 1.8rem;
+}
+
+/* track Carousel */
+.track-carousel {
+  margin: 2rem 0;
+  display: grid;
+  /* Autofit rows according to size */
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.track-carousel__item--cover {
+  position: relative;
+  overflow: hidden;
+  border: none;
+  border-radius: 5px;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  aspect-ratio: 1;
+  width: 100%;
+  object-position: center;
+}
+
+.track-carousel__item--img {
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center;
+  transition: all 0.2s ease-out;
+  height: 100%;
+  width: 100%;
+}
+
+.track-carousel__item--play {
+  text-decoration: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 5rem;
+  color: white;
+  opacity: 0;
+  transition: all 0.2s ease-out;
+}
+
+.track-carousel__item--cover:hover {
+  .track-carousel__item--play {
+    opacity: 1;
+  }
+
+  .track-carousel__item--img {
+    transform: scale(1.1);
+    filter: brightness(0.5);
+  }
+}
+
+.track-carousel__item--title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  text-decoration: none;
+  color: white;
+  display: block;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.track-carousel__item--artist {
+  font-size: 1.3rem;
+  text-decoration: none;
+  color: var(--text-subtitle-color);
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+/* track Tile */
+.track-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+  padding: 2rem 0;
+}
+.track-tile {
+  display: grid;
+  grid-template-columns: min-content min-content 1fr;
+  grid-gap: 2rem;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  font-size: 1.8rem;
+  padding: 1rem 2rem;
+  border-radius: 5px;
+  transition: all 0.2s ease-out;
+
+  &:hover {
+    background-color: var(--color-hover);
+  }
+
+  &:hover {
+    .track-tile__cover--playbutton {
+      opacity: 1;
+      font-size: 3rem;
+    }
+
+    .track-tile__cover--img {
+      filter: brightness(0.5);
+    }
+  }
+}
+
+.track-tile__position {
+  font-size: 1.8rem;
+  font-weight: bold;
+  /* color: var(--text-label-color); */
+}
+
+.track-tile__cover {
+  width: 5rem;
+  height: 5rem;
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.track-tile__cover--img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.track-tile__cover--playbutton {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 2rem;
+  color: white;
+  opacity: 0;
+  transition: all 0.2s ease-out;
+  /* transform: scale(0.8); */
+  transform-origin: center;
+}
+
+.track-tile__text {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 1rem;
+
+  .track-tile__text--title {
+    font-weight: bold;
+    font-size: 1.6rem;
+    text-decoration: none;
+    color: white;
+    display: block;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .track-tile__text--artist {
+    font-weight: lighter;
+    font-size: 1.4rem;
+    text-decoration: none;
+    color: var(--text-subtitle-color);
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+/* Genre Tiles */
+.genre-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 2rem 0;
+  gap: 2rem;
+}
+
+.genre-tile {
+  display: inline-flex;
+  gap: 2rem;
+  align-items: center;
+  background-color: var(--color-background-light);
+  padding: 0 2rem;
+  padding-left: 0;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+  height: 5rem;
+  padding: 2rem;
+  text-decoration: none;
+
+  &:hover {
+    .genre-tile__cover {
+      width: 1.5rem;
+    }
+  }
+}
+
+.genre-tile__cover {
+  width: 0.7rem;
+  height: 5rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transition: all 0.2s ease-out;
+}
+
+.genre-tile__text {
+  font-size: 1.6rem;
+  text-decoration: none;
+  color: var(--color-text);
+}

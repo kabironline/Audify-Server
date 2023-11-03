@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/core.css') }}">
+  {% block head %} {% endblock %}
+</head>
+
+<body>
+  <header>
+    {% block header %}
+    {% endblock %}
+  </header>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>
+    {% block footer %}
+    {% endblock %}
+  </footer>
+</body>
+<script src="https://kit.fontawesome.com/2e34807a57.js" crossorigin="anonymous"></script>
+
+</html>

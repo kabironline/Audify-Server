@@ -1,6 +1,8 @@
 from core.db import get_session, get_test_session
 from sqlalchemy.orm import Session
 import membership.models.user as user_model
+import datetime
+import re
 
 
 def create_or_update_superuser(username, password, test=False):
@@ -35,6 +37,7 @@ def create_or_update_superuser(username, password, test=False):
         # If there is, make that user a superuser
         user.is_admin = True
         user.password = password
+        user.last_modified_at = datetime.datetime.now()
         session.commit()
         return user.id, False
 
@@ -44,7 +47,9 @@ def create_or_update_superuser(username, password, test=False):
         password=password,
         is_admin=True,
         bio="",
-        nickname=username
+        nickname=username,
+        created_at=datetime.datetime.now(),
+        last_modified_at=datetime.datetime.now(),
     )
 
     session.add(user)
@@ -86,10 +91,29 @@ def create_user(username, password, nickname, bio, test=False):
         password=password,
         is_admin=False,
         bio=bio,
-        nickname=nickname
+        nickname=nickname,
+        created_at=datetime.datetime.now(),
+        last_modified_at=datetime.datetime.now(),
     )
 
     session.add(user)
+    session.commit()
+
+
+def set_user_as_creator(user_id, test=False):
+    """
+    Sets the given user as the creator of the user with the given id.
+
+    If there is no such user, it raises an exception.
+    """
+    user = get_user_by_id(user_id)
+    if user is None:
+        raise Exception("User not found")
+
+    session = get_session() if not test else get_test_session()
+
+    user.is_creator = True
+    user.last_modified_at = datetime.datetime.now()
     session.commit()
 
 
@@ -103,38 +127,56 @@ def get_user_by_username(username):
     return session.query(user_model.User).filter_by(username=username).first()
 
 
+def get_user_by_id(user_id):
+    """
+    Returns the user with the given id.
+
+    If there is no user with the given id, it returns None.
+    """
+    session = get_session()
+    return session.query(user_model.User).filter_by(id=user_id).first()
+
+
+def delete_user_by_id(user_id, test=False):
+    """
+    Deletes the user with the given id.
+
+    If there is no user with the given id, it raises an exception.
+    """
+    session = get_session() if not test else get_test_session()
+    user = session.query(user_model.User).filter_by(id=user_id).first()
+    if user is None:
+        raise Exception("User not found")
+
+    session.delete(user)
+    session.commit()
+
+
 def validate_username(username):
     """
     Validates that that username has the following properties.
     - It is not empty or None
     - At least 6 characters long
-    - Contains alphanumeric characters
-    - Contains at least one number
-    - Contains at least one symbol from the following list:
+    - Contains alphanumeric characters (digits are optional)
+    - Contains only these symbols (optional):
         - _ (underscore)
         - '-' (hyphen)
         - . (period)
         - @ (at)
         - $ (dollar)
+    - No spaces allowed, or anyother special characters
 
     """
     if username is None or username == "":
         raise Exception("Username cannot be empty")
 
-    if len(username) < 6:
-        raise Exception("Username must be at least 6 characters long")
+    # Match using regex
+    # [a-zA-Z0-9%\_$\-@]{6,} - This regex matches the following
 
-    if not any(char.isdigit() for char in username):
-        raise Exception("Username must contain at least one number")
-
-    if not any(char.isalpha() for char in username):
-        raise Exception("Username must contain at least one letter")
-
-    if not any(char in ['_', '-', '.', '@', '$'] for char in username):
+    if not re.match(r"[a-zA-Z0-9%\_$\-@]{6,}", username):
         raise Exception(
-            "Username must contain at least one of the following symbols: _ - . @ $")
-
-    return True
+            "Username must be at least 6 characters long and can only contain alphanumeric characters and the following symbols: _ - . @ $"
+        )
 
 
 def validate_password(password):
@@ -168,8 +210,9 @@ def validate_password(password):
     if not any(char.isupper() for char in password):
         raise Exception("Password must contain at least one Capital letter")
 
-    if not any(char in ['_', '-', '.', '@', '$'] for char in password):
+    if not any(char in ["_", "-", ".", "@", "$"] for char in password):
         raise Exception(
-            "Password must contain at least one of the following symbols: _ - . @ $")
+            "Password must contain at least one of the following symbols: _ - . @ $"
+        )
 
     return True

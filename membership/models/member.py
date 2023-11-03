@@ -3,28 +3,16 @@ from datetime import datetime as DateTime
 from sqlalchemy.orm import mapped_column, Mapped
 from .channel import Channel
 from .user import User
-from core.db import Base
+from core.db import db
 
 
-class Member(Base):
-    __tablename__ = 'Member'
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    is_admin: Mapped[bool] = mapped_column(nullable=False, default=False)
-    channel_id: Mapped["Channel.id"] = mapped_column(
-        ForeignKey('Channel.id'),
-        nullable=False
-    )
-    user_id: Mapped["User.id"] = mapped_column(
-        ForeignKey('User.id'),
-        nullable=False
-    )
-    created_by: Mapped["User.id"] = mapped_column(
-        ForeignKey('User.id'),
-        nullable=False
-    )
-    last_modified_by: Mapped["User.id"] = mapped_column(
-        ForeignKey('User.id'),
-        nullable=True
-    )
-    created_at: Mapped[DateTime] = mapped_column(nullable=False)
-    last_modified_at: Mapped[DateTime] = mapped_column(nullable=True)
+class Member(db.Model):
+    __tablename__ = "Member"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    is_admin = db.Column(db.Boolean, nullable=False, default=False)
+    channel_id = db.Column(db.Integer, ForeignKey("Channel.id"), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey("User.id"), nullable=False)
+    created_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=True)
+    last_modified_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False)
+    last_modified_at = db.Column(db.DateTime, nullable=False)

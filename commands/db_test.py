@@ -1,4 +1,4 @@
-import commands.create_db
+import commands.db
 from core.db import engine
 from sqlalchemy import inspect
 

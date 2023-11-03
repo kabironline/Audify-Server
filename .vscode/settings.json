@@ -3,5 +3,16 @@
     "membership"
   ],
   "python.testing.unittestEnabled": false,
-  "python.testing.pytestEnabled": true
+  "python.testing.pytestEnabled": true,
+  "editor.detectIndentation": false,
+  "editor.indentSize": 2,
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.indentSize": 4,
+    "editor.formatOnSave": true,
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.indentSize": 2,
+  }
 }

@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block m_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+{% block m_content %}
+<section class="hero">
+  <div class="hero__avatar">
+    <!-- TODO: Add Avatar in the databases -->
+    <!-- <img src="{{user.avatar}}" alt="Avatar" class="hero__avatar--img"> -->
+    <!-- Get the first character of the user -->
+    <div class="hero__avatar--img">
+      {{user.nickname[0]}}
+    </div>
+  </div>
+  <div class="hero__details">
+    <h1 class="heading-1 hero__details--title">
+      {{user.nickname}}
+    </h1>
+    <p class="hero__details--subtitle">
+      @{{user.username}}
+    </p>
+    <p class="hero__details--dio">
+      BIO: {{user.bio}}
+    </p>
+  </div>
+  {% if self %}
+  <div class="hero__cta">
+    <!-- TODO: Add edit profile navigation -->
+    <a href="/edit_profile" class="btn btn--white">
+      <i class="fas fa-pen-to-square"></i> Edit Profile
+    </a>
+  </div>
+  {% endif %}
+</section>
+<hr class="hr">
+<section class="section section-recents section-recents-dashboard">
+  <h1 class="heading-1 mb-medium">
+    Recently Played
+  </h1>
+  <ul class="track-list">
+    <!-- TODO: GENERATE DYNAMICALLY -->
+    {% for n in range(0,5) %}
+    <li class="track-item">
+      <!-- TODO: Link to music -->
+      <a href="/" class="track-item__link">
+        <div class="track-item__cover">
+          <img src="https://picsum.photos/100?random={{n}}" alt="" class="track-item__cover--img">
+          <i class="fas fa-play track-item__cover--playbutton"></i>
+        </div>
+        <span class="track-item__title">track name {{ n }}</span>
+        <span class="track-item__artist">Artist {{ n }}</span>
+        <!-- TODO: Add link to album -->
+        <span class="track-item__album">Album {{ n }}</span>
+      </a>
+      <div class="track-item__cta">
+        <a href="/" class="track-item__cta-link track-item__cta--like">
+          <!-- TODO: Add non liked icons and make it functional -->
+          <i class="fas fa-thumbs-up"></i>
+        </a>
+        <a href="/" class="track-item__cta-link track-item__cta--like">
+          <i class="fas fa-ellipsis-vertical"></i>
+        </a>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+<section class="section section-playlists">
+  <h1 class="heading-1 mb-medium">
+    {{ user.nickname }}'s Playlists
+  </h1>
+  <div class="playlist-container">
+    {% for n in range (5)%}
+    <div class="playlist__item">
+      <a href="/" class=" playlist__link">
+        <div class="playlist__details">
+          <p class="playlist__heading">Playlist Name</p>
+          <p class="playlist__subheading">Playlist Author</p>
+        </div>
+        <i class="fas fa-circle-play playlist__playbutton"></i>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<section class="section section-tracks">
+  <h1 class="heading-1">
+    {{ user.nickname }}'s tracks
+  </h1>
+  <div class="track-carousel">
+    <!-- TODO: GENERATE DYNAMICALLY -->
+    {% for n in range(3,10) %}
+    <div class="track-carousel__item">
+      <div class="track-carousel__item--cover">
+        <a href="/" class="">
+          <div>
+            <img src="https://picsum.photos/200?random={{n}}" alt="track Image" class="track-carousel__item--img">
+            <i class="fas fa-play track-carousel__item--play"></i>
+          </div>
+        </a>
+      </div>
+      <div class="track-carousel__item--text">
+        <a href="" class="track-carousel__item--title">track Title</a>
+        <a href="" class="track-carousel__item--artist">Artist</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

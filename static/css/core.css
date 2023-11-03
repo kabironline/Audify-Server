@@ -1,0 +1,213 @@
+:root {
+  --color-primary: #f9a826;
+  --color-primary-light: #ffd95a;
+  --color-primary-dark: #c17900;
+
+  --color-background: #010101;
+  --color-background-light: #1c1c1c;
+  --color-background-dark: #000000;
+
+  --color-invalid: #b35700;
+  --color-valid: #55c57a;
+
+  --color-border-light: #ffffff3a;
+  --color-border-dark: #0000003a;
+
+  --color-white: #ffffff;
+  --color-white-dark: #e6e6e6;
+
+  --color-black: #000000;
+  --color-black-light: #1c1c1c;
+
+  --color-text: #ffffff;
+  --text-placeholder-color: #6b6b6b;
+  --text-label-color: #9b9b9b;
+  --text-subtitle-color: #c4c4c4;
+
+  --color-hover: #353535;
+}
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-size: 1.6rem;
+  font-family: "Product Sans Regular";
+  color: white;
+  background-color: var(--color-background);
+}
+
+.mb-small {
+  margin-bottom: 2rem !important;
+}
+
+.mb-medium {
+  margin-bottom: 3rem !important;
+}
+
+.mb-large {
+  margin-bottom: 5rem !important;
+}
+
+.mb-xlarge {
+  margin-bottom: 7rem !important;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src: url(../fonts/Ubuntu.ttf);
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src: url(../fonts/Ubuntu-Bold.ttf);
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src: url(../fonts/Ubuntu-Light.ttf);
+  font-weight: lighter;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src: url(../fonts/Ubuntu-Medium.ttf);
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src: url(../fonts/Ubuntu-MediumItalic.ttf);
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src: url(../fonts/Ubuntu-Italic.ttf);
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src: url(../fonts/Ubuntu-BoldItalic.ttf);
+  font-weight: bold;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Ubuntu";
+  src: url(../fonts/Ubuntu-LightItalic.ttf);
+  font-weight: lighter;
+  font-style: italic;
+}
+
+/* Google SANS FONT FACES */
+
+@font-face {
+  font-family: "Product Sans Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Regular"),
+    url("../fonts/ProductSans-Regular.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Italic"),
+    url("../fonts/ProductSans-Italic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Thin Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Thin Regular"),
+    url("../fonts/ProductSans-Thin.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Light Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Light Regular"),
+    url("../fonts/ProductSans-Light.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Medium Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Medium Regular"),
+    url("../fonts/ProductSans-Medium.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Black Regular";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Black Regular"),
+    url("../fonts/ProductSans-Black.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Thin Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Thin Italic"),
+    url("../fonts/ProductSans-ThinItalic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Light Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Light Italic"),
+    url("../fonts/ProductSans-LightItalic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Medium Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Medium Italic"),
+    url("../fonts/ProductSans-MediumItalic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Bold";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Bold"),
+    url("../fonts/ProductSans-Bold.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Bold Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Bold Italic"),
+    url("../fonts/ProductSans-BoldItalic.woff") format("woff");
+}
+
+@font-face {
+  font-family: "Product Sans Black Italic";
+  font-style: normal;
+  font-weight: normal;
+  src: local("Product Sans Black Italic"),
+    url("../fonts/ProductSans-BlackItalic.woff") format("woff");
+}

@@ -1,0 +1,18 @@
+{% extends "core.html" %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/music-widgets.css') }}">
+{% block m_head %} {% endblock %}
+{% endblock %}
+{% block content %}
+<div class="page-container">
+  {% include "navbar.html" %}
+  {% include "sidebar.html" %}
+  <div class="page-content">
+    {% block m_content %}{% endblock %}
+  </div>
+  <!-- <iframe class="player-bar" src="/player" frameborder="0" class="music-player"> Player </iframe> -->
+</div>
+{% endblock %}

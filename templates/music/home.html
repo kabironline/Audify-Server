@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block m_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+{% endblock %}
+{% block m_content %}
+<section class="section section-recents">
+  <h1 class="heading-1">
+    Recently Played
+  </h1>
+  <div class="track-carousel">
+    {% for n in range(3,13) %}
+    <div class="track-carousel__item">
+      <div class="track-carousel__item--cover">
+        <a href="/" class="">
+          <div>
+            <img src="https://picsum.photos/200?random={{n}}" alt="track Image" class="track-carousel__item--img">
+            <i class="fas fa-play track-carousel__item--play"></i>
+          </div>
+        </a>
+      </div>
+      <div class="track-carousel__item--text">
+        <a href="" class="track-carousel__item--title">track Title</a>
+        <a href="" class="track-carousel__item--artist">Artist</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+<section class="section sections-latest">
+  <h1 class="heading-1 mb-medium">
+    Top Playlists
+  </h1>
+  <div class="playlist-container">
+    {% for n in range (5)%}
+    <div class="playlist__item">
+      <a href="/" class=" playlist__link">
+        <div class="playlist__details">
+          <p class="playlist__heading">Playlist Name</p>
+          <p class="playlist__subheading">Playlist Author</p>
+        </div>
+        <i class="fas fa-circle-play playlist__playbutton"></i>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}
