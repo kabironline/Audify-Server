@@ -1,0 +1,58 @@
+{% extends "base.html"%}
+{%block title%}Playlist{%endblock%}
+{%block m_head%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/playlist.css')}}">
+{%endblock%}
+{%block m_content%}
+
+<section class="section">
+  <div class="playlist-header">
+    <h2 class="heading-2">
+      <!-- TODO: UPDATE THIS -->
+      Playlist's Name
+    </h2>
+    <p class="playlist-header__description">
+      Playlist's Author • 10 songs, 30 min
+    </p>
+
+    <div class="playlist-header__buttons">
+      <a href="/" class="btn btn--white"><i class="fas fa-shuffle"></i>Shuffle Play</a>
+      <a href="/" class="btn "><i class="fas fa-check-to-slot"></i>Add to library</a>
+    </div>
+  </div>
+  <hr class="hr">
+</section>
+<section class="section section-playlist-songs">
+  <ul class="track-list">
+    <!-- TODO: GENERATE DYNAMICALLY -->
+    {% for n in range(0,15) %}
+    <li class="track-item">
+      <!-- TODO: Link to music -->
+      <a href="/" class="track-item__link">
+        <div class="track-item__cover">
+          <img src="https://picsum.photos/100?random={{n}}" alt="" class="track-item__cover--img">
+          <i class="fas fa-play track-item__cover--playbutton"></i>
+        </div>
+        <span class="track-item__title">track name {{ n }}</span>
+        <span class="track-item__artist">Artist {{ n }}</span>
+        <!-- TODO: Add link to album -->
+        <span class="track-item__album">Album {{ n }}</span>
+      </a>
+      <div class="track-item__cta">
+        <a href="/" class="track-item__cta-link track-item__cta--like">
+          <!-- TODO: Add non liked icons and make it functional -->
+          <i class="fas fa-thumbs-up"></i>
+        </a>
+        <a href="/" class="track-item__cta-link track-item__cta--like">
+          <i class="fas fa-ellipsis-vertical"></i>
+        </a>
+      </div>
+      <p class="track-item__length">
+        {{ n+1 }}:{{ '%02d' | format(n*3) }}
+      </p>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+
+{% endblock %}

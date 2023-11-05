@@ -41,6 +41,7 @@ app.add_url_rule(
     "/register", "register", membership.routes.register, methods=["GET", "POST"]
 )
 app.add_url_rule("/upload", "upload", music.routes.upload, methods=["GET", "POST"])
+app.add_url_rule("/playlist", "playlist", music.routes.playlist)
 app.add_url_rule("/player", "player", music.routes.player)
 app.add_url_rule("/explore", "explore", music.routes.explore)
 app.add_url_rule("/new_releases", "new_releases", music.routes.new_releases)

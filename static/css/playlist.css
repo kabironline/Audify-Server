@@ -1,0 +1,11 @@
+.playlist-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.playlist-header__buttons {
+  display: flex;
+  gap: 2rem;
+}
