@@ -44,6 +44,13 @@ app.add_url_rule(
 )
 app.add_url_rule("/player", "player", music.routes.player)
 app.add_url_rule("/explore", "explore", music.routes.explore)
+app.add_url_rule("/new_releases", "new_releases", music.routes.new_releases)
+app.add_url_rule(
+    "/new_releases/albums", "new_releases_albums", music.routes.new_releases_albums
+)
+app.add_url_rule(
+    "/new_releases/tracks", "new_releases_tracks", music.routes.new_releases_tracks
+)
 app.add_url_rule("/dashboard", "dashboard", membership.routes.dashboard)
 app.add_url_rule("/dashboard/<int:user_id>", "dashboard", membership.routes.dashboard)
 
