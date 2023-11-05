@@ -51,6 +51,7 @@ app.add_url_rule(
 app.add_url_rule(
     "/new_releases/tracks", "new_releases_tracks", music.routes.new_releases_tracks
 )
+app.add_url_rule("/top_charts", "top_charts", music.routes.top_charts)
 app.add_url_rule("/dashboard", "dashboard", membership.routes.dashboard)
 app.add_url_rule("/dashboard/<int:user_id>", "dashboard", membership.routes.dashboard)
 

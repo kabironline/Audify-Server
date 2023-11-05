@@ -32,7 +32,7 @@
       </div>
       {% endif %}
     </div>
-    <p class="hero__details--dio">
+    <p class="hero__details--bio">
       BIO: {{user.bio}}
     </p>
   </div>
@@ -68,6 +68,9 @@
           <i class="fas fa-ellipsis-vertical"></i>
         </a>
       </div>
+      <p class="track-item__length">
+        {{ n+1 }}:{{ '%02d' | format(n*3) }}
+      </p>
     </li>
     {% endfor %}
   </ul>

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}Top Charts{% endblock %}
+{% block m_content %}
+<section class="section section-top-tracks">
+  <h3 class="heading-3">
+    <!-- Link to top 20 playlist -->
+    <a href="/" class="heading-link">Top Tracks</a>
+  </h3>
+  <div class="track-tiles">
+    {% for n in range(0,12) %}
+    <div class="track-tile">
+      <!-- Add postion of the track in the top charts -->
+      <div class="track-tile__position">
+        <p class="track-tile__position--text">{{ n+1 }}</p>
+      </div>
+      <div class="track-tile__cover">
+        <a href="/" class="">
+          <div>
+            <img src="https://picsum.photos/200?random={{n+10}}" alt="track Image" class="track-tile__cover--img">
+            <i class="fas fa-play track-tile__cover--playbutton"></i>
+          </div>
+        </a>
+      </div>
+      <div class="track-tile__text">
+        <a href="" class="track-tile__text--title">track Title</a>
+        <a href="" class="track-tile__text--artist">Artist</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <a href="/" class="btn btn--primary mb-medium">View All</a>
+</section>
+<section class="section section-top-tracks">
+  <h3 class="heading-3">
+    <!-- Link to top 20 playlist -->
+    <a href="/" class="heading-link">Top Creators</a>
+  </h3>
+  <div class="creator-tiles">
+    {% for n in range(0,12) %}
+    <div class="creator-tile">
+      <!-- Add postion of the creator in the top charts -->
+      <div class="creator-tile__position">
+        <p class="creator-tile__position--text">{{ n+1 }}</p>
+      </div>
+      <div class="creator-tile__cover">
+        <a href="/" class="">
+          <div>
+            <img src="https://picsum.photos/200?random={{n+10}}" alt="creator Image" class="creator-tile__cover--img">
+          </div>
+        </a>
+      </div>
+      <div class="creator-tile__text">
+        <a href="" class="creator-tile__text--title">creator Title</a>
+        <a href="" class="creator-tile__text--artist">Artist</a>
+      </div>
+      <!-- TODO: Update this link -->
+      <a href="/explore">
+        <i class="fas fa-circle-play creator-tile__cover--playbutton"></i>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <a href="/" class="btn btn--primary mb-medium">View All</a>
+</section>
+{% endblock %}
