@@ -14,30 +14,36 @@
     </div>
   </div>
   <div class="hero__details">
-    <h1 class="heading-1 hero__details--title">
-      {{user.nickname}}
-    </h1>
-    <p class="hero__details--subtitle">
-      @{{user.username}}
-    </p>
+    <div class="hero__details--header">
+      <div class="hero__details--header">
+        <h2 class=" heading-2 hero__details--title">
+          {{user.nickname}}
+        </h2>
+        <p class="hero__details--subtitle">
+          @{{user.username}}
+        </p>
+      </div>
+      {% if self %}
+      <div class="hero__cta">
+        <!-- TODO: Add edit profile navigation -->
+        <a href="/edit_profile" class="btn btn--white">
+          <i class="fas fa-pen-to-square"></i> Edit Profile
+        </a>
+      </div>
+      {% endif %}
+    </div>
     <p class="hero__details--dio">
       BIO: {{user.bio}}
     </p>
   </div>
-  {% if self %}
-  <div class="hero__cta">
-    <!-- TODO: Add edit profile navigation -->
-    <a href="/edit_profile" class="btn btn--white">
-      <i class="fas fa-pen-to-square"></i> Edit Profile
-    </a>
-  </div>
-  {% endif %}
+
+
 </section>
 <hr class="hr">
 <section class="section section-recents section-recents-dashboard">
-  <h1 class="heading-1 mb-medium">
+  <h2 class="heading-2 mb-medium">
     Recently Played
-  </h1>
+  </h2>
   <ul class="track-list">
     <!-- TODO: GENERATE DYNAMICALLY -->
     {% for n in range(0,5) %}
@@ -67,9 +73,9 @@
   </ul>
 </section>
 <section class="section section-playlists">
-  <h1 class="heading-1 mb-medium">
+  <h2 class="heading-2 mb-medium">
     {{ user.nickname }}'s Playlists
-  </h1>
+  </h2>
   <div class="playlist-container">
     {% for n in range (5)%}
     <div class="playlist__item">
@@ -85,9 +91,9 @@
   </div>
 </section>
 <section class="section section-tracks">
-  <h1 class="heading-1">
+  <h2 class="heading-2">
     {{ user.nickname }}'s tracks
-  </h1>
+  </h2>
   <div class="track-carousel">
     <!-- TODO: GENERATE DYNAMICALLY -->
     {% for n in range(3,10) %}

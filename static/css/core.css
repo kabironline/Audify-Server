@@ -45,6 +45,8 @@ body {
   font-family: "Product Sans Regular";
   color: white;
   background-color: var(--color-background);
+  text-overflow: ellipsis;
+  overflow-x: hidden;
 }
 
 .mb-small {

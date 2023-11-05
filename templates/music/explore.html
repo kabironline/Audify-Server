@@ -5,8 +5,8 @@
 {% endblock %}
 {% block m_content %}
 <section class="section section-options mb-xlarge">
-  <div class="explore-option-container">
-    <a href="/" class="explore-option__item">
+  <div class="explore-option-container mb-medium">
+    <a href="/new_releases" class="explore-option__item">
       <div class="explore-option__item--icon">
         <i class="fas fa-fire"></i>
       </div>
@@ -27,8 +27,8 @@
   </div>
 </section>
 <section class="section section-options">
-  <a href="/" class="heading-link">
-    <h1 class="heading-1">New Releases</h1>
+  <a href="/new_releases" class="heading-link">
+    <h2 class="heading-2">New Releases</h2>
   </a>
   <!-- add track carousel -->
   <div class="track-carousel">
@@ -53,7 +53,7 @@
 </section>
 <section class="section section-top">
   <a href="/" class="heading-link">
-    <h1 class="heading-1">Top Charts</h1>
+    <h2 class="heading-2">Top Charts</h2>
   </a>
   <div class="track-tiles">
     {% for n in range(0,12) %}
@@ -80,7 +80,7 @@
 </section>
 <section class="section sections-genre">
   <a href="/" class="heading-link">
-    <h1 class="heading-1">Genres</h1>
+    <h2 class="heading-2">Genres</h2>
   </a>
   <div class="genre-tiles">
     {% for n in range (1,21)%}
@@ -90,7 +90,6 @@
       <div style="background-color: red ;" class="genre-tile__cover">
       </div>
       <p class="genre-tile__text">Genre Name {{n}}</p>
-
     </a>
     {% endfor %}
   </div>

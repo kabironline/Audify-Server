@@ -1,6 +1,6 @@
 .hero {
   display: grid;
-  grid-template-columns: 20rem 1fr max-content;
+  grid-template-columns: 20rem 1fr;
   grid-template-rows: 1fr;
   grid-gap: 2rem;
   align-items: center;
@@ -22,6 +22,13 @@
   grid-template-columns: 1fr;
   grid-template-rows: min-content min-content min-content;
   grid-gap: 1rem;
+}
+
+.hero__details--header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
 }
 
 .hero__details--title {
