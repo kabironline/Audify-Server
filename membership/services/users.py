@@ -1,5 +1,4 @@
 from core.db import get_session, get_test_session
-from sqlalchemy.orm import Session
 import membership.models.user as user_model
 import datetime
 import re

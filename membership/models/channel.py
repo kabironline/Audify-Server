@@ -1,7 +1,4 @@
 from sqlalchemy import ForeignKey
-from datetime import datetime as DateTime
-from sqlalchemy.orm import mapped_column, Mapped
-from .user import User
 from core.db import db
 
 
