@@ -3,7 +3,7 @@
 {%block m_content%}
 <section class="section section-upload">
   <h2 class="heading-2">Upload a track</h2>
-  <form action="/upload" method="post">
+  <form action="/upload" method="post" enctype="multipart/form-data">
     <div class="form-group">
       <label for="title">Title</label>
       <input type="text" name="title" id="title" placeholder="Title" required>

@@ -1,4 +1,123 @@
-<div class="player">
-  <input style="background-color: transparent; width: 100%;" type="range" min="1" max="100" value="0" class="slider"
-    id="myRange">
-</div>
+{% extends "base.html" %}
+{% block title %}Player {% endblock %}
+{% block m_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
+{% endblock %}
+{% block m_content %}
+<section class="section section-player">
+  <div class="player__cover--container">
+    <div class="player__cover">
+      <img src="{{ url_for('track_cover', track_id = track.id) }}" alt="" class="player__cover--img">
+      <div style="background: radial-gradient(
+            ellipse at center,
+            transparent 50%,
+            black 100%
+          ),url({{ url_for('track_cover', track_id = track.id) }}) center center / cover no-repeat;" alt=""
+        class="player__cover--img-blur"> </div>
+      <div class="player__cover--desc">
+        <h3 class="heading-3 player__cover--title">{{track.name}}</h3>
+        <a href="/" class="player__cover--artist">
+          {{artist.nickname}}
+          <!-- TODO : Add likes -->
+        </a> &middot; {{track.release_date.strftime('%Y-%m-%d')}}
+      </div>
+    </div>
+  </div>
+  <div class="vl"></div>
+  <div class="player__info">
+    <div class="player-tab--container">
+      <input type="radio" name="player-tabs" id="lyrics" class="player-tab--radio">
+      <label for="lyrics" class="player-tab--label">Lyrics</label>
+      <input type="radio" name="player-tabs" id="comments" class="player-tab--radio">
+      <label for="comments" class="player-tab--label">Comments</label>
+    </div>
+    <div class="player__view">
+      <p class="player__view--lyrics">
+        {{track.lyrics}}
+      </p>
+    </div>
+  </div>
+
+</section>
+
+
+{% endblock %}
+{% block scripts %}
+<script>
+  var audio = document.querySelector('.player__controls--audio');
+  var playPause = document.querySelector('.play-pause');
+  var playPauseIcon = document.querySelector('#player__controls--btn-ico');
+  var position = document.querySelector('.player__control--time');
+  var progress = document.querySelector('.player__controls--progress');
+  var duration = audio.duration;
+  var initial = true;
+
+
+  function pauseTrack() {
+    audio.pause();
+    playPauseIcon.className = 'fas fa-circle-play';
+  }
+
+
+  function playTrack() {
+    audio.play();
+    playPauseIcon.className = 'fas fa-circle-pause';
+  }
+
+  function playPauseTrack() {
+    if (audio.paused) {
+      playTrack();
+    } else {
+      pauseTrack();
+    }
+  }
+
+  if (initial) {
+    initial = false;
+    progress.value = 0;
+    progress.max = audio.duration;
+    audio.load();
+    console.log("loadedmetadata");
+  }
+
+  playPause.addEventListener('click', function () {
+    playPauseTrack();
+  });
+
+  position.innerHTML = '0:00';
+  audio.addEventListener('timeupdate', function () {
+    progress.value = audio.currentTime / audio.duration * 100;
+    // Calculate the minutes and seconds from the current time
+    // also Calculate the time remaining
+    var pos = Math.floor(audio.currentTime / 60) + ':' + ('0' + Math.floor(audio.currentTime % 60)).slice(-2);
+    var left = Math.floor((audio.duration - audio.currentTime) / 60) + ':' + ('0' + Math.floor((audio.duration - audio.currentTime) % 60)).slice(-2);
+    position.innerHTML = pos + ' / ' + "-" + left;
+  });
+  // Add event listener that will update the value of the buffered amount
+  // of the audio element
+  audio.addEventListener('progress', function () {
+    // console.log(audio.buffered.end(audio.buffered.length - 1));
+  });
+  progress.addEventListener('change', function () {
+    audio.pause();
+    audio.currentTime = audio.duration * (progress.value / 100);
+    audio.play();
+  });
+
+  var radio = document.querySelectorAll('.player-tab--radio');
+  // console.log(radio.values);
+
+  let initialized = false
+  document.addEventListener('click', function () {
+    if (!initialized) {
+      initialized = true;
+      // setTimeout(() => {
+      //   audio.mute = false;
+      //   audio.volume = 1.0;
+      //   playTrack();
+      // }, 200);
+    }
+  })
+
+</script>
+{% endblock %}

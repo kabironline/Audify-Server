@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/core.css')}} ">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css')}} ">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/player-bar.css')}} ">
+</head>
+
+<body class="frame-body">
+  <input type="range" min="1" max="100" value="20" class="player__progress-bar" />
+  <div class="player-container">
+    <audio src="{{ media }}" class="player__controls--audio" autoplay></audio>
+    <div class="player__controls">
+      <button class="player__controls--btn">
+        <i class="fas fa-step-backward"></i>
+      </button>
+      <button class="player__controls--btn play-pause">
+        <i class="fas fa-circle-play" id="player__controls--btn-ico"></i>
+      </button>
+      <button class="player__controls--btn">
+        <i class="fas fa-step-forward"></i>
+      </button>
+      <div class="player__control--time">0:00 / 0:00</div>
+    </div>
+    <div class="player__info">
+      <img src="https://www.picsum.photos/200/200" alt="album art" class="player__info--img">
+      <div class="player__info--text">
+        <div class="player__info--title">Song Title</div>
+        <div class="player__info--artist">
+          <a href="#" class="player__info--artist-link">Artist</a> • 17-01-2020
+        </div>
+      </div>
+      <a href="/" class="player__info--like-btn">
+        <i class="fa-regular fa-thumbs-up"></i>
+      </a>
+    </div>
+    <div class="player__volume">
+      <button class="player__controls--btn">
+        <i class="fas fa-volume-up"></i>
+      </button>
+      <input type="range" min="0" max="1" value="100" class="player__volume--bar" />
+    </div>
+  </div>
+
+  <script src="https://kit.fontawesome.com/2e34807a57.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

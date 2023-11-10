@@ -4,6 +4,7 @@ from datetime import datetime
 from werkzeug.datastructures import FileStorage
 import os
 
+
 def create_track(
     name, lyrics, release_date, media: FileStorage, track_art: FileStorage, user_id
 ):
@@ -50,9 +51,12 @@ def create_track(
     # Get the track id
     track_id = track.id
 
+    import pdb
+
+    pdb.set_trace()
+
     # Create a folder for the track
     os.mkdir(f"media/tracks/{track_id}")
-    
 
     media.save(f"media/tracks/{track_id}/audio.mp3")
     track_art.save(f"media/tracks/{track_id}/track-art.png")
@@ -60,3 +64,11 @@ def create_track(
     session.close()
 
     return track_id
+
+
+def get_track_by_id(track_id):
+    session = get_session()
+    track = session.query(Track).filter(Track.id == track_id).first()
+    session.close()
+
+    return track

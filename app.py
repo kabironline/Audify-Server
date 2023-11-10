@@ -42,7 +42,17 @@ app.add_url_rule(
 )
 app.add_url_rule("/upload", "upload", music.routes.upload, methods=["GET", "POST"])
 app.add_url_rule("/playlist", "playlist", music.routes.playlist)
-app.add_url_rule("/player", "player", music.routes.player)
+
+# Players and Tracks
+app.add_url_rule("/player/<int:track_id>", "player", music.routes.player)
+app.add_url_rule("/tracks/<int:track_id>", "track", music.routes.track)
+app.add_url_rule(
+    "/tracks/<int:track_id>/cover", "track_cover", music.routes.track_cover
+)
+app.add_url_rule(
+    "/tracks/<int:track_id>/media", "track_media", music.routes.track_media
+)
+app.add_url_rule("/player_controls", "player_controls", music.routes.player_controls)
 app.add_url_rule("/explore", "explore", music.routes.explore)
 app.add_url_rule("/new_releases", "new_releases", music.routes.new_releases)
 app.add_url_rule(
@@ -54,6 +64,15 @@ app.add_url_rule(
 app.add_url_rule("/top_charts", "top_charts", music.routes.top_charts)
 app.add_url_rule("/dashboard", "dashboard", membership.routes.dashboard)
 app.add_url_rule("/dashboard/<int:user_id>", "dashboard", membership.routes.dashboard)
+
+# Register the media directory as a static directory
+
+app.add_url_rule(
+    "/media/<path:filename>",
+    "media",
+    build_only=True,
+    subdomain="static",
+)
 
 if __name__ == "__main__":
     app.run(

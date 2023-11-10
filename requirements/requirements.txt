@@ -2,3 +2,4 @@ Flask==2.3.3
 SQLAlchemy==2.0.22
 Jinja2==3.1.2
 Flask-Migrate==4.0.5
+Flask-Restful==0.3.10

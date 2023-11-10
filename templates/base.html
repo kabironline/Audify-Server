@@ -4,6 +4,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='css/music-widgets.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/player-bar.css')}} ">
 {% block m_head %} {% endblock %}
 {% endblock %}
 {% block content %}
@@ -13,6 +14,8 @@
   <div class="page-content">
     {% block m_content %}{% endblock %}
   </div>
-  <!-- <iframe class="player-bar" src="/player" frameborder="0" class="music-player"> Player </iframe> -->
+  <div class="player-frame-container">
+    <iframe class="player-bar" src="/player_controls" frameborder="0" width="100%"> Player </iframe>
+  </div>
 </div>
 {% endblock %}

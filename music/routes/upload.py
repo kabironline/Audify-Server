@@ -15,13 +15,14 @@ def upload():
         cover_art = request.files.get("cover")
         audio_file = request.files.get("track")
 
+
         create_track(
-            title,
-            lyrics,
-            release_date,
-            audio_file,
-            cover_art,
-            core.get_current_user().id,
+            name=title,
+            lyrics=lyrics,
+            release_date=release_date,
+            media=audio_file,
+            track_art=cover_art,
+            user_id=core.get_current_user().id,
         )
 
         return redirect(url_for("home"))

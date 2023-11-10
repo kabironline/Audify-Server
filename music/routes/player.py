@@ -1,8 +1,61 @@
-from flask import render_template, redirect, url_for
+from flask import render_template, redirect, url_for, send_file
+from music.services import get_track_by_id
+from membership.services import get_user_by_id
 import core
 
 
-def player():
+def player(track_id):
     if core.get_current_user() is None:
         return redirect(url_for("login"))
-    return render_template("music/player.html")
+
+    track = get_track_by_id(track_id)
+    artist = get_user_by_id(track.created_by)
+    return render_template(
+        "music/player.html",
+        track=track,
+        artist=artist,
+        media=f"/tracks/{track_id}/media",
+    )
+
+
+def track(track_id):
+    # Check if track exists
+    track = get_track_by_id(track_id)
+    if track is None:
+        # TODO: Test this
+        return "Track not found", 404
+
+    track_path = "media/tracks/" + str(track_id) + "/audio.mp3"
+    track_cover_path = "media/tracks/" + str(track_id) + "/track-art.png"
+    return send_file(track_path, mimetype="audio/mpeg"), send_file(
+        track_cover_path, mimetype="image/png"
+    )
+
+
+def track_cover(track_id):
+    # Check if track exists
+    track = get_track_by_id(track_id)
+    if track is None:
+        # TODO: Test this
+        return "Track not found", 404
+
+    track_cover_path = "media/tracks/" + str(track_id) + "/track-art.png"
+    return send_file(track_cover_path, mimetype="image/png")
+
+
+def track_media(track_id):
+    # Check if track exists
+    track = get_track_by_id(track_id)
+    if track is None:
+        # TODO: Test this
+        return "Track not found", 404
+
+    track_media_path = "media/tracks/" + str(track_id) + "/audio.mp3"
+    return send_file(track_media_path, mimetype="audio/mpeg")
+
+
+def player_controls():
+    if core.get_current_user() is None:
+        return redirect(url_for("login"))
+
+    return render_template("music/player_controls.html")

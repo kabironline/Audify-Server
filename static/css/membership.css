@@ -28,5 +28,9 @@
 }
 
 .side-banner__text {
-  font-size: 5rem;
+  font-size: 7.5rem;
+  color: var(--color-background);
+  -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: var(--color-primary);
+  letter-spacing: 1rem;
 }
