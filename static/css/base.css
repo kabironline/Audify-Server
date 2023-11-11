@@ -84,6 +84,14 @@
   }
 }
 
+.badge {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background-color: var(--color-primary);
+  color: white;
+  font-size: 1.5rem;
+}
+
 .vl {
   border-left: 1px solid var(--color-border-light);
   height: 100%;

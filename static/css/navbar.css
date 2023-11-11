@@ -32,6 +32,7 @@
   margin: 0;
   font: inherit;
   transition: all 0.2s ease-out;
+  color: white;
 
   &:active,
   &:focus,

@@ -52,6 +52,22 @@ app.add_url_rule(
 app.add_url_rule(
     "/tracks/<int:track_id>/media", "track_media", music.routes.track_media
 )
+
+# Comments
+app.add_url_rule(
+    "/tracks/<int:track_id>/comments",
+    "create_comment",
+    music.routes.post_comment_route,
+    methods=["POST"],
+)
+app.add_url_rule(
+    "/tracks/<int:track_id>/comments/<int:comment_id>/delete",
+    "delete_comment",
+    music.routes.delete_comment_route,
+    # methods=["POST"],
+)
+
+
 app.add_url_rule("/player_controls", "player_controls", music.routes.player_controls)
 app.add_url_rule("/explore", "explore", music.routes.explore)
 app.add_url_rule("/new_releases", "new_releases", music.routes.new_releases)

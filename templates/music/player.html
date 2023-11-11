@@ -10,8 +10,8 @@
       <img src="{{ url_for('track_cover', track_id = track.id) }}" alt="" class="player__cover--img">
       <div style="background: radial-gradient(
             ellipse at center,
-            transparent 50%,
-            black 100%
+            transparent 20%,
+            black 85%
           ),url({{ url_for('track_cover', track_id = track.id) }}) center center / cover no-repeat;" alt=""
         class="player__cover--img-blur"> </div>
       <div class="player__cover--desc">
@@ -26,98 +26,109 @@
   <div class="vl"></div>
   <div class="player__info">
     <div class="player-tab--container">
-      <input type="radio" name="player-tabs" id="lyrics" class="player-tab--radio">
+      {% if track.lyrics %}
+      <input type="radio" name="player-tabs" id="lyrics" class="player-tab--radio" checked="{{track.lyrics}}">
       <label for="lyrics" class="player-tab--label">Lyrics</label>
-      <input type="radio" name="player-tabs" id="comments" class="player-tab--radio">
-      <label for="comments" class="player-tab--label">Comments</label>
+      {% endif %}
+      <input type="radio" name="player-tabs" id="comments" class="player-tab--radio" checked="{{not track.lyrics}}">
+      <label for="comments" class="player-tab--label">Comments {% if comments %} <span class="badge comment-count">
+          {{ comments|length}}</span> {% endif %}</label>
     </div>
     <div class="player__view">
-      <p class="player__view--lyrics">
-        {{track.lyrics}}
-      </p>
+      {% if track.lyrics %}
+      <div class="player__view--lyrics">
+        <p class="player__view--lyrics--text">
+          {{track.lyrics}}
+        </p>
+      </div>
+      {% endif %}
+      <div class="player__view--comments-container">
+        <div class="comments">
+          {% if comments %}
+          {% for comment in comments | reverse %}
+          <div class="comment">
+            <div class="comment__header">
+              <a class="comment__header--user" href="/user/{{comment.user.id}}"> {{ comment.user.nickname }}</a>
+              <div>
+                <span class="comment__header--date">
+                  {{ comment.created_at.strftime('%Y-%m-%d') }}
+                </span>
+                {% if comment.user.id == current_user.id %}
+                <a href="{{url_for('delete_comment', track_id=track.id, comment_id=comment.id)}}"
+                  class="comment__header--delete"><i class="fas fa-trash-alt"></i></a>
+                {% endif %}
+              </div>
+            </div>
+            <div class="comment__body">
+              <p class="comment__body--text">{{comment.comment}}</p>
+            </div>
+          </div>
+          {% endfor %}
+          {% else %}
+          <div class="no-comment">
+            No comments yet, Be the first to comment!
+          </div>
+          {% endif %}
+        </div>
+        <form action="{{url_for('create_comment', track_id=track.id)}}" method="post" class="comment-box-container">
+          <div class="comment-box">
+            <input minlength="1" required type="text" autocomplete="off" name="comment" placeholder="Enter comment"
+              class="comment-box--bar">
+            <button type="submit" value="comment" class="comment-box--btn"><i class="fas fa-paper-plane"
+                aria-hidden="true"></i></button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-
 </section>
 
 
 {% endblock %}
 {% block scripts %}
 <script>
-  var audio = document.querySelector('.player__controls--audio');
-  var playPause = document.querySelector('.play-pause');
-  var playPauseIcon = document.querySelector('#player__controls--btn-ico');
-  var position = document.querySelector('.player__control--time');
-  var progress = document.querySelector('.player__controls--progress');
-  var duration = audio.duration;
-  var initial = true;
-
-
-  function pauseTrack() {
-    audio.pause();
-    playPauseIcon.className = 'fas fa-circle-play';
+  var lyricsTab = document.querySelector('.player__view--lyrics');
+  var commentsTab = document.querySelector('.player__view--comments-container');
+  var lyricsRadio = document.querySelector('#lyrics');
+  var commentsRadio = document.querySelector('#comments');
+  var initalized = false;
+  if (!initalized) {
+    activateLyrics();
+    initalized = true;
   }
 
+  function activateLyrics() {
+    lyricsTab.style.display = 'block';
+    commentsTab.style.display = 'none';
+    lyricsRadio.checked = true;
+    commentsRadio.checked = false;
 
-  function playTrack() {
-    audio.play();
-    playPauseIcon.className = 'fas fa-circle-pause';
+    console.log(lyricsRadio.checked, commentsRadio.checked);
   }
 
-  function playPauseTrack() {
-    if (audio.paused) {
-      playTrack();
-    } else {
-      pauseTrack();
+  function activateComments() {
+    lyricsTab.style.display = 'none';
+    commentsTab.style.display = 'flex';
+    lyricsRadio.checked = false;
+    commentsRadio.checked = true;
+
+    console.log(lyricsRadio.checked, commentsRadio.checked);
+  }
+
+  document.getElementById('lyrics').addEventListener('change', function () {
+    if (this.checked) {
+      activateLyrics();
     }
-  }
-
-  if (initial) {
-    initial = false;
-    progress.value = 0;
-    progress.max = audio.duration;
-    audio.load();
-    console.log("loadedmetadata");
-  }
-
-  playPause.addEventListener('click', function () {
-    playPauseTrack();
   });
 
-  position.innerHTML = '0:00';
-  audio.addEventListener('timeupdate', function () {
-    progress.value = audio.currentTime / audio.duration * 100;
-    // Calculate the minutes and seconds from the current time
-    // also Calculate the time remaining
-    var pos = Math.floor(audio.currentTime / 60) + ':' + ('0' + Math.floor(audio.currentTime % 60)).slice(-2);
-    var left = Math.floor((audio.duration - audio.currentTime) / 60) + ':' + ('0' + Math.floor((audio.duration - audio.currentTime) % 60)).slice(-2);
-    position.innerHTML = pos + ' / ' + "-" + left;
-  });
-  // Add event listener that will update the value of the buffered amount
-  // of the audio element
-  audio.addEventListener('progress', function () {
-    // console.log(audio.buffered.end(audio.buffered.length - 1));
-  });
-  progress.addEventListener('change', function () {
-    audio.pause();
-    audio.currentTime = audio.duration * (progress.value / 100);
-    audio.play();
-  });
-
-  var radio = document.querySelectorAll('.player-tab--radio');
-  // console.log(radio.values);
-
-  let initialized = false
-  document.addEventListener('click', function () {
-    if (!initialized) {
-      initialized = true;
-      // setTimeout(() => {
-      //   audio.mute = false;
-      //   audio.volume = 1.0;
-      //   playTrack();
-      // }, 200);
+  document.getElementById('comments').addEventListener('change', function () {
+    if (this.checked) {
+      activateComments();
     }
-  })
+  });
+
+
+
 
 </script>
 {% endblock %}

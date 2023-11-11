@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, send_file
-from music.services import get_track_by_id
+from music.services import get_track_by_id, get_comments_by_track_id
 from membership.services import get_user_by_id
 import core
 
@@ -10,11 +10,17 @@ def player(track_id):
 
     track = get_track_by_id(track_id)
     artist = get_user_by_id(track.created_by)
+    comments = get_comments_by_track_id(track_id)
+    # join the comments with the users who created them
+    for comment in comments:
+        comment.user = get_user_by_id(comment.user_id)
+
     return render_template(
         "music/player.html",
         track=track,
         artist=artist,
-        media=f"/tracks/{track_id}/media",
+        comments=comments,
+        current_user=core.get_current_user(),
     )
 
 

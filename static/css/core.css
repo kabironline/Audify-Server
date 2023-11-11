@@ -38,6 +38,8 @@
 html {
   font-size: 62.5%;
   scroll-behavior: smooth;
+
+  /* Add a custom scrollbar with black tracks and light blakc handle */
 }
 
 body {
@@ -47,6 +49,7 @@ body {
   background-color: var(--color-background);
   text-overflow: ellipsis;
   overflow-x: hidden;
+  scrollbar-color: var(--color-background) var(--color-background-light);
 }
 
 .mb-small {
