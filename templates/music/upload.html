@@ -3,32 +3,66 @@
 {%block m_content%}
 <section class="section section-upload">
   <h2 class="heading-2">Upload a track</h2>
-  <form action="/upload" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-      <label for="title">Title</label>
-      <input type="text" name="title" id="title" placeholder="Title" required>
+  <form class="form__container form__container--track" action="/upload" method="post" enctype="multipart/form-data">
+
+    <div class="form__group">
+      <input type="text" minlength="1" maxlength="50" name="title" id="title" placeholder="Track Name" class="form__input"
+        required>
+      <label for="title" class="form__label">Track Name</label>
     </div>
-    <div class="form-group">
-      <label for="genre">Genre</label>
-      <input type="text" name="genre" id="genre" placeholder="Genre" required>
+    <div class="form__group">
+      <input type="text" minlength="2 name=" genre" id="genre" placeholder="Genre" class="form__input" required>
+      <label for="genre" aria-autocomplete="list" class="form__label">Genre</label>
     </div>
-    <div class="form-group">
-      <label for="lyrics">Lyrics</label>
-      <textarea type="text" name="lyrics" id="lyrics" placeholder="Lyrics"></textarea>
+    <div class="form__group">
+      <input type="date" name="release_date" id="release_date" placeholder="Release Date" class="form__input" required>
+      <label for="release_date" class="form__label">Release Date</label>
     </div>
-    <div class="form-group">
-      <label for="artist">Release Date</label>
-      <input type="date" name="release_date" id="release_date" required>
+    <div class="form__group">
+      <textarea name="lyrics" id="lyrics" class="form__input form__input--textarea" placeholder="Lyrics"></textarea>
+      <label for="lyrics" class="form__label">Lyrics (Optional)</label>
     </div>
-    <div class="form-group">
-      <label for="cover">Cover</label>
-      <input type="file" accept=".png" name="cover" id="cover" required>
+    <div class="form__group form__group--reverse">
+      <label class="form__label" for="track">Track</label>
+
+      <input class="form__input form__input--file " type="file" accept=".mp3" name="track" id="track" required>
+      <img src="" alt="" class="form__input--img">
+
     </div>
-    <div class="form-group">
-      <label for="track">Track</label>
-      <input type="file" accept=".mp3" name="track" id="track" required>
+    <div class="form__group form__group--reverse">
+      <label class="form__label" for="cover">Cover Large</label>
+      <div class="form__input--img-container">
+        <input class="form__input form__input--file cover-large" type="file" accept=".png" name="cover" id="cover"
+          required>
+        <img src="" alt="" class="form__input--img">
+      </div>
     </div>
-    <input type="submit" value="Upload" class="btn btn-primary" />
+    <input class="form__button form__button--track" type="submit" value="Upload" class="btn btn-primary" />
   </form>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // If image file has been uploaded then display it in the adjacent image tag
+
+  const coverLarge = document.querySelector('.cover-large');
+  const track = document.querySelector('.track');
+
+  coverLarge.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.addEventListener('load', function () {
+        coverLarge.nextElementSibling.style.display = 'block';
+        coverLarge.nextElementSibling.src = this.result;
+      });
+      reader.readAsDataURL(file);
+    }
+  });
+
+
+
+
+</script>
 {% endblock %}

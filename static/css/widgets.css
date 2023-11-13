@@ -3,17 +3,28 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  /* align-items: center; */
   text-align: center;
 }
 
+.form__box {
+  width: 40rem;
+}
+
+.form__container--track {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem 5rem;
+  /* align-items: normal; */
+}
+
 .form__group:not(:last-child) {
-  margin-bottom: 2rem;
+  margin-bottom: 0rem 2rem;
 }
 
 .form__heading {
   font-size: 4rem;
-  margin-bottom: 5rem;
+  margin-bottom: 2rem;
 }
 
 .form__group {
@@ -21,6 +32,11 @@
   flex-direction: column-reverse;
   justify-content: start;
   align-items: start;
+}
+
+.form__group--reverse {
+  flex-direction: column;
+  margin-bottom: 1rem;
 }
 
 .form__input {
@@ -34,7 +50,7 @@
   border-radius: 5px;
   border: none;
   border-bottom: 3px solid transparent;
-  width: 35vw;
+  width: 100%;
 }
 
 .form__input::-webkit-input-placeholder {
@@ -73,6 +89,29 @@
 
 .form__input--password {
   letter-spacing: 0.3rem;
+}
+
+.form__input--file {
+  flex: 1;
+}
+
+.form__input--file::-webkit-file-upload-button {
+  display: none;
+}
+
+.form__input--img-container {
+  display: flex;
+  width: 100%;
+  gap: 2rem;
+  transition: all 0.2s;
+}
+
+.form__input--img {
+  display: none;
+  height: 7.5rem;
+  width: 7.5rem;
+  border-radius: 5px;
+  object-fit: cover;
 }
 
 .form__label {
@@ -119,6 +158,12 @@
   padding: 1.5rem 4rem;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.form__button--track {
+  grid-column: 1 / -1;
+  width: 15rem;
+  justify-self: center;
 }
 
 .form__button:hover {
