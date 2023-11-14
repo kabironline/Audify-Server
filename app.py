@@ -1,16 +1,21 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, request, Response, session
 from flask_migrate import Migrate
+from flask_restful import Api
+from flask_cors import CORS
 import os
 import core
 
 from commands.db import *
 from core.db import db
+from core import api
 import membership.routes
 import music.routes
+import music.api
 
 
 app = Flask(__name__)
 
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(current_dir, "core/db/db.sqlite3")
@@ -20,6 +25,26 @@ app.config["SQLALCHEMY_ECHO"] = True
 
 db.init_app(app)
 migrate = Migrate(app, db)
+
+api = Api(app)
+api.add_resource(
+    music.api.RatingAPI,
+    "/api/rating/<int:track_id>",
+)
+api.add_resource(
+    music.api.CommentAPI,
+    "/api/rating/<int:track_id>",
+)
+
+core.set_api(api)
+
+
+@app.before_request
+def handle_preflight():
+    if request.method == "OPTIONS":
+        res = Response()
+        res.headers["X-Content-Type-Options"] = "*"
+        return res
 
 
 app.cli.add_command(create_tables)
