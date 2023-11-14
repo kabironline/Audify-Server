@@ -9,6 +9,7 @@
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter",
     "editor.indentSize": 4,
+    "editor.tabSize": 4,
     "editor.formatOnSave": true,
   },
   "[css]": {
