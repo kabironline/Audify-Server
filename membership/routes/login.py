@@ -14,6 +14,7 @@ def login():
             return render_template(
                 "membership/login.html", error="Please fill all fields"
             )
+
         user = get_user_by_username(username)
         if user is None:
             return render_template("membership/login.html", error="User not found")
@@ -23,6 +24,5 @@ def login():
             )
 
         core.set_current_user(user)
-        # Change this later
         return redirect(url_for("home"))
     return render_template("membership/login.html")

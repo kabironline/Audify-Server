@@ -14,7 +14,7 @@ import music.api
 
 
 app = Flask(__name__)
-
+app.secret_key = "secret_key"
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
