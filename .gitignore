@@ -1,6 +1,4 @@
-audio.mp3
-track-art.png
-
+media/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

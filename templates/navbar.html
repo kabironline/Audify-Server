@@ -7,7 +7,29 @@
       </button>
     </div>
   </form>
+  <div class="profile-icon-container">
+    <input type="checkbox" name="profile" id="profile" class="profile-icon__checkbox">
+    <div class="profile-dropdown-container">
+      <ul class="profile-dropdown-list">
+        <li class="profile-dropdown-item">
+          <a class="profile-dropdown-item--link" href="/dashboard">Dashboard</a>
+        </li>
+        <li class="profile-dropdown-item">
+          <a class="profile-dropdown-item--link" href="/edit_profile">Edit Profile</a>
+        </li>
+        <li class="profile-dropdown-item">
+          <a class="profile-dropdown-item--link" href="/register-creator">Register as Creator</a>
+        </li>
+        <li class="profile-dropdown-item">
+          <a class="profile-dropdown-item--link" href="/logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+    <label for="profile" class="navbar__profile">
+      <i class="fas fa-circle-user"></i>
+    </label>
+  </div>
   <a class="navbar__profile" href="/dashboard">
-    <i class="fas fa-circle-user"></i>
+
   </a>
 </nav>

@@ -1,4 +1,5 @@
 from core.db import get_session, get_test_session
+from core import get_current_user
 import membership.models.user as user_model
 import datetime
 import re
@@ -96,6 +97,35 @@ def create_user(username, password, nickname, bio, test=False):
     )
 
     session.add(user)
+    session.commit()
+
+
+def update_user(user: user_model.User):
+    """
+    This function updates the user with the given user object.
+    """
+    old_user = get_user_by_id(user.id)
+    old_user.username = user.username if user.username else old_user.username
+    old_user.password = user.password if user.password else old_user.password
+    old_user.nickname = user.nickname if user.nickname else old_user.nickname
+    old_user.bio = user.bio if user.bio else old_user.bio
+    old_user.last_modified_at = datetime.datetime.now()
+    old_user.last_modified_by = get_current_user().id
+    session = get_session()
+
+    if user.avatar:
+        import os
+
+        try:
+            os.mkdir(f"media/users/{user.id}")
+        except FileExistsError:
+            pass
+        user.avatar.save(f"media/users/{user.id}/avatar.png")
+
+    import core
+
+    core.set_current_user(old_user)
+
     session.commit()
 
 

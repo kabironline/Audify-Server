@@ -188,7 +188,7 @@
   }
 
   async function updateLikePercentage() {
-    const response = await fetch(`http://127.0.0.1:5000/api/rating/{{track.id}}`, {
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/rating/{{track.id}}`, {
       method: 'GET',
     });
 
@@ -250,7 +250,7 @@
 
   dislikeButton.addEventListener('click', async function () {
     console.log('dislike');
-    const response = await fetch(`http://127.0.0.1:5000/api/rating/{{track.id}}`, {
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/rating/{{track.id}}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -273,7 +273,7 @@
   });
 
   likeButton.addEventListener('click', async function () {
-    const response = await fetch(`http://127.0.0.1:5000/api/rating/{{track.id}}`, {
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/rating/{{track.id}}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -29,7 +29,7 @@ migrate = Migrate(app, db)
 api = Api(app)
 api.add_resource(
     music.api.RatingAPI,
-    "/api/rating/<int:track_id>",
+    "/api/v1/rating/<int:track_id>",
 )
 api.add_resource(
     music.api.CommentAPI,
@@ -62,6 +62,8 @@ def entry():
 
 app.add_url_rule("/home", "home", music.routes.home)
 app.add_url_rule("/login", "login", membership.routes.login, methods=["GET", "POST"])
+app.add_url_rule("/logout", "logout", membership.routes.logout)
+
 app.add_url_rule(
     "/register", "register", membership.routes.register, methods=["GET", "POST"]
 )
@@ -105,9 +107,15 @@ app.add_url_rule(
 app.add_url_rule("/top_charts", "top_charts", music.routes.top_charts)
 app.add_url_rule("/dashboard", "dashboard", membership.routes.dashboard)
 app.add_url_rule("/dashboard/<int:user_id>", "dashboard", membership.routes.dashboard)
-
-# Register the media directory as a static directory
-
+app.add_url_rule(
+    "/edit_profile",
+    "edit_profile",
+    membership.routes.edit_profile,
+    methods=["GET", "POST"],
+)
+app.add_url_rule(
+    "/user_avatar/<int:user_id>", "user_avatar", membership.routes.user_avatar
+)
 app.add_url_rule(
     "/media/<path:filename>",
     "media",

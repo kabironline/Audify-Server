@@ -26,3 +26,8 @@ def login():
         core.set_current_user(user)
         return redirect(url_for("home"))
     return render_template("membership/login.html")
+
+
+def logout():
+    core.logout()
+    return redirect(url_for("login"))
