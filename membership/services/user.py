@@ -3,6 +3,7 @@ from core import get_current_user
 import membership.models.user as user_model
 import datetime
 import re
+import os
 
 
 def create_or_update_superuser(username, password, test=False):
@@ -75,10 +76,10 @@ def create_user(username, password, nickname, bio, test=False):
     session = get_session() if not test else get_test_session()
 
     # Validate username
-    validate_username(username)
+    # validate_username(username)
 
     # Validate password
-    validate_password(password)
+    # validate_password(password)
 
     # Check if there is already a user with the given username
     user = session.query(user_model.User).filter_by(username=username).first()
@@ -129,21 +130,21 @@ def update_user(user: user_model.User):
     session.commit()
 
 
-def set_user_as_creator(user_id, test=False):
-    """
-    Sets the given user as the creator of the user with the given id.
+# def set_user_as_creator(user_id, test=False):
+#     """
+#     Sets the given user as the creator of the user with the given id.
 
-    If there is no such user, it raises an exception.
-    """
-    user = get_user_by_id(user_id)
-    if user is None:
-        raise Exception("User not found")
+#     If there is no such user, it raises an exception.
+#     """
+#     user = get_user_by_id(user_id)
+#     if user is None:
+#         raise Exception("User not found")
 
-    session = get_session() if not test else get_test_session()
+#     session = get_session() if not test else get_test_session()
 
-    user.is_creator = True
-    user.last_modified_at = datetime.datetime.now()
-    session.commit()
+#     user.is_creator = True
+#     user.last_modified_at = datetime.datetime.now()
+#     session.commit()
 
 
 def get_user_by_username(username):
@@ -153,7 +154,13 @@ def get_user_by_username(username):
     If there is no user with the given username, it returns None.
     """
     session = get_session()
-    return session.query(user_model.User).filter_by(username=username).first()
+
+    try:
+        user = session.query(user_model.User).filter_by(username=username).first()
+    except Exception as e:
+        print("Error", e)
+        return None
+    return user
 
 
 def get_user_by_id(user_id):
@@ -176,6 +183,16 @@ def delete_user_by_id(user_id, test=False):
     user = session.query(user_model.User).filter_by(id=user_id).first()
     if user is None:
         raise Exception("User not found")
+
+    if user.is_admin:
+        raise Exception("Cannot delete a superuser")
+
+    # Deleting the avatar if it exists
+    try:
+        os.remove(f"media/users/{user.id}/avatar.png")
+        os.removedirs(f"media/users/{user.id}")
+    except Exception:
+        pass
 
     session.delete(user)
     session.commit()
@@ -245,3 +262,18 @@ def validate_password(password):
         )
 
     return True
+
+
+def get_dict(user: user_model.User, avatar=None):
+    return {
+        "id": user.id,
+        "username": user.username,
+        "nickname": user.nickname,
+        "bio": user.bio,
+        "is_admin": user.is_admin,
+        "created_by": user.created_by,
+        "last_modified_by": user.last_modified_by,
+        "created_at": user.created_at,
+        "last_modified_at": user.last_modified_at,
+        "avatar": avatar or "",
+    }

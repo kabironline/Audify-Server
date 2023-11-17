@@ -9,6 +9,7 @@ from commands.db import *
 from core.db import db
 from core import api
 import membership.routes
+import membership.api
 import music.routes
 import music.api
 
@@ -21,7 +22,7 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(current_dir, "core/db/db.sqlite3")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_path
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-app.config["SQLALCHEMY_ECHO"] = True
+app.config["SQLALCHEMY_ECHO"] = False
 
 db.init_app(app)
 migrate = Migrate(app, db)
@@ -34,6 +35,26 @@ api.add_resource(
 api.add_resource(
     music.api.CommentAPI,
     "/api/rating/<int:track_id>",
+)
+
+api.add_resource(
+    music.api.TrackAPI,
+    "/api/v1/track",
+    "/api/v1/track/<int:track_id>",
+)
+
+api.add_resource(
+    membership.api.UserAPI,
+    "/api/v1/user",
+    "/api/v1/user/<int:user_id>",
+    "/api/v1/user/<string:username>",
+)
+
+api.add_resource(
+    membership.api.ChannelAPI,
+    "/api/v1/channel",
+    "/api/v1/channel/<int:channel_id>",
+    "/api/v1/channel/<string:channel_name>",
 )
 
 core.set_api(api)

@@ -1,4 +1,4 @@
-from flask_restful import Resource, Api, request, fields, marshal_with
+from flask_restful import Resource, request
 import music.services as services
 import core
 from flask_cors import cross_origin

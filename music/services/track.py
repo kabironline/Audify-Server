@@ -6,7 +6,7 @@ import os
 
 
 def create_track(
-    name, lyrics, release_date, media: FileStorage, track_art: FileStorage, user_id
+    name, lyrics, release_date, media: FileStorage, track_art: FileStorage, channel_id
 ):
     """
     Creates a track with the given name, lyrics, release_date
@@ -32,15 +32,13 @@ def create_track(
 
     session = get_session()
 
-    # Converting the string release_date into a datetime object
-    release_date = datetime.strptime(release_date, "%Y-%m-%d")
-
     track = Track(
         name=name,
         lyrics=lyrics,
         release_date=release_date,
-        created_by=user_id,
-        last_modified_by=user_id,
+        channel_id=channel_id,
+        created_by=channel_id,
+        last_modified_by=channel_id,
         created_at=datetime.now(),
         last_modified_at=datetime.now(),
     )
@@ -51,16 +49,16 @@ def create_track(
     # Get the track id
     track_id = track.id
 
-    import pdb
+    try:
+        # Create a folder for the track
+        os.mkdir(f"media/tracks/{track_id}")
 
-    pdb.set_trace()
-
-    # Create a folder for the track
-    os.mkdir(f"media/tracks/{track_id}")
-
-    media.save(f"media/tracks/{track_id}/audio.mp3")
-    track_art.save(f"media/tracks/{track_id}/track-art.png")
-
+        media.save(f"media/tracks/{track_id}/audio.mp3")
+        track_art.save(f"media/tracks/{track_id}/track-art.png")
+    except Exception as e:
+        session.rollback()
+        os.rmdir(f"media/tracks/{track_id}")
+        raise e
     session.close()
 
     return track_id

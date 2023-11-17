@@ -15,15 +15,3 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     last_modified_at = db.Column(db.DateTime, nullable=False)
 
-    # def __dict__(self):
-    #     return {
-    #         "id": self.id,
-    #         "username": self.username,
-    #         "nickname": self.nickname,
-    #         "bio": self.bio,
-    #         "is_admin": self.is_admin,
-    #         "created_by": self.created_by,
-    #         "last_modified_by": self.last_modified_by,
-    #         "created_at": self.created_at,
-    #         "last_modified_at": self.last_modified_at,
-    #     }

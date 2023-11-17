@@ -15,3 +15,4 @@ class Track(db.Model):
     last_modified_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
     last_modified_at = db.Column(db.DateTime, nullable=False)
+
