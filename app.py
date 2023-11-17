@@ -6,6 +6,7 @@ import os
 import core
 
 from commands.db import *
+from commands.track import *
 from core.db import db
 from core import api
 import membership.routes
@@ -72,6 +73,9 @@ app.cli.add_command(create_tables)
 app.cli.add_command(drop_table)
 app.cli.add_command(drop_all_tables)
 app.cli.add_command(create_superuser)
+app.cli.add_command(get_track_list)
+app.cli.add_command(update_track_from_list)
+app.cli.add_command(update_genre_list)
 
 
 @app.route("/")

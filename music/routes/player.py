@@ -17,9 +17,10 @@ def player(track_id):
         comment.user = get_user_by_id(comment.user_id)
 
     user = core.get_current_user()
-    user_rating = music.services.get_rating_by_user_and_track_id(
-        track_id, user.id
-    ).rating
+    user_rating = music.services.get_rating_by_user_and_track_id(user.id, track_id)
+
+    if user_rating is not None:
+        user_rating = user_rating.rating
 
     track.user_rating = user_rating
 

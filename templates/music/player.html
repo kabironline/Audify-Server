@@ -126,7 +126,9 @@
   var initalized = false;
   if (!initalized) {
     updateLikePercentage();
-    activateLyrics();
+    if (lyricsRadio != null) {
+      activateLyrics();
+    }
 
   }
 
@@ -204,11 +206,13 @@
 
   }
 
-  document.getElementById('lyrics').addEventListener('change', function () {
-    if (this.checked) {
-      activateLyrics();
-    }
-  });
+  if (lyricsRadio != null) {
+    lyricsRadio.addEventListener('change', function () {
+      if (this.checked) {
+        activateLyrics();
+      }
+    });
+  }
 
   document.getElementById('comments').addEventListener('change', function () {
     if (this.checked) {

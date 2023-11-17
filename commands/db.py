@@ -1,7 +1,7 @@
 from core.db import db
+from membership.services import create_or_update_superuser
 import click
 from flask.cli import with_appcontext
-from membership.services import create_or_update_superuser
 
 
 @click.command(name="create_tables")

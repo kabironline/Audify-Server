@@ -16,7 +16,7 @@ class RatingAPI(Resource):
 
     @cross_origin()
     def post(self, track_id) -> [dict, int]:
-        user_id = core.current_user.id
+        user_id = core.get_current_user().id
 
         # Reading the rating from the request body
         request_data = request.get_json()
