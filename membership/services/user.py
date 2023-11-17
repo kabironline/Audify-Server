@@ -92,7 +92,7 @@ def create_user(username, password, nickname, bio, test=False):
         password=password,
         is_admin=False,
         bio=bio,
-        nickname=nickname,
+        nickname=nickname if nickname else username,
         created_at=datetime.datetime.now(),
         last_modified_at=datetime.datetime.now(),
     )

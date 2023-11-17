@@ -34,6 +34,8 @@ def set_current_user(user: User):
     }
 
     session["user"] = user_dict
+    session.permanent = True
+    print(session["user"])
 
 
 def logout():
@@ -41,7 +43,7 @@ def logout():
 
 
 def get_current_user() -> User:
-    user_dict = session.get("user", None)
+    user_dict = session.get("user")
 
     # Convert the user dict to a User object
     user = User(

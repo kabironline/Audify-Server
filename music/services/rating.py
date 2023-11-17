@@ -22,7 +22,7 @@ def create_or_update_rating(track_id, user_id, rating):
 
     """
     session = get_session()
-    user_rating = get_rating_by_user_and_track_id(track_id, user_id)
+    user_rating = get_rating_by_user_and_track_id(user_id, track_id)
     if user_rating == None:
         # create a new rating
         new_rating = Rating(
@@ -75,7 +75,7 @@ def get_track_rating(track_id):
     return average_rating
 
 
-def get_rating_by_user_and_track_id(track_id, user_id):
+def get_rating_by_user_and_track_id(user_id, track_id):
     """
     This function returns the rating of a track by a user.
     """

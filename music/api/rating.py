@@ -16,12 +16,10 @@ class RatingAPI(Resource):
 
     @cross_origin()
     def post(self, track_id) -> [dict, int]:
-        user_id = core.get_current_user().id
-
         # Reading the rating from the request body
         request_data = request.get_json()
         rating = request_data.get("rating")
-
+        user_id = request_data.get("user_id")
         if rating is None:
             return {"error": "Rating is required"}, 400
 
