@@ -6,7 +6,7 @@
 {% block m_content %}
 <section class="section section-recents">
   <h2 class="heading-2">
-    Recently Played
+    {{ carousel_title }}
   </h2>
   {% with tracks=recently_played %}
   {% include "widgets/track_carousel.html" %}

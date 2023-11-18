@@ -44,36 +44,9 @@
   <h2 class="heading-2 mb-medium">
     Recently Played
   </h2>
-  <ul class="track-list">
-    <!-- TODO: GENERATE DYNAMICALLY -->
-    {% for n in range(0,5) %}
-    <li class="track-item">
-      <!-- TODO: Link to music -->
-      <a href="/" class="track-item__link">
-        <div class="track-item__cover">
-          <img src="https://picsum.photos/100?random={{n}}" alt="" class="track-item__cover--img">
-          <i class="fas fa-play track-item__cover--playbutton"></i>
-        </div>
-        <span class="track-item__title">track name {{ n }}</span>
-        <span class="track-item__artist">Artist {{ n }}</span>
-        <!-- TODO: Add link to album -->
-        <span class="track-item__album">Album {{ n }}</span>
-      </a>
-      <div class="track-item__cta">
-        <a href="/" class="track-item__cta-link track-item__cta--like">
-          <!-- TODO: Add non liked icons and make it functional -->
-          <i class="fas fa-thumbs-up"></i>
-        </a>
-        <a href="/" class="track-item__cta-link track-item__cta--like">
-          <i class="fas fa-ellipsis-vertical"></i>
-        </a>
-      </div>
-      <p class="track-item__length">
-        {{ n+1 }}:{{ '%02d' | format(n*3) }}
-      </p>
-    </li>
-    {% endfor %}
-  </ul>
+  {% with tracks=recently_played %}
+  {% include "widgets/track_list.html" %}
+  {% endwith %}
 </section>
 <section class="section section-playlists">
   <h2 class="heading-2 mb-medium">

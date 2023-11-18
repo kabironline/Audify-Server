@@ -1,0 +1,11 @@
+<div class="genre-tiles">
+  {% for genre in genres %}
+  <a href="/genre/{{genre.id}}/tracks" class="genre-tile genre__link">
+
+    <!-- generate a random color -->
+    <div style="background-color: {{genre.color}} ;" class="genre-tile__cover">
+    </div>
+    <p class="genre-tile__text">{{ genre.name }}</p>
+  </a>
+  {% endfor %}
+</div>

@@ -30,26 +30,9 @@
   <a href="/new_releases" class="heading-link">
     <h2 class="heading-2">New Releases</h2>
   </a>
-  <!-- add track carousel -->
-  <div class="track-carousel">
-    {% for n in range(0,5) %}
-    <!-- TODO: Generate this dynamically -->
-    <div class="track-carousel__item">
-      <div class="track-carousel__item--cover">
-        <a href="/" class="">
-          <div>
-            <img src="https://picsum.photos/200?random={{n}}" alt="track Image" class="track-carousel__item--img">
-            <i class="fas fa-play track-carousel__item--play"></i>
-          </div>
-        </a>
-      </div>
-      <div class="track-carousel__item--text">
-        <a href="" class="track-carousel__item--title">track Title</a>
-        <a href="" class="track-carousel__item--artist">Artist</a>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
+  {% with tracks=new_releases %}
+  {% include "widgets/track_carousel.html" %}
+  {% endwith %}
 </section>
 <section class="section section-top">
   <a href="/top_charts" class="heading-link">
@@ -82,16 +65,8 @@
   <a href="/" class="heading-link">
     <h2 class="heading-2">Genres</h2>
   </a>
-  <div class="genre-tiles">
-    {% for n in range (1,21)%}
-    <a href="/" class="genre-tile genre__link">
-
-      <!-- generate a random color -->
-      <div style="background-color: red ;" class="genre-tile__cover">
-      </div>
-      <p class="genre-tile__text">Genre Name {{n}}</p>
-    </a>
-    {% endfor %}
-  </div>
+  {% with genres=genres %}
+  {% include "widgets/genre_tile.html" %}
+  {% endwith %}
 </section>
 {% endblock %}

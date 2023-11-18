@@ -11,6 +11,8 @@ def home():
 
     if user is None:
         return redirect(url_for("login"))
+
+    carousel_title = "Recently Played"
     recents = music.services.get_recent_by_user_id(user.id)
     recently_played_tracks = []
 
@@ -21,11 +23,24 @@ def home():
 
     for recent in recents:
         track = music.services.get_track_by_id(recent.track_id)
-        track.channel = (
-            session.query(membership.models.Channel)
-            .filter_by(id=track.channel_id)
-            .first()
-        )
+        track.channel = membership.services.get_channel_by_id(track.channel_id)
         recently_played_tracks.append(track)
 
-    return render_template("music/home.html", recently_played=recently_played_tracks)
+    session.close()
+
+    if len(recents) < 5:
+        recently_played_tracks.extend(
+            music.services.get_latest_tracks(5 - len(recents))
+        )
+        carousel_title = (
+            "New Releases" if len(recents) == 0 else "Recently Played & New Releases"
+        )
+
+    for track in recently_played_tracks:
+        track.channel = membership.services.get_channel_by_id(track.channel_id)
+
+    return render_template(
+        "music/home.html",
+        recently_played=recently_played_tracks,
+        carousel_title=carousel_title,
+    )

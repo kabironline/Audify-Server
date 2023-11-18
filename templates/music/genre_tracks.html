@@ -3,9 +3,9 @@
 {% endblock %} {% block m_content %}
 <section class="section section-new-tracks">
   <h2 class="heading-2">
-    New Singles
+    {{ genre.name}}
   </h2>
-  {% with tracks=new_releases %}
+  {% with tracks=genre_tracks %}
   {% include 'widgets/track_carousel.html' %}
   {% endwith %}
 </section>

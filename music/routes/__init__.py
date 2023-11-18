@@ -6,3 +6,4 @@ from .top_charts import *
 from .upload import *
 from .playlist import *
 from .comment import *
+from .genre import *

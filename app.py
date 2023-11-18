@@ -138,6 +138,10 @@ app.add_url_rule(
     membership.routes.edit_profile,
     methods=["GET", "POST"],
 )
+
+app.add_url_rule(
+    "/genre/<int:genre_id>/tracks", "genre_tracks", music.routes.genre_tracks
+)
 app.add_url_rule(
     "/user_avatar/<int:user_id>", "user_avatar", membership.routes.user_avatar
 )

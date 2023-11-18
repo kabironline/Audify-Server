@@ -16,12 +16,28 @@ def create_genre(name, color):
     return new_genre
 
 
+def get_latest_genres(limit=20):
+    session = get_session()
+
+    genres = session.query(Genre).limit(limit).all()
+
+    return genres
+
+
 def get_genre_by_id(genre_id):
     session = get_session()
 
     genre = session.query(Genre).filter(Genre.id == genre_id).first()
 
     return genre
+
+
+def get_genre_tracks(genre_id):
+    session = get_session()
+
+    tracks = session.query(Track).filter(Track.genre_id == genre_id).all()
+
+    return tracks
 
 
 def get_genre_by_name(name):

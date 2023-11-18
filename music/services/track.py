@@ -88,12 +88,20 @@ def get_tracks_by_channel(channel_id):
     return tracks
 
 
+def get_latest_tracks(count=5):
+    session = get_session()
+    tracks = session.query(Track).order_by(Track.id.desc()).limit(count).all()
+    session.close()
+
+    return tracks
+
+
 def update_track(
     track_id,
-    name = None,
-    lyrics = None,
-    genre = None,
-    release_date = None,
+    name=None,
+    lyrics=None,
+    genre=None,
+    release_date=None,
     media: FileStorage = None,
     track_art: FileStorage = None,
 ):
@@ -106,7 +114,9 @@ def update_track(
 
     track.name = name if name is not None else track.name
     track.lyrics = lyrics if lyrics is not None else track.lyrics
-    track.release_date = release_date if release_date is not None else track.release_date
+    track.release_date = (
+        release_date if release_date is not None else track.release_date
+    )
     track.genre_id = genre if genre is not None else track.genre_id
 
     try:

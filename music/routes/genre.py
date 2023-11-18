@@ -4,16 +4,13 @@ import membership.services
 import core
 
 
-def explore():
+def genre_tracks(genre_id):
     if core.get_current_user() is None:
         return redirect(url_for("login"))
 
-    new_releases = music.services.get_latest_tracks()
-    for track in new_releases:
+    genre = music.services.get_genre_by_id(genre_id)
+    tracks = music.services.get_genre_tracks(genre_id)
+    for track in tracks:
         track.channel = membership.services.get_channel_by_id(track.channel_id)
 
-    genres = music.services.get_all_genres()
-
-    return render_template(
-        "music/explore.html", new_releases=new_releases, genres=genres
-    )
+    return render_template("music/genre_tracks.html", genre=genre, genre_tracks=tracks)

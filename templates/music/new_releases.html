@@ -8,24 +8,9 @@
   <h3 class="heading-3">
     <a href="/new_releases/tracks" class="heading-link">Tracks</a>
   </h3>
-  <div class="track-carousel">
-    {% for n in range(0,5) %}
-    <div class="track-carousel__item">
-      <div class="track-carousel__item--cover">
-        <a href="/" class="">
-          <div>
-            <img src="https://picsum.photos/200?random={{n}}" alt="track Image" class="track-carousel__item--img">
-            <i class="fas fa-play track-carousel__item--play"></i>
-          </div>
-        </a>
-      </div>
-      <div class="track-carousel__item--text">
-        <a href="" class="track-carousel__item--title">track Title</a>
-        <a href="" class="track-carousel__item--artist">Artist</a>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
+  {% with tracks=new_releases %}
+  {% include 'widgets/track_carousel.html' %}
+  {% endwith %}
   <a href="/new_releases/tracks" class="btn btn--primary mb-medium">View All</a>
 </section>
 
