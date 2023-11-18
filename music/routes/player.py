@@ -1,5 +1,5 @@
 from flask import render_template, redirect, url_for, send_file
-from music.services import get_track_by_id, get_comments_by_track_id
+from music.services import *
 from membership.services import get_user_by_id, get_channel_by_id
 import core
 import music.services
@@ -23,6 +23,8 @@ def player(track_id):
         user_rating = user_rating.rating
 
     track.user_rating = user_rating
+
+    create_recent(user.id, track_id)
 
     return render_template(
         "music/player.html",

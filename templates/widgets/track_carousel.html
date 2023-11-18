@@ -1,0 +1,19 @@
+<div class="track-carousel">
+  {% for track in tracks %}
+  <div class="track-carousel__item">
+    <div class="track-carousel__item--cover">
+      <a href="/player/{{track.id}}" class="">
+        <div>
+          <img src="{{ url_for('track_cover', track_id = track.id)}}" alt="track Image"
+            class="track-carousel__item--img">
+          <i class="fas fa-play track-carousel__item--play"></i>
+        </div>
+      </a>
+    </div>
+    <div class="track-carousel__item--text">
+      <p class="track-carousel__item--title">{{track.name}}</p>
+      <a href="/dashboard/{{track.channel_id}}" class="track-carousel__item--artist">{{track.channel.name}}</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
