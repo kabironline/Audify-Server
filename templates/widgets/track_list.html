@@ -1,7 +1,7 @@
 <ul class="track-list">
   {% for track in tracks %}
   <li class="track-item">
-    <a href="/" class="track-item__link">
+    <a href="{{ url_for('player', track_id=track.id)}}" class="track-item__link">
       <div class="track-item__cover">
         <img src="{{ url_for('track_cover', track_id=track.id)}}" alt="" class="track-item__cover--img">
         <i class="fas fa-play track-item__cover--playbutton"></i>
@@ -12,11 +12,13 @@
       <!-- <span class="track-item__album">Album {{ n }}</span> -->
     </a>
     <div class="track-item__cta">
-      <a href="/" class="track-item__cta-link track-item__cta--like">
-        <i class="fas fa-thumbs-up"></i>
+      <a href="{{ url_for('dashboard_rating', track_id=track.id, rating=1) }}"
+        class="track-item__cta-link track-item__cta--like {%if track.rating == 1 %} track-item__cta-link--active {% endif %}">
+        <i class="{%if track.rating == 1 %}fas {% else %} far {% endif %} fa-thumbs-up"></i>
       </a>
-      <a href="/" class="track-item__cta-link track-item__cta--like">
-        <i class="far fa-thumbs-down"></i>
+      <a href="{{ url_for('dashboard_rating', track_id=track.id, rating=0) }}"
+        class="track-item__cta-link track-item__cta--like {%if track.rating == 0 %} track-item__cta-link--active {% endif %}">
+        <i class="{%if track.rating == 0 %}fas {% else %} far {% endif %} fa-thumbs-down"></i>
       </a>
     </div>
   </li>

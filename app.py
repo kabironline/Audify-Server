@@ -35,7 +35,7 @@ api.add_resource(
 )
 api.add_resource(
     music.api.CommentAPI,
-    "/api/rating/<int:track_id>",
+    "/api/comment/<int:track_id>",
 )
 
 api.add_resource(
@@ -132,6 +132,11 @@ app.add_url_rule(
 app.add_url_rule("/top_charts", "top_charts", music.routes.top_charts)
 app.add_url_rule("/dashboard", "dashboard", membership.routes.dashboard)
 app.add_url_rule("/dashboard/<int:user_id>", "dashboard", membership.routes.dashboard)
+app.add_url_rule(
+    "/rating/<int:track_id>/<int:rating>/dashboard",
+    "dashboard_rating",
+    music.routes.update_dashboard_track_rating,
+)
 app.add_url_rule(
     "/edit_profile",
     "edit_profile",

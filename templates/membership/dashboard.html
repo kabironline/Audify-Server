@@ -7,11 +7,11 @@
 <section class="hero">
   <div class="hero__avatar">
     <!-- TODO: Add Avatar in the databases -->
-    <!-- <img src="{{user.avatar}}" alt="Avatar" class="hero__avatar--img"> -->
+    <img src="{{ url_for('user_avatar', user_id = user.id)}}" alt="Avatar" class="hero__avatar--img">
     <!-- Get the first character of the user -->
-    <div class="hero__avatar--img">
+    <!-- <div class="hero__avatar--img">
       {{user.nickname[0]}}
-    </div>
+    </div> -->
   </div>
   <div class="hero__details">
     <div class="hero__details--header">
@@ -23,9 +23,9 @@
           @{{user.username}}
         </p>
       </div>
-      {% if self %}
+      <!-- TOOD Fix this -->
+      {% if own_profile == True %}
       <div class="hero__cta">
-        <!-- TODO: Add edit profile navigation -->
         <a href="/edit_profile" class="btn btn--white">
           <i class="fas fa-pen-to-square"></i> Edit Profile
         </a>
@@ -40,14 +40,16 @@
 
 </section>
 <hr class="hr">
+{% if recent_played != [] %}
 <section class="section section-recents section-recents-dashboard">
   <h2 class="heading-2 mb-medium">
     Recently Played
   </h2>
-  {% with tracks=recently_played %}
+  {% with tracks=recent_tracks %}
   {% include "widgets/track_list.html" %}
   {% endwith %}
 </section>
+{% endif %}
 <section class="section section-playlists">
   <h2 class="heading-2 mb-medium">
     {{ user.nickname }}'s Playlists

@@ -8,13 +8,17 @@
 }
 .hero__avatar {
   height: 20rem;
-  background-color: var(--color-primary);
   border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
   text-transform: capitalize;
   font-size: 12rem;
+}
+
+.hero__avatar--img {
+  height: 100%;
+  border-radius: 100%;
 }
 
 .hero__details {
