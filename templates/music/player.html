@@ -45,6 +45,11 @@
           <button class="player__controls--btn play-pause">
             <i class="fas fa-circle-play" id="player__controls--btn-ico" aria-hidden="true"></i>
           </button>
+          <div class="player__btn-grp">
+            <input type="checkbox" name="loop" id="loop" class="checkbox-disable player__controls--btn-check">
+            <label for="loop" class="loop-btn  player__controls--btn-side player__controls--btn-check"><i
+                class="fas fa-redo-alt"></i></label>
+          </div>
         </div>
       </div>
     </div>
@@ -57,8 +62,7 @@
       <label for="lyrics" class="player-tab--label">Lyrics</label>
       {% endif %}
       <input type="radio" name="player-tabs" id="comments" class="player-tab--radio" checked="{{not track.lyrics}}">
-      <label for="comments" class="player-tab--label">Comments {% if comments %} <span class="badge comment-count">
-          {{ comments|length}}</span> {% endif %}</label>
+      <label for="comments" class="player-tab--label comment-label">Comments</label>
     </div>
     <div class="player__view">
       {% if track.lyrics %}
@@ -70,33 +74,9 @@
       {% endif %}
       <div class="player__view--comments-container">
         <div class="comments">
-          {% if comments %}
-          {% for comment in comments | reverse %}
-          <div class="comment">
-            <div class="comment__header">
-              <a class="comment__header--user" href="/user/{{comment.user.id}}"> {{ comment.user.nickname }}</a>
-              <div>
-                <span class="comment__header--date">
-                  {{ comment.created_at.strftime('%Y-%m-%d') }}
-                </span>
-                {% if comment.user.id == current_user.id %}
-                <a href="{{url_for('delete_comment', track_id=track.id, comment_id=comment.id)}}"
-                  class="comment__header--delete"><i class="fas fa-trash-alt"></i></a>
-                {% endif %}
-              </div>
-            </div>
-            <div class="comment__body">
-              <p class="comment__body--text">{{comment.comment}}</p>
-            </div>
-          </div>
-          {% endfor %}
-          {% else %}
-          <div class="no-comment">
-            No comments yet, Be the first to comment!
-          </div>
-          {% endif %}
+          <!-- Comment Section -->
         </div>
-        <form action="{{url_for('create_comment', track_id=track.id)}}" method="post" class="comment-box-container">
+        <form class="comment-box-container" onsubmit="sendComment()">
           <div class="comment-box">
             <input minlength="1" required type="text" autocomplete="off" name="comment" placeholder="Enter comment"
               class="comment-box--bar">
@@ -113,25 +93,28 @@
 {% endblock %}
 {% block scripts %}
 <script>
-  var lyricsTab = document.querySelector('.player__view--lyrics');
-  var commentsTab = document.querySelector('.player__view--comments-container');
-  var lyricsRadio = document.querySelector('#lyrics');
-  var commentsRadio = document.querySelector('#comments');
-  var playPause = document.querySelector('.play-pause');
-  var audio = document.querySelector('.player__audio');
-  var progressBar = document.querySelector('.player__progress-bar');
-  var current = document.querySelector('.player__time--current');
-  var remaining = document.querySelector('.player__time--remaining');
-  var likeButton = document.querySelector('.player__like--btn');
-  var dislikeButton = document.querySelector('.player__dislike--btn');
+  let lyricsTab = document.querySelector('.player__view--lyrics');
+  let commentsTab = document.querySelector('.player__view--comments-container');
+  let lyricsRadio = document.querySelector('#lyrics');
+  let commentsRadio = document.querySelector('#comments');
+  let playPause = document.querySelector('.play-pause');
+  let audio = document.querySelector('.player__audio');
+  let progressBar = document.querySelector('.player__progress-bar');
+  let current = document.querySelector('.player__time--current');
+  let remaining = document.querySelector('.player__time--remaining');
+  let likeButton = document.querySelector('.player__like--btn');
+  let dislikeButton = document.querySelector('.player__dislike--btn');
+  let loopButton = document.querySelector('#loop');
+  let loopIcon = document.querySelector('.loop-btn');
+  let commentLabel = document.querySelector('.comment-label');
 
-  var initalized = false;
+  let initalized = false;
   if (!initalized) {
     updateLikePercentage();
     if (lyricsRadio != null) {
       activateLyrics();
     }
-
+    updateCommentSection();
   }
 
   function activateLyrics() {
@@ -149,8 +132,8 @@
   }
 
   function formatTime(seconds) {
-    var minutes = Math.floor(seconds / 60);
-    var seconds = Math.floor(seconds % 60);
+    let minutes = Math.floor(seconds / 60);
+    seconds = Math.floor(seconds % 60);
     if (seconds < 10) {
       seconds = '0' + seconds;
     }
@@ -205,6 +188,123 @@
     const likePercentage = responseData.rating * 100;
     document.querySelector('.rating__bar').style.width = `${likePercentage}%`;
     document.querySelector('.player__rating--text').innerHTML = `${likePercentage}%`;
+  }
+
+  function addComment(comment) {
+    // Get the DOM element for the comments section and update it with the new comment
+    const commentSection = document.querySelector('.comments');
+    const commentDate = new Date(comment.created_at);
+    const formattedDate = `${commentDate.getFullYear()}-${commentDate.getMonth() + 1}-${commentDate.getDate()}`;
+    const commentHTML = `
+    <div class="comment">
+      <div class="comment__header">
+        <a class="comment__header--user" href="/user/${comment.user_id}"> {{ current_user.nickname }}</a>
+        <div>
+          <span class="comment__header--date">
+            ${formattedDate}
+          </span>
+          <button onclick="deleteComment(${comment.id}, {{current_user.id}})"
+            class="comment__header--delete"><i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+      </div>
+      <div class="comment__body">
+        <p class="comment__body--text">${comment.comment}</p>
+      </div>
+    </div>
+    `;
+
+    commentSection.innerHTML = commentHTML + commentSection.innerHTML;
+  }
+
+  function updateCommentSection() {
+    // This function will fetch the comments from the server and update the DOM
+
+    const commentSection = document.querySelector('.comments');
+
+    let comments = null;
+
+    const request = fetch(`http://127.0.0.1:5000/api/v1/comment/{{track.id}}`, {
+      method: 'GET',
+    }).then(response => response.json())
+      .then(data => {
+        comments = data.comments;
+        console.log(comments);
+
+        // Clearing the comment section
+        commentSection.innerHTML = '';
+
+        if (comments.length == 0) {
+          commentSection.innerHTML = `
+          <div class="no-comment">
+            No comments yet, Be the first to comment!
+          </div>
+          `;
+          return;
+        }
+
+        comments.forEach(comment => {
+
+          let user = null;
+          const userRequest = fetch(`http://192.168.1.69:5000/api/v1/user/${comment.user_id}`, {
+            method: 'GET',
+          }).then(response => response.json())
+            .then(data => {
+              comment.user = data;
+              console.log(user);
+              addComment(comment);
+            });
+        });
+
+      });
+  }
+
+  async function sendComment() {
+    event.preventDefault();
+    // Get the data from the form and send it to the server
+    comment = document.querySelector('.comment-box--bar').value;
+    comment = comment.trim();
+    if (comment.length == 0) {
+      return;
+    }
+
+    document.querySelector('.comment-box--bar').value = '';
+
+    const requests = await fetch(`http://127.0.0.1:5000/api/v1/comment/{{track.id}}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        comment: comment,
+        user_id: {{ current_user.id }},
+      }),
+    });
+
+  if (!requests.ok) {
+    console.error('Failed to send comment');
+    return;
+  }
+
+  const responseData = await requests.json();
+  if (responseData.action == 'created') {
+    addComment(responseData.comment);
+  }
+  }
+
+  function deleteComment(commentId, userId) {
+    event.preventDefault();
+
+    console.log(commentId, userId);
+    const request = fetch(`http://127.0.0.1:5000/api/v1/comment/{{track.id}}/${commentId}`, {
+      method: 'DELETE',
+    }).then(response => response.json())
+      .then(data => {
+        console.log(data);
+        if (data.action == 'deleted') {
+          updateCommentSection();
+        }
+      });
 
   }
 
@@ -213,6 +313,7 @@
       if (this.checked) {
         activateLyrics();
       }
+
     });
   }
 
@@ -240,15 +341,25 @@
 
 
   audio.addEventListener('timeupdate', function () {
-    var position = audio.currentTime / audio.duration;
+    let position = audio.currentTime / audio.duration;
     progressBar.value = position * 100;
     current.innerHTML = formatTime(audio.currentTime);
-    remaining.innerHTML = `-${formatTime(audio.duration - audio.currentTime)}`;
+    remaining.innerHTML = `- ${formatTime(audio.duration - audio.currentTime)}`;
+  });
+
+  audio.addEventListener('ended', function () {
+    if (audio.loop) {
+      audio.currentTime = 0;
+      playTrack();
+      return;
+    }
+    pauseTrack();
+    audio.currentTime = 0;
   });
 
   progressBar.addEventListener('click', function (e) {
     audio.pause();
-    var position = e.offsetX / this.offsetWidth;
+    let position = e.offsetX / this.offsetWidth;
     audio.currentTime = position * audio.duration;
     progressBar.value = position / 100;
     playTrack();
@@ -299,6 +410,17 @@
   } else {
     console.error('Failed to create/update rating');
   }
+  });
+
+  loopButton.addEventListener('change', function () {
+    console.log('loop', this.checked);
+    if (this.checked) {
+      audio.loop = true;
+      loopIcon.classList.add('player__controls--btn-check--active');
+    } else {
+      audio.loop = false;
+      loopIcon.classList.remove('player__controls--btn-check--active');
+    }
   });
 </script>
 {% endblock %}

@@ -35,7 +35,8 @@ api.add_resource(
 )
 api.add_resource(
     music.api.CommentAPI,
-    "/api/comment/<int:track_id>",
+    "/api/v1/comment/<int:track_id>",
+    "/api/v1/comment/<int:track_id>/<int:comment_id>",
 )
 
 api.add_resource(

@@ -77,3 +77,15 @@ def delete_all_comments_by_track_id(track_id):
     session.commit()
 
     return True
+
+def get_dict (comment: Comment) -> dict:
+    return {
+        "id": comment.id,
+        "comment": comment.comment,
+        "track_id": comment.track_id,
+        "user_id": comment.user_id,
+        "created_at": comment.created_at,
+        "created_by": comment.created_by,
+        "last_modified_at": comment.last_modified_at,
+        "last_modified_by": comment.last_modified_by,
+    }
