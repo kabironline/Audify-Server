@@ -17,7 +17,7 @@ def get_api():
     return api
 
 
-def set_current_user(user: User):
+def set_current_user(user: User, channel=None):
     # Convert the user to a dictionary
     user_dict = {
         "id": user.id,
@@ -31,6 +31,7 @@ def set_current_user(user: User):
         "created_by": user.created_by,
         "created_at": user.created_at,
         "last_modified_at": user.last_modified_at,
+        "channels": channel,
     }
 
     session["user"] = user_dict
@@ -42,9 +43,11 @@ def logout():
     session.pop("user", None)
 
 
-def get_current_user() -> User:
+def get_current_user() -> User | None:
     user_dict = session.get("user")
 
+    if user_dict is None:
+        return None
     # Convert the user dict to a User object
     user = User(
         id=user_dict["id"],
@@ -59,4 +62,11 @@ def get_current_user() -> User:
         created_at=user_dict["created_at"],
         last_modified_at=user_dict["last_modified_at"],
     )
+
+    user.channels = user_dict["channels"]
     return user
+
+
+def get_current_user_jinja():
+    # Return the user so that it can be used in jinja templates
+    return get_current_user()

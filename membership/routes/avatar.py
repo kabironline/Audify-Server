@@ -47,16 +47,14 @@ def channel_avatar(channel_id):
 
     - return: The file of the channel avatar
     """
-
-    channel = get_channel_by_id(channel_id)
-    if channel is None:
-        return None
-
     avatar_path = "media/channels/" + str(channel_id) + "/avatar.png"
 
     # try to read the file
     try:
         import os
+
+        if channel_id == 0:
+            raise FileNotFoundError
 
         path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "..", "..", avatar_path

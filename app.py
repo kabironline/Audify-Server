@@ -93,6 +93,9 @@ app.add_url_rule("/logout", "logout", membership.routes.logout)
 app.add_url_rule(
     "/register", "register", membership.routes.register, methods=["GET", "POST"]
 )
+app.add_url_rule(
+    "/register_creator", "register_creator", membership.routes.register_creator, methods=["GET", "POST"]
+)
 app.add_url_rule("/upload", "upload", music.routes.upload, methods=["GET", "POST"])
 app.add_url_rule("/playlist", "playlist", music.routes.playlist)
 

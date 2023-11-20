@@ -193,6 +193,9 @@
   function addComment(comment) {
     // Get the DOM element for the comments section and update it with the new comment
     const commentSection = document.querySelector('.comments');
+    if (commentSection.children.length == 1 && commentSection.children[0].classList.contains('no-comment')) {
+      commentSection.innerHTML = '';
+    }
     const commentDate = new Date(comment.created_at);
     const formattedDate = `${commentDate.getFullYear()}-${commentDate.getMonth() + 1}-${commentDate.getDate()}`;
     const commentHTML = `

@@ -1,5 +1,10 @@
 from flask import render_template, request, redirect, url_for
-from membership.services import get_user_by_username
+from membership.services import (
+    get_user_by_username,
+    get_user_channels,
+    get_channel_by_id,
+    get_channel_dict,
+)
 import core
 
 
@@ -23,7 +28,15 @@ def login():
                 "membership/login.html", error="Password entered is incorrect"
             )
 
-        core.set_current_user(user)
+        # Checking if user is a part of any channel
+        members = get_user_channels(user.id)
+        channel = None
+        if len(members) != 0:
+            channel = []
+            for member in members:
+                channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))
+
+        core.set_current_user(user, channel)
         return redirect(url_for("home"))
     return render_template("membership/login.html")
 

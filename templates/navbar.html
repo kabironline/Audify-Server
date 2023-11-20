@@ -17,11 +17,18 @@
         <li class="profile-dropdown-item">
           <a class="profile-dropdown-item--link" href="/edit_profile">Edit Profile</a>
         </li>
+        {% if current_user.channels == None %}
         <li class="profile-dropdown-item">
-          <a class="profile-dropdown-item--link" href="/register-creator">Register as Creator</a>
+          <a class="profile-dropdown-item--link" href="/register_creator">Register as Creator</a>
         </li>
+        {% endif %}
+        {% if current_user.channels != None %}
         <li class="profile-dropdown-item">
-          <a class="profile-dropdown-item--link" href="/logout">Logout</a>
+          <a class="profile-dropdown-item--link" href="/edit_channel">Edit Channel</a>
+        </li>
+        {% endif %}
+        <li class="profile-dropdown-item">
+          <a class="profile-dropdown-item--link" href="#section-modal">Logout</a>
         </li>
       </ul>
     </div>

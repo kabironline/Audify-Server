@@ -5,6 +5,7 @@
   <title>{% block title %}{% endblock %}</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='css/core.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/widgets.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
   {% block head %} {% endblock %}
 </head>
 
@@ -13,13 +14,14 @@
     {% block header %}
     {% endblock %}
   </header>
-  <main>
+  <main id="main">
     {% block content %}{% endblock %}
   </main>
   <footer>
     {% block footer %}
     {% endblock %}
   </footer>
+  {% include "modals.html" %}
 </body>
 <script src="https://kit.fontawesome.com/2e34807a57.js" crossorigin="anonymous"></script>
 {% block scripts %}
