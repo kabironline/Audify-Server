@@ -1,6 +1,7 @@
 from core.db import get_session, get_test_session
 from core import get_current_user
 import membership.models.user as user_model
+import membership.services as membership_services
 import datetime
 import re
 import os
@@ -125,7 +126,15 @@ def update_user(user: user_model.User):
 
     import core
 
-    core.set_current_user(old_user)
+    # Check if current user is a member of the channel
+    channel = None
+    members = membership_services.get_user_channels(old_user.id)
+    if len(members) > 0:
+        channel = membership_services.get_channel_dict(
+            membership_services.get_channel_by_id(members[0].channel_id)
+        )
+
+    core.set_current_user(old_user, channel=channel)
 
     session.commit()
 
