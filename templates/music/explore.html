@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/explore.css') }}">
 {% endblock %}
 {% block m_content %}
-<section class="section section-options mb-xlarge">
+<!-- <section class="section section-options mb-xlarge">
   <div class="explore-option-container mb-medium">
     <a href="/new_releases" class="explore-option__item">
       <div class="explore-option__item--icon">
@@ -25,7 +25,7 @@
       <p class="explore-option__item--text">Genres</p>
     </a>
   </div>
-</section>
+</section> -->
 <section class="section section-options">
   <a href="/new_releases" class="heading-link">
     <h2 class="heading-2">New Releases</h2>
@@ -38,28 +38,9 @@
   <a href="/top_charts" class="heading-link">
     <h2 class="heading-2">Top Charts</h2>
   </a>
-  <div class="track-tiles">
-    {% for n in range(0,12) %}
-    <div class="track-tile">
-      <!-- Add postion of the track in the top charts -->
-      <div class="track-tile__position">
-        <p class="track-tile__position--text">{{ n+1 }}</p>
-      </div>
-      <div class="track-tile__cover">
-        <a href="/" class="">
-          <div>
-            <img src="https://picsum.photos/200?random={{n+10}}" alt="track Image" class="track-tile__cover--img">
-            <i class="fas fa-play track-tile__cover--playbutton"></i>
-          </div>
-        </a>
-      </div>
-      <div class="track-tile__text">
-        <a href="" class="track-tile__text--title">track Title</a>
-        <a href="" class="track-tile__text--artist">Artist</a>
-      </div>
-    </div>
-    {% endfor %}
-  </div>
+  {% with tracks=top_charts %}
+  {% include "widgets/track_tiles.html" %}
+  {% endwith %}
 </section>
 <section class="section sections-genre">
   <a href="/" class="heading-link">

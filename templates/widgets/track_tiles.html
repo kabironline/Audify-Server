@@ -1,0 +1,25 @@
+<div class="track-tiles">
+  
+  {% for n in range(tracks|length) %}
+  <div class="track-tile">
+    <!-- Add postion of the track in the top charts -->
+    <div class="track-tile__position">
+      <p class="track-tile__position--text">{{ n+1 }}</p>
+    </div>
+    <div class="track-tile__cover">
+      <a href="/player/{{tracks[n].id}}" class="">
+        <div>
+          <img src="{{ url_for('track_cover', track_id=tracks[n].id) }}" alt="track Image"
+            class="track-tile__cover--img">
+          <i class="fas fa-play track-tile__cover--playbutton"></i>
+        </div>
+      </a>
+    </div>
+    <div class="track-tile__text">
+      <a href=" /player/{{tracks[n].id}}" class="track-tile__text--title">{{ tracks[n].name }}</a>
+      <a href=" /dashboard/channel/{{tracks[n].channel_id}}" class="track-tile__text--artist"> {{ tracks[n].channel.name
+        }}</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>

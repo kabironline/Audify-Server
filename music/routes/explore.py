@@ -14,6 +14,13 @@ def explore():
 
     genres = music.services.get_all_genres()
 
+    top_rated = music.services.get_top_rated_tracks(count=12)
+    for track in top_rated:
+        track.channel = membership.services.get_channel_by_id(track.channel_id)
+
     return render_template(
-        "music/explore.html", new_releases=new_releases, genres=genres
+        "music/explore.html",
+        new_releases=new_releases,
+        genres=genres,
+        top_charts=top_rated,
     )

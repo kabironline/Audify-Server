@@ -14,6 +14,11 @@
         <li class="profile-dropdown-item">
           <a class="profile-dropdown-item--link" href="/dashboard">Dashboard</a>
         </li>
+        {% if current_user.channels != None %}
+        <li class="profile-dropdown-item">
+          <a class="profile-dropdown-item--link" href="/edit_channel">Channel Dashboard</a>
+        </li>
+        {% endif %}
         <li class="profile-dropdown-item">
           <a class="profile-dropdown-item--link" href="/edit_profile">Edit Profile</a>
         </li>

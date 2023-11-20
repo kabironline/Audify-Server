@@ -86,3 +86,22 @@ def update_track_from_list():
             track_id=track_id,
             genre=genre_id,
         )
+
+
+@click.command(name="generate_random_likes")
+def generate_random_likes():
+    user_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    import random
+
+    for tracks in music_services.get_all_tracks():
+        for user_id in user_ids:
+            rating = random.random()
+            if rating < 0.6:
+                rating = 1
+            else:
+                rating = 0
+            music_services.create_or_update_rating(
+                user_id=user_id,
+                track_id=tracks.id,
+                rating=rating,
+            )

@@ -221,7 +221,7 @@
 .track-tile {
   display: grid;
   grid-template-columns: min-content min-content 1fr;
-  grid-gap: 2rem;
+  grid-gap: 1rem;
   align-items: center;
   text-decoration: none;
   color: white;
@@ -253,11 +253,12 @@
 }
 
 .track-tile__cover {
-  width: 5rem;
-  height: 5rem;
+  /* width: 8.9rem; */
+  height: 6rem;
   position: relative;
   overflow: hidden;
   border-radius: 5px;
+  aspect-ratio: 16/9;
 }
 
 .track-tile__cover--img {
@@ -284,6 +285,7 @@
   display: grid;
   grid-template-rows: 1fr 1fr;
   grid-gap: 1rem;
+  overflow: hidden;
 
   .track-tile__text--title {
     font-weight: bold;
@@ -291,6 +293,8 @@
     text-decoration: none;
     color: white;
     display: block;
+    text-wrap: nowrap;
+    text-overflow: ellipsis;
 
     &:hover {
       text-decoration: underline;
@@ -367,9 +371,10 @@
 }
 
 .creator-tile__text {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  grid-gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
 
   .creator-tile__text--title {
     font-weight: bold;

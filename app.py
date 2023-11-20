@@ -77,6 +77,7 @@ app.cli.add_command(create_superuser)
 app.cli.add_command(get_track_list)
 app.cli.add_command(update_track_from_list)
 app.cli.add_command(update_genre_list)
+app.cli.add_command(generate_random_likes)
 
 
 @app.route("/")
@@ -94,7 +95,10 @@ app.add_url_rule(
     "/register", "register", membership.routes.register, methods=["GET", "POST"]
 )
 app.add_url_rule(
-    "/register_creator", "register_creator", membership.routes.register_creator, methods=["GET", "POST"]
+    "/register_creator",
+    "register_creator",
+    membership.routes.register_creator,
+    methods=["GET", "POST"],
 )
 app.add_url_rule("/upload", "upload", music.routes.upload, methods=["GET", "POST"])
 app.add_url_rule("/playlist", "playlist", music.routes.playlist)
@@ -134,6 +138,7 @@ app.add_url_rule(
     "/new_releases/tracks", "new_releases_tracks", music.routes.new_releases_tracks
 )
 app.add_url_rule("/top_charts", "top_charts", music.routes.top_charts)
+app.add_url_rule("/top_charts/tracks", "top_tracks", music.routes.top_charts_tracks)
 app.add_url_rule("/dashboard", "dashboard", membership.routes.dashboard)
 app.add_url_rule("/dashboard/<int:user_id>", "dashboard", membership.routes.dashboard)
 app.add_url_rule(

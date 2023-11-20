@@ -1,6 +1,7 @@
-from music.models import Track
+from music.models import Track, Rating
 from music.services.rating import get_rating_by_user_and_track_id
-from core.db import get_session
+from membership.services.channel import get_channel_by_id
+from core.db import get_session, get_db
 from datetime import datetime
 from werkzeug.datastructures import FileStorage
 import os
@@ -68,15 +69,10 @@ def create_track(
 def get_track_by_id(track_id, user_id=None, rating=False):
     session = get_session()
 
+    track = session.query(Track).filter(Track.id == track_id).first()
+
     if rating:
-        track = (
-            session.query(Track)
-            .join(Rating, Track.id == Rating.track_id)
-            .filter(Track.id == track_id, Rating.user_id == user_id)
-            .first()
-        )
-    else:
-        track = session.query(Track).filter(Track.id == track_id).first()
+        track.rating = get_rating_by_user_and_track_id(user_id, track.id)
 
     session.close()
 
@@ -111,12 +107,72 @@ def get_tracks_by_channel(channel_id, user_id=None, rating=False, count=None):
 
     if count is not None:
         tracks = tracks.limit(count)
-
-    tracks = tracks.all()
+    else:
+        tracks = tracks.all()
 
     session.close()
 
     return tracks
+
+
+def get_top_rated_tracks(count=None):
+    session = get_session()
+
+    db = get_db()
+
+    average_ratings = (
+        db.session.query(Track, db.func.avg(Rating.rating).label("average_rating"))
+        .join(Rating, Track.id == Rating.track_id)
+        .group_by(Track.id)
+        .order_by(db.func.avg(Rating.rating).desc())
+    )
+
+    if count is not None:
+        average_ratings = average_ratings.limit(count)
+    else:
+        average_ratings = average_ratings.all()
+
+    top_rated = []
+
+    for track, average_rating in average_ratings:
+        if average_rating is None or average_rating == 0:
+            continue
+
+        top_rated.append(track)
+
+    session.close()
+
+    return top_rated
+
+
+def get_top_rated_channels(count=None):
+    session = get_session()
+
+    db = get_db()
+
+    average_ratings = (
+        db.session.query(Track, db.func.avg(Rating.rating).label("average_rating"))
+        .distinct(Track.channel_id)
+        .join(Rating, Track.id == Rating.track_id)
+        .group_by(Track.channel_id)
+        .order_by(db.func.avg(Rating.rating).desc())
+    )
+
+    if count is not None:
+        average_ratings = average_ratings.limit(count)
+    else:
+        average_ratings = average_ratings.all()
+
+    top_rated_channels = []
+    for track, average_rating in average_ratings:
+        if average_rating is None or average_rating == 0:
+            continue
+
+        top_rated_channels.append(get_channel_by_id(track.channel_id))
+
+    session.close()
+
+    return top_rated_channels
 
 
 def get_latest_tracks(count=5):

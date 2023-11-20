@@ -185,7 +185,7 @@
     }
 
     const responseData = await response.json();
-    const likePercentage = responseData.rating * 100;
+    const likePercentage = responseData.rating.toFixed(2) * 100;
     document.querySelector('.rating__bar').style.width = `${likePercentage}%`;
     document.querySelector('.player__rating--text').innerHTML = `${likePercentage}%`;
   }
@@ -232,7 +232,7 @@
     }).then(response => response.json())
       .then(data => {
         comments = data.comments;
-        console.log(comments);
+  
 
         // Clearing the comment section
         commentSection.innerHTML = '';
@@ -254,7 +254,7 @@
           }).then(response => response.json())
             .then(data => {
               comment.user = data;
-              console.log(user);
+        
               addComment(comment);
             });
         });
@@ -298,12 +298,11 @@
   function deleteComment(commentId, userId) {
     event.preventDefault();
 
-    console.log(commentId, userId);
     const request = fetch(`http://127.0.0.1:5000/api/v1/comment/{{track.id}}/${commentId}`, {
       method: 'DELETE',
     }).then(response => response.json())
       .then(data => {
-        console.log(data);
+  
         if (data.action == 'deleted') {
           updateCommentSection();
         }
@@ -369,7 +368,6 @@
   });
 
   dislikeButton.addEventListener('click', async function () {
-    console.log('dislike');
     const response = await fetch(`http://127.0.0.1:5000/api/v1/rating/{{track.id}}`, {
       method: 'POST',
       headers: {
@@ -416,7 +414,6 @@
   });
 
   loopButton.addEventListener('change', function () {
-    console.log('loop', this.checked);
     if (this.checked) {
       audio.loop = true;
       loopIcon.classList.add('player__controls--btn-check--active');
