@@ -1,5 +1,5 @@
 from flask import render_template, request, redirect, url_for
-from membership.services import get_user_by_id, get_channel_by_id
+from membership.services import get_user_by_id, get_channel_by_id, get_channel_members
 import music.services
 import core
 
@@ -39,3 +39,49 @@ def dashboard(user_id=None):
             own_profile=False,
             recent_tracks=recent_tracks,
         )
+
+
+def dashboard_channel(channel_id=None):
+    channel = get_channel_by_id(channel_id)
+    user = core.get_current_user()
+
+    if user is None:
+        return redirect(url_for("login"))
+
+    # Check if the user is a member of the channel
+    is_member = any(
+        [member.user_id == user.id for member in get_channel_members(channel_id)]
+    )
+
+    if channel is None:
+        # TODO: Redirect to 404 page
+        return redirect(url_for("home"))
+
+    channel_tracks = music.services.get_tracks_by_channel(channel_id)
+    for track in channel_tracks:
+        track.channel = channel
+
+    # TODO: Add Album and Playlist information to the channel
+
+    return render_template(
+        "membership/dashboard_channel.html",
+        channel=channel,
+        own_profile=is_member,
+        channel_tracks=channel_tracks,
+    )
+
+
+def dashboard_channel_tracks(channel_id=None):
+    channel = get_channel_by_id(channel_id)
+
+    if channel is None:
+        # TODO: Redirect to 404 page
+        return redirect(url_for("home"))
+
+    channel_tracks = music.services.get_tracks_by_channel(channel_id)
+    for track in channel_tracks:
+        track.channel = channel
+
+    return render_template(
+        "music/all_tracks.html", all_tracks=channel_tracks, title=channel.name
+    )

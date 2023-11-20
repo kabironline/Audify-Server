@@ -134,6 +134,16 @@ app.add_url_rule("/top_charts", "top_charts", music.routes.top_charts)
 app.add_url_rule("/dashboard", "dashboard", membership.routes.dashboard)
 app.add_url_rule("/dashboard/<int:user_id>", "dashboard", membership.routes.dashboard)
 app.add_url_rule(
+    "/dashboard/channel/<int:channel_id>",
+    "dashboard_channel",
+    membership.routes.dashboard_channel,
+)
+app.add_url_rule(
+    "/dashboard/channel/<int:channel_id>/tracks",
+    "dashboard_channel_tracks",
+    membership.routes.dashboard_channel_tracks,
+)
+app.add_url_rule(
     "/rating/<int:track_id>/<int:rating>/dashboard",
     "dashboard_rating",
     music.routes.update_dashboard_track_rating,
@@ -151,6 +161,19 @@ app.add_url_rule(
 app.add_url_rule(
     "/user_avatar/<int:user_id>", "user_avatar", membership.routes.user_avatar
 )
+
+app.add_url_rule(
+    "/channel_avatar/<int:channel_id>",
+    "channel_avatar",
+    membership.routes.channel_avatar,
+)
+
+
+@app.context_processor
+def inject_user():
+    return dict(current_user=core.get_current_user())
+
+
 app.add_url_rule(
     "/media/<path:filename>",
     "media",

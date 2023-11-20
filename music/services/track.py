@@ -1,4 +1,5 @@
 from music.models import Track
+from music.services.rating import get_rating_by_user_and_track_id
 from core.db import get_session
 from datetime import datetime
 from werkzeug.datastructures import FileStorage
@@ -64,9 +65,19 @@ def create_track(
     return track_id
 
 
-def get_track_by_id(track_id):
+def get_track_by_id(track_id, user_id=None, rating=False):
     session = get_session()
-    track = session.query(Track).filter(Track.id == track_id).first()
+
+    if rating:
+        track = (
+            session.query(Track)
+            .join(Rating, Track.id == Rating.track_id)
+            .filter(Track.id == track_id, Rating.user_id == user_id)
+            .first()
+        )
+    else:
+        track = session.query(Track).filter(Track.id == track_id).first()
+
     session.close()
 
     return track
@@ -80,9 +91,29 @@ def get_all_tracks():
     return tracks
 
 
-def get_tracks_by_channel(channel_id):
+def get_tracks_by_channel(channel_id, user_id=None, rating=False, count=None):
     session = get_session()
-    tracks = session.query(Track).filter(Track.channel_id == channel_id).all()
+    tracks = None
+    if rating:
+        tracks = (
+            session.query(Track)
+            .filter(Track.channel_id == channel_id)
+            .order_by(Track.last_modified_at.desc())
+        )
+        for track in tracks:
+            track.rating = get_rating_by_user_and_track_id(user_id, track.id)
+    else:
+        tracks = (
+            session.query(Track)
+            .filter(Track.channel_id == channel_id)
+            .order_by(Track.last_modified_at.desc())
+        )
+
+    if count is not None:
+        tracks = tracks.limit(count)
+
+    tracks = tracks.all()
+
     session.close()
 
     return tracks

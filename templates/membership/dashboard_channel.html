@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block m_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+{% endblock %}
+{% block m_content %}
+<section class="hero">
+  <div class="hero__avatar">
+    <!-- TODO: Add Avatar in the databases -->
+    <img src="{{ url_for('channel_avatar', channel_id = channel.id)}}" alt="Avatar" class="hero__avatar--img">
+    <!-- Get the first character of the user -->
+    <!-- <div class="hero__avatar--img">
+      {{channel.name[0]}}
+    </div> -->
+  </div>
+  <div class="hero__details">
+    <div class="hero__details--header">
+      <div class="hero__details--header">
+        <h2 class=" heading-2 hero__details--title">
+          {{channel.name}}
+        </h2>
+      </div>
+      <!-- TOOD Fix this -->
+      {% if own_profile == True %}
+      <div class="hero__cta">
+        <a href="/edit_profile_creator" class="btn btn--white">
+          <i class="fas fa-pen-to-square"></i> Edit Profile
+        </a>
+      </div>
+      {% endif %}
+    </div>
+    <p class="hero__details--bio">
+      BIO: {% if channel.description != '' %} {{channel.description}}
+      {% else %} Welcome to the channel of {{ channel.name }} {% endif %}
+    </p>
+  </div>
+
+
+</section>
+<hr class="hr">
+<section class="section section-tracks">
+  {% if channel_tracks|length == 0 %}
+  <p class="heading-2">No tracks yet</p>
+  {% else %}
+  <h2 class="heading-2">
+    {{ channel.name }}'s tracks
+  </h2>
+
+  {% with tracks=channel_tracks[:5] %}
+  {% include "widgets/track_carousel.html" %}
+  {% endwith %}
+  {% if channel_tracks|length > 5 %}
+  <a href="/dashboard/channel/{{channel.id}}/tracks" class="btn btn--white">See all</a>
+  {% endif %}
+  {% endif %}
+</section>
+<section class="section section-playlists">
+  <h2 class="heading-2 mb-medium">
+    {{ channel.name }}'s Playlists
+  </h2>
+  <div class="playlist-container">
+    {% for n in range (5)%}
+    <div class="playlist__item">
+      <a href="/" class=" playlist__link">
+        <div class="playlist__details">
+          <p class="playlist__heading">Playlist Name</p>
+          <p class="playlist__subheading">Playlist Author</p>
+        </div>
+        <i class="fas fa-circle-play playlist__playbutton"></i>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endblock %}

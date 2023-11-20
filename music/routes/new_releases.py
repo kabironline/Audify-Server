@@ -28,4 +28,6 @@ def new_releases_tracks():
     for track in new_releases:
         track.channel = membership.services.get_channel_by_id(track.channel_id)
 
-    return render_template("music/new_releases_tracks.html", new_releases=new_releases)
+    return render_template(
+        "music/all_tracks.html", title="New Singles", all_tracks=new_releases
+    )
