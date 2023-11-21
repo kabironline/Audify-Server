@@ -1,4 +1,4 @@
-<section id="section-modal">
+<section id="logout-modal" class="modal">
   <div class="modal__backdrop">
   </div>
 
@@ -12,6 +12,36 @@
     <div class="modal__footer">
       <a href="/logout" class="btn btn--secondary">Logout</a>
       <a href="#main" class="btn btn--primary">Close</a>
+    </div>
+  </div>
+</section>
+<section id="playlist-modal" class="modal">
+  <div class="modal__backdrop">
+  </div>
+
+  <div class="modal__container">
+    <div class="modal__header">
+      <h2 class="heading-2">Create Playlist</h2>
+    </div>
+    <div class="modal__content">
+      <form action="/playlist" method="post">
+        <div class="form__group">
+          <input type="text" minlength="2" maxlength="20" value="" name="name" id="name" placeholder="Playlist Name"
+            class="form__input" required>
+          <label for="name" class="form__label">Playlist Name</label>
+        </div>
+        <br>
+        <div class="form__group">
+          <textarea name="description" maxlength="400" value="" id="description" cols="30" rows="10"
+            class="form__input form__input--textarea" placeholder="Description (Optional)"></textarea>
+          <label for="description" class="form__label">Description (Optional, 400 characters maximum) </label>
+        </div>
+        <br>
+        <div class="modal__footer">
+          <a href="#main" class="btn">Close</a>
+          <button type="submit" class="btn btn--primary">Create Playlist</button>
+        </div>
+      </form>
     </div>
   </div>
 </section>

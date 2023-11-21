@@ -1,4 +1,4 @@
-#section-modal {
+.modal {
   display: none;
   height: 100%;
   width: 100%;
@@ -6,7 +6,11 @@
   top: 0;
 }
 
-#section-modal:target {
+#logout-modal:target {
+  display: block;
+}
+
+#playlist-modal:target {
   display: block;
 }
 
