@@ -10,7 +10,13 @@ class ChannelAPI(Resource):
     @cross_origin()
     def get(self, channel_id=None, channel_name=None):
         if channel_id is None and channel_name is None:
-            return {"error": "channel_id or channel_name is required"}, 400
+            # from the request get the ".../channel?name=..." or ".../channel?id=..."
+            channel_id = request.args.get("id")
+            channel_name = request.args.get("name")
+
+            if channel_id is None and channel_name is None:
+                return {"error": "Channel id or name not provided"}, 400
+        channel = None
 
         if channel_id is None:
             channel = services.get_channel_by_name(channel_name)

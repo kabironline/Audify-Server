@@ -1,10 +1,12 @@
-from music.models import Track, Rating
+from music.models import Track, Rating, TrackSearch
 from music.services.rating import get_rating_by_user_and_track_id
 from membership.services.channel import get_channel_by_id
 from core.db import get_session, get_db
 from datetime import datetime
 from werkzeug.datastructures import FileStorage
 import os
+
+db = get_db()
 
 
 def create_track(
@@ -218,3 +220,22 @@ def update_track(
     session.close()
 
     return track
+
+
+def delete_track(track_id):
+    session = get_session()
+
+    track = session.query(Track).filter(Track.id == track_id).first()
+
+    if track is None:
+        return None
+
+    session.delete(track)
+    session.commit()
+    session.close()
+
+    return track
+
+
+def search_tracks(keyword):
+    return TrackSearch.query.filter(TrackSearch.name.match(keyword)).all()

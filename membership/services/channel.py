@@ -59,7 +59,18 @@ def get_channel_by_name(name) -> channel_model.Channel:
     If there is no channel with the given name, it returns None.
     """
     session = get_session()
-    return session.query(channel_model.Channel).filter_by(name=name).first()
+
+    search = search_channels(name)
+
+    return search[0] if len(search) > 0 else None
+
+
+def get_all_channels() -> [channel_model.Channel]:
+    """
+    Returns all the channels.
+    """
+    session = get_session()
+    return session.query(channel_model.Channel).all()
 
 
 def update_channel(
@@ -116,3 +127,15 @@ def get_channel_dict(channel: channel_model.Channel):
         "created_at": channel.created_at,
         "last_modified_at": channel.last_modified_at,
     }
+
+
+def search_channels(q):
+    search = channel_model.ChannelSearch.query.filter(
+        channel_model.ChannelSearch.name.match(f"{q}")
+    )
+
+    result = []
+    for channel in search:
+        result.append(get_channel_by_id(channel.rowid))
+
+    return result

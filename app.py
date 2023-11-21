@@ -13,6 +13,7 @@ import membership.routes
 import membership.api
 import music.routes
 import music.api
+import music.models
 
 
 app = Flask(__name__)
@@ -22,7 +23,8 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 current_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(current_dir, "core/db/db.sqlite3")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_path
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
+app.config["WHOOSH_BASE"] = "whoosh"
 app.config["SQLALCHEMY_ECHO"] = False
 
 db.init_app(app)
@@ -78,6 +80,7 @@ app.cli.add_command(get_track_list)
 app.cli.add_command(update_track_from_list)
 app.cli.add_command(update_genre_list)
 app.cli.add_command(generate_random_likes)
+app.cli.add_command(update_channelname)
 
 
 @app.route("/")
@@ -100,6 +103,9 @@ app.add_url_rule(
     membership.routes.register_creator,
     methods=["GET", "POST"],
 )
+
+app.add_url_rule("/search", "search", music.routes.search)
+
 app.add_url_rule("/upload", "upload", music.routes.upload, methods=["GET", "POST"])
 app.add_url_rule("/playlist", "playlist", music.routes.playlist)
 

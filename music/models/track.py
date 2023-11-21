@@ -4,9 +4,10 @@ from core.db import db
 
 class Track(db.Model):
     __tablename__ = "Track"
+
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(50), nullable=False)
-    lyrics = db.Column(db.String, nullable=True)
+    name = db.Column(db.Text, nullable=False)
+    lyrics = db.Column(db.Text, nullable=True)
     release_date = db.Column(db.DateTime, nullable=False)
     flag_id = db.Column(db.Integer, ForeignKey("Flag.id"), nullable=True)
     genre_id = db.Column(db.Integer, ForeignKey("Genre.id"), nullable=True)
@@ -16,3 +17,8 @@ class Track(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     last_modified_at = db.Column(db.DateTime, nullable=False)
 
+
+class TrackSearch(db.Model):
+    __tablename__ = "TrackSearch"
+    rowid = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Text)
