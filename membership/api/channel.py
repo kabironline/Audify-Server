@@ -102,7 +102,7 @@ class ChannelAPI(Resource):
             with open(request_data.get("avatar"), "rb") as avatar_file:
                 avatar = FileStorage(avatar_file)
 
-        services.update_channel(user)
+        services.update_channel(channel_id, avatar=avatar)
 
         return {"message": "User updated successfully"}, 200
 

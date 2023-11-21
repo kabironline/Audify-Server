@@ -86,8 +86,8 @@ def update_channel(
     if channel is None:
         raise Exception("Channel not found")
 
-    channel.name = name
-    channel.description = description
+    channel.name = name if name is not None else channel.name
+    channel.description = description if description is not None else channel.description
     channel.last_modified_at = datetime.datetime.now()
     session.commit()
 

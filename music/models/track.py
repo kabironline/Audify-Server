@@ -6,8 +6,8 @@ class Track(db.Model):
     __tablename__ = "Track"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.Text, nullable=False)
-    lyrics = db.Column(db.Text, nullable=True)
+    name = db.Column(db.String, nullable=False)
+    lyrics = db.Column(db.String, nullable=True)
     release_date = db.Column(db.DateTime, nullable=False)
     flag_id = db.Column(db.Integer, ForeignKey("Flag.id"), nullable=True)
     genre_id = db.Column(db.Integer, ForeignKey("Genre.id"), nullable=True)

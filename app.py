@@ -24,7 +24,6 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(current_dir, "core/db/db.sqlite3")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_path
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
-app.config["WHOOSH_BASE"] = "whoosh"
 app.config["SQLALCHEMY_ECHO"] = False
 
 db.init_app(app)
