@@ -39,7 +39,7 @@
           <span class="player__time--current">0:00</span>
           <span class="player__time--remaining">0:00</span>
         </div>
-        <audio src="{{ url_for('track_media', track_id = track.id) }}" class="player__audio"></audio>
+        <audio src="{{ url_for('track_media', track_id = track.id) }}" class="player__audio" autoplay></audio>
         <input type="range" min="0" max="100" value="0" class="player__progress-bar">
         <div class="player__controls">
           <button class="player__controls--btn play-pause">
@@ -111,6 +111,7 @@
   let initalized = false;
   if (!initalized) {
     updateLikePercentage();
+    playTrack();
     if (lyricsRadio != null) {
       activateLyrics();
     }
@@ -232,7 +233,7 @@
     }).then(response => response.json())
       .then(data => {
         comments = data.comments;
-  
+
 
         // Clearing the comment section
         commentSection.innerHTML = '';
@@ -254,7 +255,7 @@
           }).then(response => response.json())
             .then(data => {
               comment.user = data;
-        
+
               addComment(comment);
             });
         });
@@ -302,7 +303,7 @@
       method: 'DELETE',
     }).then(response => response.json())
       .then(data => {
-  
+
         if (data.action == 'deleted') {
           updateCommentSection();
         }
@@ -325,13 +326,13 @@
     }
   });
 
-  document.addEventListener("click", function () {
-    if (initalized)
-      return;
+  // document.addEventListener("click", function () {
+  //   if (initalized)
+  //     return;
 
-    playTrack();
-    initalized = true;
-  });
+  //   playTrack();
+  //   initalized = true;
+  // });
 
   playPause.addEventListener('click', function () {
     if (audio.paused) {

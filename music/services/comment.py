@@ -78,7 +78,8 @@ def delete_all_comments_by_track_id(track_id):
 
     return True
 
-def get_dict (comment: Comment) -> dict:
+
+def get_comment_dict(comment: Comment) -> dict:
     return {
         "id": comment.id,
         "comment": comment.comment,

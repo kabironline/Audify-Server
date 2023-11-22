@@ -190,6 +190,12 @@
   }
 }
 
+.track-carousel__item--text-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .track-carousel__item--title {
   font-size: 1.5rem;
   font-weight: 500;
@@ -200,6 +206,49 @@
 
   &:hover {
     text-decoration: underline;
+  }
+}
+
+.track-menu-label {
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 0 1rem;
+  text-decoration: none;
+  color: white;
+  display: block;
+}
+
+.track-dropdown-container {
+  display: none;
+  position: absolute;
+  top: -12rem;
+  left: -12rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--color-border-light);
+  padding: 1rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
+  z-index: 101;
+  height: 0%;
+  transition: all 0.2s ease-out;
+  background-color: transparent;
+  backdrop-filter: blur(20px) brightness(0.5);
+}
+
+.track-menu-container {
+  position: relative;
+}
+
+.track-dropdown-container {
+  display: none;
+  position: absolute;
+}
+
+.track-menu__checkbox {
+  display: none;
+
+  &:checked ~ .track-dropdown-container {
+    display: block;
+    height: auto;
   }
 }
 

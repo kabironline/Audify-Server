@@ -24,7 +24,7 @@
       <h2 class="heading-2">Create Playlist</h2>
     </div>
     <div class="modal__content">
-      <form action="/playlist" method="post">
+      <form action="/playlist" method="POST">
         <div class="form__group">
           <input type="text" minlength="2" maxlength="20" value="" name="name" id="name" placeholder="Playlist Name"
             class="form__input" required>
@@ -37,10 +37,45 @@
           <label for="description" class="form__label">Description (Optional, 400 characters maximum) </label>
         </div>
         <br>
+        <input type="text" name="route" id="" value="{{ request.full_path }}" style="display: none;">
         <div class="modal__footer">
           <a href="#main" class="btn">Close</a>
           <button type="submit" class="btn btn--primary">Create Playlist</button>
         </div>
+      </form>
+    </div>
+  </div>
+</section>
+</section>
+<section id="playlist-add-modal" class="modal">
+  <div class="modal__backdrop">
+  </div>
+
+  <div class="modal__container">
+    <div class="modal__header">
+      <h2 class="heading-2">Save to Playlist</h2>
+    </div>
+    <div class="modal__content">
+      <form action="/playlist/add" method="POST" class="modal-form-container">
+        <p>Select Playlist</p>
+        {% for playlist in current_user.playlists %}
+        <div class="modal-form-group">
+          <input type="checkbox" name="playlist" id="{{playlist.id}}" value="{{ playlist.id }}"
+            class="modal-form__checkbox checkbox-disable">
+          <label for="{{ playlist.id }}" class="modal-form__label">{{ playlist.name }}</label>
+        </div>
+        {% endfor %}
+        <hr class="hr">
+        <a href="#playlist-modal" class="modal-form__btn-extra">
+          <label class="modal-form__label"><i class="fas fa-plus"></i>
+            <p>Create new Playlist</p>
+          </label>
+        </a>
+        <div class="modal__footer">
+          <a href="#main" class="btn">Close</a>
+          <button type="submit" class="btn btn--white">Add</button>
+        </div>
+        <input type="text" name="route" value="{{ request.full_path }}" style="display: none;">
       </form>
     </div>
   </div>

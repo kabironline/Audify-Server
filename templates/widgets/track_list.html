@@ -12,6 +12,7 @@
       <!-- <span class="track-item__album">Album {{ n }}</span> -->
     </a>
     <div class="track-item__cta">
+      {% if playlist_id == 0 %}
       <a href="{{ url_for('dashboard_rating', track_id=track.id, rating=1) }}"
         class="track-item__cta-link track-item__cta--like {%if track.rating == 1 %} track-item__cta-link--active {% endif %}">
         <i class="{%if track.rating == 1 %}fas {% else %} far {% endif %} fa-thumbs-up"></i>
@@ -19,6 +20,27 @@
       <a href="{{ url_for('dashboard_rating', track_id=track.id, rating=0) }}"
         class="track-item__cta-link track-item__cta--like {%if track.rating == 0 %} track-item__cta-link--active {% endif %}">
         <i class="{%if track.rating == 0 %}fas {% else %} far {% endif %} fa-thumbs-down"></i>
+      </a>
+      {% else %}
+      <a href="{{ url_for('playlist_rating', track_id=track.id, rating=1, playlist_id=playlist_id) }}"
+        class="track-item__cta-link track-item__cta--like {%if track.rating == 1 %} track-item__cta-link--active {% endif %}">
+        <i class="{%if track.rating == 1 %}fas {% else %} far {% endif %} fa-thumbs-up"></i>
+      </a>
+      <a href="{{ url_for('playlist_rating', track_id=track.id, rating=0, playlist_id=playlist_id) }}"
+        class="track-item__cta-link track-item__cta--like {%if track.rating == 0 %} track-item__cta-link--active {% endif %}">
+        <i class="{%if track.rating == 0 %}fas {% else %} far {% endif %} fa-thumbs-down"></i>
+      </a>
+      <a href="{{ url_for('playlist_track_delete', playlist_id=playlist_id, track_id=track.id) }}"
+        class="track-item__cta-link track-item__cta--remove">
+        <i class="fas fa-minus"></i>
+      </a>
+      {% endif %}
+      <a href="?id={{ track.id }}#playlist-add-modal" class="track-item__cta-link track-item__cta--remove">
+        <i class="fas fa-plus"></i>
+      </a>
+      <!-- Report Button -->
+      <a href="?id={{track.id}}#report-modal" class="track-item__cta-link track-item__cta--report">
+        <i class="fas fa-exclamation-triangle"></i>
       </a>
     </div>
   </li>

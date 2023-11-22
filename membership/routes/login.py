@@ -5,6 +5,7 @@ from membership.services import (
     get_channel_by_id,
     get_channel_dict,
 )
+from music.services import get_playlist_by_user, get_playlist_dict
 import core
 
 
@@ -36,7 +37,12 @@ def login():
             for member in members:
                 channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))
 
-        core.set_current_user(user, channel)
+        playlist = []
+        playlist_search = get_playlist_by_user(user.id)
+        for playlist_item in playlist_search:
+            playlist.append(get_playlist_dict(playlist_item))
+
+        core.set_current_user(user, channel, playlist)
         return redirect(url_for("home"))
     return render_template("membership/login.html")
 

@@ -19,7 +19,7 @@ class UserAPI(Resource):
         if user is None:
             return {"error": "User not found"}, 404
 
-        user_dict = services.get_dict(
+        user_dict = services.get_user_dict(
             user, avatar=url_for("user_avatar", user_id=user_id)
         )
 

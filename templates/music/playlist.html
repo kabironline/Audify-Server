@@ -8,51 +8,74 @@
 <section class="section">
   <div class="playlist-header">
     <h2 class="heading-2">
-      <!-- TODO: UPDATE THIS -->
-      Playlist's Name
+      {{playlist.name}}
     </h2>
+    {% if playlist.description != "" %}
     <p class="playlist-header__description">
-      Playlist's Author • 10 songs, 30 min
+      Description: {{playlist.description}}
+    </p>
+    {% endif %}
+    <p class="playlist-header__description">
+      {{ playlist.author.nickname }} • {{playlist.items|length}} songs, 30 min
     </p>
 
     <div class="playlist-header__buttons">
+      {% if playlist.items|length > 1 %}
       <a href="/" class="btn btn--white"><i class="fas fa-shuffle"></i>Shuffle Play</a>
+      {% endif %}
+      {% if playlist.author.id == current_user.id %}
+      <a href="#playlist-edit-modal" class="btn "><i class="fas fa-pencil"></i>Edit Playlist</a>
+      <a href="/playlist/{{playlist.id}}/delete" class="btn ">Delete Playlist</a>
+      {% else %}
       <a href="/" class="btn "><i class="fas fa-check-to-slot"></i>Add to library</a>
+      {% endif %}
     </div>
   </div>
   <hr class="hr">
 </section>
 <section class="section section-playlist-songs">
   <ul class="track-list">
-    <!-- TODO: GENERATE DYNAMICALLY -->
-    {% for n in range(0,15) %}
-    <li class="track-item">
-      <!-- TODO: Link to music -->
-      <a href="/" class="track-item__link">
-        <div class="track-item__cover">
-          <img src="https://picsum.photos/100?random={{n}}" alt="" class="track-item__cover--img">
-          <i class="fas fa-play track-item__cover--playbutton"></i>
-        </div>
-        <span class="track-item__title">track name {{ n }}</span>
-        <span class="track-item__artist">Artist {{ n }}</span>
-        <!-- TODO: Add link to album -->
-        <span class="track-item__album">Album {{ n }}</span>
-      </a>
-      <div class="track-item__cta">
-        <a href="/" class="track-item__cta-link track-item__cta--like">
-          <!-- TODO: Add non liked icons and make it functional -->
-          <i class="fas fa-thumbs-up"></i>
-        </a>
-        <a href="/" class="track-item__cta-link track-item__cta--like">
-          <i class="fas fa-ellipsis-vertical"></i>
-        </a>
-      </div>
-      <p class="track-item__length">
-        {{ n+1 }}:{{ '%02d' | format(n*3) }}
-      </p>
-    </li>
-    {% endfor %}
+    {% with tracks=playlist.items,playlist_id = playlist.id %}
+    {% include "widgets/track_list.html" %}
+    {% endwith %}
+    {% if playlist.items|length == 0 %}
+    <h3 class="heading-3">No Tracks Yet</h3>
+    {% endif %}
   </ul>
 </section>
+{% endblock %}
+{% block extra_modals %}
 
+<section id="playlist-edit-modal" class="modal">
+  <div class="modal__backdrop">
+  </div>
+
+  <div class="modal__container">
+    <div class="modal__header">
+      <h2 class="heading-2">Update Playlist</h2>
+    </div>
+    <div class="modal__content">
+      <form action="/playlist/{{playlist.id}}/update" method="POST">
+        <div class="form__group">
+          <input type="text" minlength="2" maxlength="20" name="name" id="name" placeholder="{{playlist.name}}"
+            value="{{playlist.name}}" class="form__input" required>
+          <label for="name" class="form__label">Playlist Name</label>
+        </div>
+        <br>
+        <div class="form__group">
+          <textarea name="description" maxlength="400" id="description" cols="30" rows="10"
+            class="form__input form__input--textarea"
+            placeholder="Description (Optional)">{{playlist.description}}</textarea>
+          <label for="description" class="form__label">Description (Optional, 400 characters maximum) </label>
+        </div>
+        <br>
+        <input type="text" name="route" id="" value="{{ request.path }}" style="display: none;">
+        <div class="modal__footer">
+          <a href="#main" class="btn">Close</a>
+          <button type="submit" class="btn btn--primary">Create Playlist</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
 {% endblock %}

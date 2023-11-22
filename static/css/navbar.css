@@ -86,11 +86,11 @@
   backdrop-filter: blur(20px) brightness(0.5);
 }
 
-.profile-dropdown-list {
+.dropdown-list {
   list-style: none;
 }
 
-.profile-dropdown-item {
+.dropdown-item {
   padding: 1rem;
   color: white;
   font-size: 1.5rem;
@@ -99,12 +99,12 @@
   transition: all 0.2s ease-out;
   margin-bottom: 1rem;
 
-  &:hover .profile-dropdown-item--link {
+  &:hover .dropdown-item--link {
     color: var(--color-primary);
   }
 }
 
-.profile-dropdown-item--link {
+.dropdown-item--link {
   text-decoration: none;
   color: white;
   transition: all 0.2s ease-out;

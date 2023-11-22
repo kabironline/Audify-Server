@@ -14,6 +14,14 @@
   display: block;
 }
 
+#playlist-edit-modal:target {
+  display: block;
+}
+
+#playlist-add-modal:target {
+  display: block;
+}
+
 .modal__container {
   position: absolute;
   top: 50%;
@@ -37,10 +45,54 @@
   height: 100%;
   backdrop-filter: brightness(0.7);
 }
+.modal__content {
+  z-index: 10;
+}
 
 .modal__footer {
   width: 100%;
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
+}
+
+.modal-form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-form-group {
+  height: 5rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+}
+.modal-form__label {
+  height: 100%;
+  width: 100%;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-radius: 5px;
+  font-size: 2rem;
+  transition: all 0.1s ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    background-color: var(--color-hover);
+  }
+}
+.modal-form__checkbox:checked + .modal-form__label {
+  background-color: var(--color-white);
+  color: var(--color-black);
+}
+
+.modal-form__btn-extra {
+  height: 5rem;
+  text-decoration: none;
+  color: var(--color-white);
+  display: flex;
 }

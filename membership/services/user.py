@@ -273,7 +273,7 @@ def validate_password(password):
     return True
 
 
-def get_dict(user: user_model.User, avatar=None):
+def get_user_dict(user: user_model.User, avatar=None):
     return {
         "id": user.id,
         "username": user.username,

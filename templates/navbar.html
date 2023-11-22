@@ -10,30 +10,30 @@
   <div class="profile-icon-container">
     <input type="checkbox" name="profile" id="profile" class="profile-icon__checkbox">
     <div class="profile-dropdown-container">
-      <ul class="profile-dropdown-list">
-        <li class="profile-dropdown-item">
-          <a class="profile-dropdown-item--link" href="/dashboard">Dashboard</a>
+      <ul class="dropdown-list">
+        <li class="dropdown-item">
+          <a class="dropdown-item--link" href="/dashboard">Dashboard</a>
         </li>
         {% if current_user.channels != None %}
-        <li class="profile-dropdown-item">
-          <a class="profile-dropdown-item--link" href="/edit_channel">Channel Dashboard</a>
+        <li class="dropdown-item">
+          <a class="dropdown-item--link" href="/edit_channel">Channel Dashboard</a>
         </li>
         {% endif %}
-        <li class="profile-dropdown-item">
-          <a class="profile-dropdown-item--link" href="/edit_profile">Edit Profile</a>
+        <li class="dropdown-item">
+          <a class="dropdown-item--link" href="/edit_profile">Edit Profile</a>
         </li>
         {% if current_user.channels == None %}
-        <li class="profile-dropdown-item">
-          <a class="profile-dropdown-item--link" href="/register_creator">Register as Creator</a>
+        <li class="dropdown-item">
+          <a class="dropdown-item--link" href="/register_creator">Register as Creator</a>
         </li>
         {% endif %}
         {% if current_user.channels != None %}
-        <li class="profile-dropdown-item">
-          <a class="profile-dropdown-item--link" href="/edit_channel">Edit Channel</a>
+        <li class="dropdown-item">
+          <a class="dropdown-item--link" href="/edit_channel">Edit Channel</a>
         </li>
         {% endif %}
-        <li class="profile-dropdown-item">
-          <a class="profile-dropdown-item--link" href="#logout-modal">Logout</a>
+        <li class="dropdown-item">
+          <a class="dropdown-item--link" href="#logout-modal">Logout</a>
         </li>
       </ul>
     </div>

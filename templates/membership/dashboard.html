@@ -37,7 +37,6 @@
     </p>
   </div>
 
-
 </section>
 <hr class="hr">
 {% if recent_tracks != [] %}
@@ -45,7 +44,7 @@
   <h2 class="heading-2 mb-medium">
     Recently Played
   </h2>
-  {% with tracks=recent_tracks %}
+  {% with tracks=recent_tracks,playlist_id = 0%}
   {% include "widgets/track_list.html" %}
   {% endwith %}
 </section>

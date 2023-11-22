@@ -8,7 +8,7 @@ class CommentAPI(Resource):
     @cross_origin()
     def get(self, track_id):
         comments = services.get_comments_by_track_id(track_id)
-        comment_dict = [services.get_dict(comment) for comment in comments]
+        comment_dict = [services.get_comment_dict(comment) for comment in comments]
         return {
             "track_id": track_id,
             "comments": comment_dict,
@@ -34,7 +34,7 @@ class CommentAPI(Resource):
             }, 200
 
         return {
-            "comment": services.get_dict(comment_object),
+            "comment": services.get_comment_dict(comment_object),
             "action": "created",
         }, 201
 

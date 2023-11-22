@@ -15,7 +15,7 @@ def get_api():
     return api
 
 
-def set_current_user(user: User, channel=None):
+def set_current_user(user: User, channel=None, playlist=[]):
     # Convert the user to a dictionary
     user_dict = {
         "id": user.id,
@@ -30,6 +30,7 @@ def set_current_user(user: User, channel=None):
         "created_at": user.created_at,
         "last_modified_at": user.last_modified_at,
         "channels": channel,
+        "playlists": playlist,
     }
 
     session["user"] = user_dict
@@ -62,6 +63,10 @@ def get_current_user() -> User | None:
     )
 
     user.channels = user_dict["channels"]
+    if "playlists" in user_dict:
+        user.playlists = user_dict["playlists"]
+    else:
+        user.playlists = []
     return user
 
 

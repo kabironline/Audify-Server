@@ -106,7 +106,38 @@ app.add_url_rule(
 app.add_url_rule("/search", "search", music.routes.search)
 
 app.add_url_rule("/upload", "upload", music.routes.upload, methods=["GET", "POST"])
-app.add_url_rule("/playlist", "playlist", music.routes.playlist)
+app.add_url_rule("/playlist", "playlist", music.routes.playlist, methods=["POST"])
+app.add_url_rule(
+    "/playlist/<int:playlist_id>",
+    "playlist_page",
+    music.routes.playlist,
+    methods=["GET"],
+)
+
+app.add_url_rule(
+    "/playlist/<int:playlist_id>/delete",
+    "playlist_delete",
+    music.routes.playlist_delete,
+)
+
+app.add_url_rule(
+    "/playlist/<int:playlist_id>/update",
+    "playlist_update",
+    music.routes.playlist_update,
+    methods=["POST"],
+)
+app.add_url_rule(
+    "/playlist/add",
+    "playlist_add",
+    music.routes.playlist_add,
+    methods=["POST"],
+)
+
+app.add_url_rule(
+    "/playlist/<int:playlist_id>/delete/<int:track_id>",
+    "playlist_track_delete",
+    music.routes.playlist_track_delete,
+)
 
 # Players and Tracks
 app.add_url_rule("/player/<int:track_id>", "player", music.routes.player)
@@ -117,7 +148,6 @@ app.add_url_rule(
 app.add_url_rule(
     "/tracks/<int:track_id>/media", "track_media", music.routes.track_media
 )
-
 # Comments
 app.add_url_rule(
     "/tracks/<int:track_id>/comments",
@@ -157,10 +187,17 @@ app.add_url_rule(
     membership.routes.dashboard_channel_tracks,
 )
 app.add_url_rule(
-    "/rating/<int:track_id>/<int:rating>/dashboard",
+    "/rating/<int:track_id>/<int:rating>/<int:playlist_id>",
+    "playlist_rating",
+    music.routes.update_playlist_track_rating,
+)
+
+app.add_url_rule(
+    "/rating/<int:track_id>/<int:rating>/playlist",
     "dashboard_rating",
     music.routes.update_dashboard_track_rating,
 )
+
 app.add_url_rule(
     "/edit_profile",
     "edit_profile",
