@@ -7,7 +7,14 @@ import os.path
 from datetime import datetime
 
 
-def create_album(name, description="", album_art: FileStorage = None, api=False):
+def create_album(
+    name,
+    description="",
+    release_date: datetime = datetime.now(),
+    album_art: FileStorage = None,
+    channel_id=0,
+    api=False,
+):
     session = get_session()
 
     user = None
@@ -21,22 +28,23 @@ def create_album(name, description="", album_art: FileStorage = None, api=False)
         description=description,
         created_at=datetime.now(),
         last_modified_at=datetime.now(),
-        created_by=user.id,
-        last_modified_by=user.id,
+        release_date=release_date,
+        created_by=channel_id,
+        last_modified_by=channel_id,
     )
 
     session.add(album)
     session.commit()
 
-    album_id = session.query(Album).filter_by(name=name).first().id
+    album = session.query(Album).filter_by(name=name).first()
 
     if album_art is not None:
         try:
-            os.mkdir(f"media/albums/{album_id}")
-            album_art.save(f"media/albums/{album_id}/album_art.png")
+            os.mkdir(f"media/albums/{album.id}")
+            album_art.save(f"media/albums/{album.id}/album_art.png")
         except Exception as e:
             session.rollback()
-            os.rmdir(f"media/albums/{album_id}")
+            os.rmdir(f"media/albums/{album.id}")
 
     session.close()
 

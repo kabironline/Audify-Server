@@ -139,6 +139,13 @@ app.add_url_rule(
     music.routes.playlist_track_delete,
 )
 
+app.add_url_rule(
+    "/album/add",
+    "album_add",
+    music.routes.create_album_route,
+    methods=["GET", "POST"],
+)
+
 # Players and Tracks
 app.add_url_rule("/player/<int:track_id>", "player", music.routes.player)
 app.add_url_rule("/tracks/<int:track_id>", "track", music.routes.track)

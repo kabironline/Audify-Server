@@ -7,6 +7,7 @@ class Album(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=True)
+    release_date = db.Column(db.DateTime, nullable=False)
     created_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=True)
     last_modified_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)

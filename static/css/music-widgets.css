@@ -292,7 +292,18 @@
     .track-tile__cover--img {
       filter: brightness(0.5);
     }
+    .track-tile__cover--img.selectable {
+      filter: brightness(1);
+    }
   }
+}
+
+.track-tile-small {
+  grid-template-columns: min-content 1fr;
+}
+
+.track-tile-checkbox:checked + .track-tile-label .track-tile {
+  background-color: var(--color-hover);
 }
 
 .track-tile__position {
@@ -331,9 +342,11 @@
 }
 
 .track-tile__text {
-  display: grid;
-  grid-template-rows: 1fr 1fr;
-  grid-gap: 1rem;
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
+  text-overflow: ellipsis;
   overflow: hidden;
 
   .track-tile__text--title {

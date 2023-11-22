@@ -1,0 +1,89 @@
+{% extends "base.html"%}
+{%block title%}Upload{%endblock%}
+{%block m_content%}
+<section class="section section-upload">
+  <h2 class="heading-2">Create an Album</h2>
+  <form class="form__container form__container--track" action="/album/add" method="post" enctype="multipart/form-data">
+    <div>
+      <div class="form__group">
+        <input type="text" minlength="1" maxlength="50" name="title" id="title" placeholder="Album Name"
+          class="form__input" required>
+        <label for="title" class="form__label">Album Name</label>
+      </div>
+      <br>
+      <div class="form__group">
+        <input type="date" name="release_date" id="release_date" placeholder="Release Date" class="form__input"
+          required>
+        <label for="release_date" class="form__label">Release Date</label>
+      </div>
+      <br>
+      <div class="form__group">
+        <textarea name="description" id="description" class="form__input form__input--textarea"
+          placeholder="Description (Optional)"></textarea>
+        <label for="description" class="form__label">Description (Optional)</label>
+      </div>
+      <br>
+      <div class="form__group form__group--reverse">
+        <label class="form__label" for="cover">Album Cover</label>
+        <div class="form__input--img-container">
+          <input class="form__input form__input--file cover-large" type="file" accept=".png" name="cover" id="cover"
+            required>
+          <img src="" alt="" class="form__input--img">
+        </div>
+        <p class="error">{{error}}</p>
+      </div>
+    </div>
+    <div>
+      <div class="track-tiles">
+        {% for n in range(tracks|length) %}
+        <div>
+          <input type="checkbox" name="tracks" class="checkbox-disable track-tile-checkbox"
+            id="track-tile-{{tracks[n].id}}" value="{{tracks[n].id}}">
+          <label for="track-tile-{{tracks[n].id}}" class="track-tile-label">
+            <div class="track-tile track-tile-small">
+              <!-- Add postion of the track in the top charts -->
+              <div class="track-tile__cover">
+                <div>
+                  <img src="{{ url_for('track_cover', track_id=tracks[n].id) }}" alt="track Image"
+                    class="track-tile__cover--img selectable">
+                </div>
+              </div>
+              <div class="track-tile__text">
+                <p class="track-tile__text--title">{{ tracks[n].name }}</p>
+                <p class="track-tile__text--artist"> {{tracks[n].channel.name}}</p>
+              </div>
+            </div>
+          </label>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    <input class="form__button form__button--track" type="submit" value="Upload" class="btn btn-primary" />
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // If image file has been uploaded then display it in the adjacent image tag
+
+  const coverLarge = document.querySelector('.cover-large');
+  const track = document.querySelector('.track');
+
+  coverLarge.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.addEventListener('load', function () {
+        coverLarge.nextElementSibling.style.display = 'block';
+        coverLarge.nextElementSibling.src = this.result;
+      });
+      reader.readAsDataURL(file);
+    }
+  });
+
+
+
+
+</script>
+{% endblock %}
