@@ -1,0 +1,39 @@
+<div class="track-carousel">
+  {% for album in albums %}
+  <div class="track-carousel__item">
+    <div class="track-carousel__item--cover album-carousel__item--cover">
+      <a href="/player/album/{{album.id}}" class="">
+        <div>
+          <img src="{{ url_for('album_cover', album_id = album.id)}}" alt="Album Image"
+            class="track-carousel__item--img album-carousel__item--img">
+          <i class="fas fa-play track-carousel__item--play"></i>
+        </div>
+      </a>
+    </div>
+    <div class="track-carousel__item--text">
+      <div class="track-carousel__item--text-header">
+        <a href="/album/{{album.id}}" class="track-carousel__item--title">
+          <p>{{album.name}}</p>
+        </a>
+        <div class="track-menu-container">
+          <input type="checkbox" id="track-carousel-{{album.id}}" name="track-menu-{{album.id}}" id=""
+            class="checkbox-disable track-menu__checkbox">
+          <div class="track-dropdown-container album-dropdown-container">
+            <ul class="dropdown-list">
+              <li class="dropdown-item">
+                <a href="?id={{album.id}}#report-modal" class="dropdown-item--link">
+                  Report
+                </a>
+              </li>
+            </ul>
+          </div>
+          <label for="track-carousel-{{album.id}}" class="track-menu-label">
+            <i class="fas fa-ellipsis-v"></i>
+          </label>
+        </div>
+      </div>
+      <a href="/dashboard/channel/{{album.channel_id}}" class="track-carousel__item--artist">{{album.channel.name}}</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>

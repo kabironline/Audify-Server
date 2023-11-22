@@ -27,20 +27,21 @@ def home():
         recently_played_tracks.append(track)
 
     session.close()
-
-    if len(recents) < 5:
-        recently_played_tracks.extend(
-            music.services.get_latest_tracks(5 - len(recents))
-        )
-        carousel_title = (
-            "New Releases" if len(recents) == 0 else "Recently Played & New Releases"
-        )
+    latest_tracks = music.services.get_latest_tracks(5)
+    for track in latest_tracks:
+        track.channel = membership.services.get_channel_by_id(track.channel_id)
 
     for track in recently_played_tracks:
         track.channel = membership.services.get_channel_by_id(track.channel_id)
+
+    latest_albums = music.services.get_latest_albums(5)
+    for album in latest_albums:
+        album.channel = membership.services.get_channel_by_id(album.created_by)
 
     return render_template(
         "music/home.html",
         recently_played=recently_played_tracks,
         carousel_title=carousel_title,
+        latest_tracks=latest_tracks,
+        latest_albums=latest_albums,
     )

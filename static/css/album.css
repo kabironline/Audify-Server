@@ -1,0 +1,11 @@
+.section-album-header {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+.album-header__image__img {
+  height: 20rem;
+  border-radius: 2rem;
+  aspect-ratio: 1;
+  object-fit: cover;
+}

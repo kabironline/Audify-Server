@@ -25,6 +25,12 @@
 #delete-track-modal:target {
   display: block;
 }
+#delete-album-modal:target {
+  display: block;
+}
+#delete-playlist-modal:target {
+  display: block;
+}
 
 .modal__container {
   position: absolute;

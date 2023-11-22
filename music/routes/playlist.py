@@ -10,7 +10,7 @@ import core
 import datetime
 
 
-def playlist(playlist_id=None):
+def playlist_page(playlist_id=None):
     user = core.get_current_user()
     if user is None:
         return redirect(url_for("login"))

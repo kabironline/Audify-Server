@@ -75,19 +75,43 @@ def get_album_by_user(user_id):
     return album
 
 
-def update_album(album_id, name="", description="", album_art: FileStorage = None):
+def get_latest_albums(limit=5):
+    session = get_session()
+
+    albums = session.query(Album).order_by(Album.created_at.desc()).limit(limit).all()
+
+    session.close()
+
+    return albums
+
+
+def update_album(
+    album_id,
+    name="",
+    description="",
+    release_date: datetime = None,
+    album_art: FileStorage = None,
+):
     session = get_session()
 
     album = session.query(Album).filter_by(id=album_id).first()
 
-    album.name = name if name != "" else album.name
-    album.description = description if description != "" else album.description
+    album.name = name if name != "" and name is not None else album.name
+    album.description = (
+        description if description != "" and description is None else album.description
+    )
+    album.release_date = (
+        release_date if release_date is not None else album.release_date
+    )
     album.last_modified_at = datetime.now()
-    album.last_modified_by = get_current_user().id
+    album.last_modified_by = album.created_by
 
     session.commit()
 
     if album_art is not None:
+        if album_art.filename == "":
+            session.close()
+            return album
         try:
             os.mkdir(f"media/albums/{album_id}")
         except FileExistsError:
@@ -112,8 +136,13 @@ def delete_album(album_id, channel_id=0, api=False):
     album_tracks = get_album_items_by_album_id(album_id)
     for album_track in album_tracks:
         delete_album_item(album_track.id)
-
-    os.rmdir(f"media/albums/{album_id}")
+    try:
+        files = os.listdir(f"media/albums/{album_id}")
+        for file in files:
+            os.remove(f"media/albums/{album_id}/{file}")
+        os.rmdir(f"media/albums/{album_id}")
+    except FileNotFoundError:
+        pass
 
     session.delete(album)
     session.commit()

@@ -110,7 +110,7 @@ app.add_url_rule("/playlist", "playlist", music.routes.playlist, methods=["POST"
 app.add_url_rule(
     "/playlist/<int:playlist_id>",
     "playlist_page",
-    music.routes.playlist,
+    music.routes.playlist_page,
     methods=["GET"],
 )
 
@@ -140,11 +140,32 @@ app.add_url_rule(
 )
 
 app.add_url_rule(
+    "/album/<int:album_id>",
+    "album_page",
+    music.routes.album_page,
+)
+
+app.add_url_rule(
     "/album/add",
     "album_add",
     music.routes.create_album_route,
     methods=["GET", "POST"],
 )
+
+app.add_url_rule(
+    "/album/<int:album_id>/edit",
+    "album_edit",
+    music.routes.album_update_route,
+    methods=["GET", "POST"],
+)
+
+app.add_url_rule(
+    "/album/<int:album_id>/delete",
+    "album_delete",
+    music.routes.album_delete_route,
+    methods=["GET", "POST"],
+)
+
 
 # Players and Tracks
 app.add_url_rule("/player/<int:track_id>", "player", music.routes.player)
@@ -198,15 +219,9 @@ app.add_url_rule(
     membership.routes.dashboard_channel_tracks,
 )
 app.add_url_rule(
-    "/rating/<int:track_id>/<int:rating>/<int:playlist_id>",
-    "playlist_rating",
-    music.routes.update_playlist_track_rating,
-)
-
-app.add_url_rule(
-    "/rating/<int:track_id>/<int:rating>/playlist",
-    "dashboard_rating",
-    music.routes.update_dashboard_track_rating,
+    "/rating/<int:track_id>/<int:rating>",
+    "update_rating",
+    music.routes.update_rating,
 )
 
 app.add_url_rule(
@@ -227,6 +242,12 @@ app.add_url_rule(
     "/channel_avatar/<int:channel_id>",
     "channel_avatar",
     membership.routes.channel_avatar,
+)
+
+app.add_url_rule(
+    "/album/cover/<int:album_id>",
+    "album_cover",
+    music.routes.album_cover,
 )
 
 

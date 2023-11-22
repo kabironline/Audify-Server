@@ -6,12 +6,30 @@
 {% block m_content %}
 <section class="section section-recents">
   <h2 class="heading-2">
-    {{ carousel_title }}
+    Latest Tracks
+  </h2>
+  {% with tracks=latest_tracks %}
+  {% include "widgets/track_carousel.html" %}
+  {% endwith %}
+</section>
+<section class="section section-lastest-albums">
+  <h2 class="heading-2">
+    Latest Albums
+  </h2>
+  {% with albums=latest_albums %}
+  {% include "widgets/album_carousel.html" %}
+  {% endwith %}
+</section>
+{% if recently_played| length > 0 %}
+<section class="section section-recents">
+  <h2 class="heading-2">
+    Recently Played
   </h2>
   {% with tracks=recently_played %}
   {% include "widgets/track_carousel.html" %}
   {% endwith %}
 </section>
+{% endif %}
 <section class="section sections-latest">
   <h2 class="heading-2 mb-medium">
     Top Playlists

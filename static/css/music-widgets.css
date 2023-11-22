@@ -141,7 +141,7 @@
   margin: 2rem 0;
   display: grid;
   /* Autofit rows according to size */
-  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(15%, 18.86%));
   flex-wrap: wrap;
   gap: 2rem;
 }
@@ -158,6 +158,10 @@
   object-position: center;
 }
 
+.album-carousel__item--cover {
+  aspect-ratio: 1/1;
+}
+
 .track-carousel__item--img {
   aspect-ratio: 16/9;
   object-fit: cover;
@@ -165,6 +169,10 @@
   transition: all 0.2s ease-out;
   /* height: 100%; */
   width: 100%;
+}
+
+.album-carousel__item--img {
+  aspect-ratio: 1/1;
 }
 
 .track-carousel__item--play {
@@ -232,6 +240,10 @@
   transition: all 0.2s ease-out;
   background-color: transparent;
   backdrop-filter: blur(20px) brightness(0.5);
+}
+
+.album-dropdown-container {
+  left: -8rem;
 }
 
 .track-menu-container {

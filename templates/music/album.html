@@ -1,0 +1,77 @@
+{% extends "base.html"%}
+{%block title%}Playlist{%endblock%}
+{%block m_head%}
+<link rel="stylesheet" href="{{url_for('static', filename='css/album.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='css/playlist.css')}}">
+
+{%endblock%}
+{%block m_content%}
+
+<section class="section section-album-header">
+  <div class="playlist-header__image">
+    <img src="{{url_for('album_cover', album_id=album.id)}}" alt="{{album.name}}" class="album-header__image__img">
+  </div>
+  <div class="playlist-header">
+    <h2 class="heading-2">
+      {{album.name}}
+    </h2>
+    {% if album.description != "" %}
+    <p class="playlist-header__description">
+      Description: {{album.description}}
+    </p>
+    {% endif %}
+    <p class="playlist-header__description">
+      {{ album.author.name }} • {{album.items|length}} songs, 30 min
+    </p>
+
+    <div class="playlist-header__buttons">
+      {% if album.items|length > 1 %}
+      <a href="/" class="btn btn--white"><i class="fas fa-play"></i>Play</a>
+      {% endif %}
+      {% if album.author.id == current_user.channels[0]['id'] %}
+      <a href="/album/{{album.id}}/edit" class="btn "><i class="fas fa-pencil"></i>Edit Album</a>
+      <a href="#delete-album-modal" class="btn ">Delete Album</a>
+      {% else %}
+      <!-- <a href="/" class="btn "><i class="fas fa-check-to-slot"></i>Add to library</a> -->
+      {% endif %}
+    </div>
+  </div>
+  <hr class="hr">
+</section>
+<section class="section section-playlist-songs">
+  <ul class="track-list">
+    {% with tracks=album.items,playlist_id = 0 %}
+    {% include "widgets/track_list.html" %}
+    {% endwith %}
+    {% if album.items|length == 0 %}
+    <h3 class="heading-3">No Tracks Yet</h3>
+    {% endif %}
+  </ul>
+</section>
+{% endblock %}
+{%block extra_modals%}
+{% if album.author.id == current_user.channels[0]['id'] %}
+<section id="delete-album-modal" class="modal">
+  <div class="modal__backdrop">
+  </div>
+
+  <div class="modal__container">
+    <div class="modal__header">
+      <h2 class="heading-2">Delete Track</h2>
+    </div>
+    <div class="modal__content">
+      <p class="modal__text">Are you sure you want to delete this album from this platform? This action cannot be
+        irreversible.
+        <br>
+        <br>
+        <b>DELETING {{album.name}}</b>
+      </p>
+    </div>
+    <div class="modal__footer">
+      <a href="/album/{{album.id}}/delete" type="submit" class="btn btn--secondary">Delete</a>
+      <a href="#main" class="btn btn--primary">Close</a>
+    </div>
+  </div>
+</section>
+{% endif %}
+{%endblock%}
