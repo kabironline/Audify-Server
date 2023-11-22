@@ -148,6 +148,10 @@ app.add_url_rule(
 app.add_url_rule(
     "/tracks/<int:track_id>/media", "track_media", music.routes.track_media
 )
+app.add_url_rule(
+    "/track/delete", "track_delete", music.routes.track_delete, methods=["POST"]
+)
+
 # Comments
 app.add_url_rule(
     "/tracks/<int:track_id>/comments",

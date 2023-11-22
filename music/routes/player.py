@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, send_file
+from flask import render_template, redirect, url_for, send_file, request
 from music.services import *
 from membership.services import get_user_by_id, get_channel_by_id
 import core
@@ -77,3 +77,20 @@ def player_controls():
         return redirect(url_for("login"))
 
     return render_template("music/player_controls.html")
+
+
+def track_delete():
+    user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
+
+    route = request.form.get("route")
+    id = int(route.split("=")[1])
+
+    track = get_track_by_id(id)
+
+    for channel in user.channels:
+        if channel["id"] == track.channel_id:
+            delete_track(id)
+            return redirect(route)
+    return render_template("music/track_delete.html")

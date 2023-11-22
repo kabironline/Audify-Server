@@ -16,7 +16,7 @@
         </li>
         {% if current_user.channels != None %}
         <li class="dropdown-item">
-          <a class="dropdown-item--link" href="/edit_channel">Channel Dashboard</a>
+          <a class="dropdown-item--link" href="/dashboard/channel/{{current_user.channels[0].id}}">Channel Dashboard</a>
         </li>
         {% endif %}
         <li class="dropdown-item">
