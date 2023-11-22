@@ -161,6 +161,16 @@ def get_playlist_items_by_playlist_id(playlist_id):
     return playlist_items
 
 
+def get_track_playlists(track_id):
+    session = get_session()
+
+    playlist_items = session.query(PlaylistItem).filter_by(track_id=track_id).all()
+
+    session.close()
+
+    return playlist_items
+
+
 def delete_playlist_item(playlist_item_id):
     session = get_session()
 
@@ -176,11 +186,14 @@ def delete_playlist_item(playlist_item_id):
 def delete_playlist_item_by_playlist_track_id(playlist_id, track_id):
     session = get_session()
 
-    playlist_item = (
-        session.query(PlaylistItem)
-        .filter_by(playlist_id=playlist_id, track_id=track_id)
-        .first()
-    )
+    try:
+        playlist_item = (
+            session.query(PlaylistItem)
+            .filter_by(playlist_id=playlist_id, track_id=track_id)
+            .first()
+        )
+    except Exception as e:
+        pass
 
     session.delete(playlist_item)
     session.commit()

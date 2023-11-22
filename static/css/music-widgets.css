@@ -193,7 +193,7 @@
 .track-carousel__item--text-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .track-carousel__item--title {
@@ -221,7 +221,7 @@
 .track-dropdown-container {
   display: none;
   position: absolute;
-  top: -12rem;
+  top: 2rem;
   left: -12rem;
   border-radius: 0.5rem;
   border: 1px solid var(--color-border-light);

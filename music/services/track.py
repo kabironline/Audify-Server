@@ -1,5 +1,14 @@
 from music.models import Track, Rating, TrackSearch
-from music.services.rating import get_rating_by_user_and_track_id
+from music.services.rating import *
+from music.services.playlist import (
+    get_track_playlists,
+    delete_playlist_item_by_playlist_track_id,
+)
+from music.services.album import (
+    get_track_albums,
+    delete_album_item_by_album_track_id,
+)
+from music.services.recent import delete_recent_by_track_id
 from membership.services.channel import get_channel_by_id
 from core.db import get_session, get_db
 from datetime import datetime
@@ -229,6 +238,29 @@ def delete_track(track_id):
 
     if track is None:
         return None
+
+    try:
+        # Get all the files in the directory
+        files = os.listdir(f"media/tracks/{track_id}")
+        # Delete all the files
+        for file in files:
+            os.remove(f"media/tracks/{track_id}/{file}")
+        # Delete the directory
+        os.rmdir(f"media/tracks/{track_id}")
+    except Exception as e:
+        pass
+
+    # Delete the track and all the Playlist, Album, Rating associated with it.
+    playlists = get_track_playlists(track.id)
+    for playlist in playlists:
+        delete_playlist_item_by_playlist_track_id(playlist.playlist_id, track.id)
+
+    albums = get_track_albums(track.id)
+    for album in albums:
+        delete_album_item_by_album_track_id(album.album_id, track.id)
+
+    delete_track_ratings(track.id)
+    delete_recent_by_track_id(track.id)
 
     session.delete(track)
     session.commit()

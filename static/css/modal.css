@@ -22,6 +22,10 @@
   display: block;
 }
 
+#delete-track-modal:target {
+  display: block;
+}
+
 .modal__container {
   position: absolute;
   top: 50%;

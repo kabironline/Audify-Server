@@ -118,3 +118,14 @@ def delete_rating(track_id, user_id):
     session.delete(rating)
 
     session.commit()
+
+
+def delete_track_ratings(track_id):
+    session = get_session()
+
+    ratings = session.query(Rating).filter(Rating.track_id == track_id).all()
+
+    for rating in ratings:
+        session.delete(rating)
+
+    session.commit()

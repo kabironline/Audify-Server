@@ -25,6 +25,15 @@
                   Add to Playlist
                 </a>
               </li>
+              {% if current_user.channels|length > 0 %}
+              {% if track.channel_id == current_user.channels[0].id %}
+              <li class="dropdown-item">
+                <a href="?id={{track.id}}#delete-track-modal" class="dropdown-item--link">
+                  Delete Track
+                </a>
+              </li>
+              {% endif %}
+              {% endif %}
               <li class="dropdown-item">
                 <a href="?id={{track.id}}#report-modal" class="dropdown-item--link">
                   Report
