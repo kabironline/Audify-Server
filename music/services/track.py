@@ -16,6 +16,7 @@ from core.db import get_session, get_db
 from datetime import datetime
 from werkzeug.datastructures import FileStorage
 import os
+import mutagen.mp3
 
 db = get_db()
 
@@ -52,6 +53,11 @@ def create_track(
     """
 
     session = get_session()
+    duration = 0
+    if media is not None:
+        if not media.filename.endswith(".mp3") or media.filename == "":
+            raise Exception("Invalid media file")
+        duration = mutagen.mp3.MP3(media).info.length
 
     track = Track(
         name=name,
@@ -60,6 +66,7 @@ def create_track(
         channel_id=channel_id,
         genre_id=genre_id,
         created_by=channel_id,
+        duration=duration,
         last_modified_by=channel_id,
         created_at=datetime.now(),
         last_modified_at=datetime.now(),
@@ -99,13 +106,16 @@ def get_track_by_id(track_id, user_id=None, rating=False):
     return track
 
 
-def get_all_tracks():
+def get_all_tracks(channel=True):
     session = get_session()
-    tracks = (
-        session.query(Track, Channel.name.label("channel_name"))
-        .join(Channel, Track.channel_id == Channel.id)
-        .all()
-    )
+    if channel:
+        tracks = (
+            session.query(Track, Channel.name.label("channel_name"))
+            .join(Channel, Track.channel_id == Channel.id)
+            .all()
+        )
+    else:
+        tracks = session.query(Track).all()
     session.close()
 
     return tracks
@@ -213,6 +223,7 @@ def update_track(
     lyrics=None,
     genre=None,
     release_date=None,
+    duration=0,
     media: FileStorage = None,
     track_art: FileStorage = None,
 ):
@@ -229,9 +240,10 @@ def update_track(
         release_date if release_date is not None else track.release_date
     )
     track.genre_id = genre if genre is not None else track.genre_id
-
+    track.duration = duration if duration is not 0 else track.duration
     try:
         if media is not None:
+            track.duration = mutagen.mp3.MP3(media).info.length
             media.save(f"media/tracks/{track_id}/audio.mp3")
         if track_art is not None:
             track_art.save(f"media/tracks/{track_id}/track-art.png")
@@ -284,5 +296,5 @@ def delete_track(track_id):
     return track
 
 
-def search_tracks(keyword):
-    return TrackSearch.query.filter(TrackSearch.name.match(keyword)).all()
+def search_tracks(keyword, count=10):
+    return TrackSearch.query.filter(TrackSearch.name.match(keyword)).limit(count).all()

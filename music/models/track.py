@@ -9,6 +9,7 @@ class Track(db.Model):
     name = db.Column(db.String, nullable=False)
     lyrics = db.Column(db.String, nullable=True)
     release_date = db.Column(db.DateTime, nullable=False)
+    duration = db.Column(db.Integer, nullable=True, default=0)
     flag_id = db.Column(db.Integer, ForeignKey("Flag.id"), nullable=True)
     genre_id = db.Column(db.Integer, ForeignKey("Genre.id"), nullable=True)
     channel_id = db.Column(db.Integer, ForeignKey("Channel.id"), nullable=True)

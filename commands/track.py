@@ -3,6 +3,7 @@ from flask.cli import with_appcontext
 import music.services as music_services
 from membership.services import channel as channel_services
 import os
+import mutagen.mp3
 
 
 @click.command(name="update_genre_list")
@@ -120,3 +121,11 @@ def generate_random_views():
                     track=track[0],
                     user_id=user_id,
                 )
+
+
+@click.command(name="update_track_duration")
+def update_track_duration():
+    for track in music_services.get_all_tracks(False):
+        audio = mutagen.mp3.MP3(f"media/tracks/{track.id}/audio.mp3")
+        duration = int(audio.info.length)
+        music_services.update_track(track.id, duration=duration)
