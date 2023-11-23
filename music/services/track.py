@@ -9,6 +9,7 @@ from music.services.album import (
     get_track_albums,
     delete_album_item_by_album_track_id,
 )
+from music.services.comment import delete_all_comments_by_track_id
 from music.services.recent import delete_recent_by_track_id
 from membership.services.channel import get_channel_by_id
 from core.db import get_session, get_db
@@ -20,7 +21,13 @@ db = get_db()
 
 
 def create_track(
-    name, lyrics, release_date, media: FileStorage, track_art: FileStorage, channel_id
+    name,
+    lyrics,
+    release_date: datetime,
+    media: FileStorage,
+    track_art: FileStorage,
+    channel_id,
+    genre_id=10,
 ):
     """
     Creates a track with the given name, lyrics, release_date
@@ -51,6 +58,7 @@ def create_track(
         lyrics=lyrics,
         release_date=release_date,
         channel_id=channel_id,
+        genre_id=genre_id,
         created_by=channel_id,
         last_modified_by=channel_id,
         created_at=datetime.now(),
@@ -266,6 +274,8 @@ def delete_track(track_id):
 
     delete_track_ratings(track.id)
     delete_recent_by_track_id(track.id)
+
+    delete_all_comments_by_track_id(track.id)
 
     session.delete(track)
     session.commit()

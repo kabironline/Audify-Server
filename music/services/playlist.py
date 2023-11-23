@@ -1,4 +1,5 @@
-from music.models import Playlist, PlaylistItem, Track
+from music.models import Playlist, PlaylistItem, Track, PlaylistSearch
+from membership.models import User
 from membership.services import get_user_by_username, get_user_by_id, get_user_dict
 from core.db import get_session
 from core import get_current_user
@@ -66,6 +67,20 @@ def get_playlist_by_user(user_id):
     return playlist
 
 
+def get_all_playlists():
+    session = get_session()
+
+    playlists = (
+        session.query(Playlist, User.nickname)
+        .join(User, Playlist.created_by == User.id)
+        .all()
+    )
+
+    session.close()
+
+    return playlists
+
+
 def update_playlist(playlist_id, name="", description=""):
     session = get_session()
 
@@ -118,6 +133,10 @@ def get_playlist_dict(playlist):
     }
 
     return playlist_dict
+
+
+def search_playlists(search_term):
+    return PlaylistSearch.query.filter(PlaylistSearch.name.match(search_term)).all()
 
 
 # -----------------------------Playlist Items-----------------------------------

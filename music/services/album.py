@@ -1,4 +1,5 @@
-from music.models import Album, AlbumItem, Track
+from music.models import Album, AlbumItem, Track, AlbumSearch
+from membership.models import Channel
 from membership.services import get_user_by_username, get_user_by_id, get_user_dict
 from core.db import get_session
 from core import get_current_user
@@ -85,6 +86,20 @@ def get_latest_albums(limit=5):
     return albums
 
 
+def get_all_albums():
+    session = get_session()
+
+    albums = (
+        session.query(Album, Channel.name.label("channel_name"))
+        .join(Channel, Channel.id == Album.created_by)
+        .all()
+    )
+
+    session.close()
+
+    return albums
+
+
 def update_album(
     album_id,
     name="",
@@ -165,6 +180,10 @@ def get_album_dict(album):
     }
 
     return album_dict
+
+
+def search_albums(search_term):
+    return AlbumSearch.query.filter(AlbumSearch.name.match(search_term)).all()
 
 
 # -----------------------------Album Items-----------------------------------

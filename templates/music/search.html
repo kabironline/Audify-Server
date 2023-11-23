@@ -17,12 +17,26 @@
   {% include "widgets/creator_tiles.html" %}
   {% endwith %}
   {% endif %}
+  {% if search_results_playlists|length > 0 %}
+  <h2 class="heading-2">Similar Playlists</h2>
+  {% with playlists=search_results_playlists %}
+  {% include "widgets/playlist_tile.html" %}
+  {% endwith %}
+  {% endif %}
+  {% if search_results_albums|length > 0 %}
+  <h2 class="heading-2">Similar Albums</h2>
+  {% with albums=search_results_albums %}
+  {% include "widgets/album_carousel.html" %}
+  {% endwith %}
+  {% endif %}
   <div class="error-container">
-    {% if search_results_tracks|length == 0 %}
-    <h2 class="heading">No Tracks Found</h2>
-    {% endif %}
-    {% if search_results_channels|length == 0 %}
-    <h2 class="heading">No Channels Found</h2>
+    {% if search_results_tracks|length == 0 and search_results_channels|length == 0 and search_results_playlists|length
+    == 0 and search_results_albums|length == 0 %}
+    <h2 class="heading-2">No results found</h2>
+    <br>
+    <p class="error-message">Try adjusting your search or browse for some of our trending content.</p>
+    <br>
+    <a href="{{ url_for('explore') }}" class="btn btn--white">Explore</a>
     {% endif %}
   </div>
 </section>

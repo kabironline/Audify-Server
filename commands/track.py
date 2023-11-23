@@ -105,3 +105,18 @@ def generate_random_likes():
                 track_id=tracks.id,
                 rating=rating,
             )
+
+
+@click.command(name="generate_random_views")
+def generate_random_views():
+    user_ids = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+    import random
+
+    for track in music_services.get_all_tracks():
+        for user_id in user_ids:
+            view = random.random()
+            if view < 0.6:
+                music_services.create_new_view(
+                    track=track[0],
+                    user_id=user_id,
+                )
