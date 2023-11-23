@@ -34,10 +34,8 @@
   <h2 class="heading-2 mb-medium">
     Latest Playlists
   </h2>
-  <div class="playlist-container">
     {% with playlists=latest_playlists %}
     {% include "widgets/playlist_tile.html" %}
     {% endwith %}
-  </div>
 </section>
 {% endblock %}

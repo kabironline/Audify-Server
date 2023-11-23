@@ -6,8 +6,11 @@ import core
 
 def dashboard(user_id=None):
     user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
 
     user_id = user.id if user_id is None else user_id
+    user = get_user_by_id(user_id) if user_id is not user.id else user
 
     recent_tracks = music.services.get_recent_by_user_id(user_id)
 
@@ -21,23 +24,16 @@ def dashboard(user_id=None):
         if rating is not None:
             recent_tracks[i].rating = rating.rating
 
-    if user is None:
-        return redirect(url_for("login"))
-    if user_id is None or user_id == user.id:
-        return render_template(
-            "membership/dashboard.html",
-            user=user,
-            recent_tracks=recent_tracks,
-            own_profile=True,
-        )
-    else:
-        user = get_user_by_id(user_id)
+    playlists = music.services.get_playlist_by_user(user_id)
+    for playlist in playlists:
+        playlist.created_by = user
 
         return render_template(
             "membership/dashboard.html",
             user=user,
             own_profile=False,
             recent_tracks=recent_tracks,
+            playlists=playlists,
         )
 
 

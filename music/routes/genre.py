@@ -13,4 +13,4 @@ def genre_tracks(genre_id):
     for track in tracks:
         track.channel = membership.services.get_channel_by_id(track.channel_id)
 
-    return render_template("music/genre_tracks.html", genre=genre, genre_tracks=tracks)
+    return render_template("music/all_tracks.html", title=genre.name, all_tracks=tracks)

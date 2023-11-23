@@ -51,7 +51,7 @@
 
 .playlist-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(25rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 23.9%));
   row-gap: 2rem;
   column-gap: 2rem;
 }

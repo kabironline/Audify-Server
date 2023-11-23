@@ -8,5 +8,8 @@
   {% with tracks=all_tracks %}
   {% include 'widgets/track_carousel.html' %}
   {% endwith %}
+  {% if all_tracks | length == 0 %}
+  <p class="no-tracks">No tracks found</p>
+  {% endif %}
 </section>
 {% endblock %}

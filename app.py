@@ -284,17 +284,17 @@ app.add_url_rule(
     admin.routes.admin_dashboard,
 )
 
-app.add_url_rule(
-    "/admin/dashboard/genre-graph",
-    "genre_distribution_graph",
-    admin.routes.genre_distribution_graph,
-)
+# app.add_url_rule(
+#     "/admin/dashboard/genre-graph",
+#     "genre_distribution_graph",
+#     admin.routes.genre_distribution_graph,
+# )
 
-app.add_url_rule(
-    "/admin/dashboard/user-channel-graph",
-    "user_channel_distribution_graph",
-    admin.routes.user_channel_distribution_graph,
-)
+# app.add_url_rule(
+#     "/admin/dashboard/user-channel-graph",
+#     "user_channel_distribution_graph",
+#     admin.routes.user_channel_distribution_graph,
+# )
 
 
 @app.context_processor
