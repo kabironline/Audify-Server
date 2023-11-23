@@ -75,7 +75,7 @@
 
 .track-item__link {
   display: grid;
-  grid-template-columns: 3rem 2fr 1fr 1fr;
+  grid-template-columns: 3rem 2fr max-content;
   grid-gap: 2.5rem;
   align-items: center;
   height: 5rem;

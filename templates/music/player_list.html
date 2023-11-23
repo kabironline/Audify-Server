@@ -43,7 +43,7 @@
         </div>
         <div class="player__time">
           <span class="player__time--current">0:00</span>
-          <span class="player__time--remaining">0:00</span>
+          <span class="player__time--remaining">-{{ track.duration | format_duration }}</span>
         </div>
         <audio src="{{ url_for('track_media', track_id = track.id) }}" class="player__audio" autoplay></audio>
         <input type="range" min="0" max="100" value="0" class="player__progress-bar">

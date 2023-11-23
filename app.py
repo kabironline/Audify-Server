@@ -5,6 +5,7 @@ from flask_cors import CORS
 import os
 import core
 
+from core.utils import *
 from commands.db import *
 from commands.track import *
 from core.db import db
@@ -81,6 +82,7 @@ app.cli.add_command(update_genre_list)
 app.cli.add_command(generate_random_likes)
 app.cli.add_command(generate_random_views)
 app.cli.add_command(update_channelname)
+app.cli.add_command(update_track_duration)
 
 
 @app.route("/")
@@ -299,6 +301,8 @@ app.add_url_rule(
 def inject_user():
     return dict(current_user=core.get_current_user())
 
+
+app.jinja_env.filters["format_duration"] = format_duration
 
 app.add_url_rule(
     "/media/<path:filename>",

@@ -3,15 +3,15 @@
   {% set track = tracks[n] %}
   <li class="track-item {%if n == position%} track-selected {% endif %}">
     <a href="/player/{{type}}/{{id}}/{{n}}" class="track-item__link track-item__link-player">
-        <div class="track-item__cover">
-          <img loading="lazy" p src="{{ url_for('track_cover', track_id=track.id)}}" alt=""
-            class="track-item__cover--img">
-          <i class="fas fa-play track-item__cover--playbutton"></i>
-        </div>
-        <span class="track-item__title">{{ track.name}}</span>
-        <span class="track-item__artist">{{ track.channel.name}}</span>
-      </a>
-      <p class="track-item__timer">1:23</p>
+      <div class="track-item__cover">
+        <img loading="lazy" p src="{{ url_for('track_cover', track_id=track.id)}}" alt=""
+          class="track-item__cover--img">
+        <i class="fas fa-play track-item__cover--playbutton"></i>
+      </div>
+      <span class="track-item__title">{{ track.name}}</span>
+      <span class="track-item__artist">{{ track.channel.name}}</span>
+    </a>
+    <p class="track-item__timer"> {{ track.duration | format_duration }}</p>
   </li>
   {% endfor %}
 </ul>
