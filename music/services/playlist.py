@@ -44,6 +44,18 @@ def get_playlist_by_name(playlist_name):
     pass
 
 
+def get_latest_playlist(limit=5):
+    session = get_session()
+
+    playlist = (
+        session.query(Playlist).order_by(Playlist.created_at.desc()).limit(limit).all()
+    )
+
+    session.close()
+
+    return playlist
+
+
 def get_playlist_by_user(user_id):
     session = get_session()
 

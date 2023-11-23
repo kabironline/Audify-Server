@@ -32,20 +32,12 @@
 {% endif %}
 <section class="section sections-latest">
   <h2 class="heading-2 mb-medium">
-    Top Playlists
+    Latest Playlists
   </h2>
   <div class="playlist-container">
-    {% for n in range (5)%}
-    <div class="playlist__item">
-      <a href="/" class=" playlist__link">
-        <div class="playlist__details">
-          <p class="playlist__heading">Playlist Name</p>
-          <p class="playlist__subheading">Playlist Author</p>
-        </div>
-        <i class="fas fa-circle-play playlist__playbutton"></i>
-      </a>
-    </div>
-    {% endfor %}
+    {% with playlists=latest_playlists %}
+    {% include "widgets/playlist_tile.html" %}
+    {% endwith %}
   </div>
 </section>
 {% endblock %}

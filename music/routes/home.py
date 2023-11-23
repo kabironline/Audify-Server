@@ -19,14 +19,11 @@ def home():
     # Join the track table with the channel table
     # to get the artist name
 
-    session = core.get_session()
-
     for recent in recents:
         track = music.services.get_track_by_id(recent.track_id)
         track.channel = membership.services.get_channel_by_id(track.channel_id)
         recently_played_tracks.append(track)
 
-    session.close()
     latest_tracks = music.services.get_latest_tracks(5)
     for track in latest_tracks:
         track.channel = membership.services.get_channel_by_id(track.channel_id)
@@ -38,10 +35,15 @@ def home():
     for album in latest_albums:
         album.channel = membership.services.get_channel_by_id(album.created_by)
 
+    latest_playlists = music.services.get_latest_playlist(5)
+    for playlist in latest_playlists:
+        playlist.created_by = membership.services.get_user_by_id(playlist.created_by)
+
     return render_template(
         "music/home.html",
         recently_played=recently_played_tracks,
         carousel_title=carousel_title,
         latest_tracks=latest_tracks,
         latest_albums=latest_albums,
+        latest_playlists=latest_playlists,
     )

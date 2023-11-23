@@ -6,7 +6,7 @@
 {% set id = album_id %}
 {% endif %} {% endif %}
 {% extends "base.html" %}
-{% block title %}Player {% endblock %}
+{% block title %}{{track.name}}{% endblock %}
 {% block m_head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
 {% endblock %}
@@ -22,9 +22,7 @@
           ),url({{ url_for('track_cover', track_id = track.id) }}) center center / cover no-repeat;" alt=""
         class="player__cover--img-blur"> </div>
       <div class="player__cover--desc">
-        <marquee>
-          <h3 class="heading-3 player__cover--title">{{track.name}}</h3>
-        </marquee>
+        <h1 class="heading-3 player__cover--title">{{track.name}}</h1>
         <div class="player__cover--details">
           <a href="/" class="player__cover--artist">
             {{track.channel.name}}
@@ -86,7 +84,7 @@
       <input type="radio" name="player-tabs" id="comments" class="player-tab--radio" checked="{{not track.lyrics}}">
       <label for="comments" class="player-tab--label comment-label">Comments</label>
       <input type="radio" name="player-tabs" id="playlist" class="player-tab--radio" checked="{{not track.lyrics}}">
-      <label for="playlist" class="player-tab--label">Playlist</label>
+      <label for="playlist" class="player-tab--label">{{ type | title }}</label>
     </div>
     <div class="player__view">
       {% if track.lyrics %}
@@ -243,7 +241,8 @@
     }
 
     const responseData = await response.json();
-    const likePercentage = responseData.rating.toFixed(2) * 100;
+    const likePercentage = Math.round(responseData.rating * 100);
+    console.log(likePercentage);
     document.querySelector('.rating__bar').style.width = `${likePercentage}%`;
     document.querySelector('.player__rating--text').innerHTML = `${likePercentage}%`;
   }
@@ -307,7 +306,7 @@
         comments.forEach(comment => {
 
           let user = null;
-          const userRequest = fetch(`http://192.168.1.69:5000/api/v1/user/${comment.user_id}`, {
+          const userRequest = fetch(`http://127.0.0.1:5000/api/v1/user/${comment.user_id}`, {
             method: 'GET',
           }).then(response => response.json())
             .then(data => {

@@ -1,3 +1,4 @@
+from membership.models import Channel
 from music.models import Track, Rating, TrackSearch
 from music.services.rating import *
 from music.services.playlist import (
@@ -92,7 +93,11 @@ def get_track_by_id(track_id, user_id=None, rating=False):
 
 def get_all_tracks():
     session = get_session()
-    tracks = session.query(Track).all()
+    tracks = (
+        session.query(Track, Channel.name.label("channel_name"))
+        .join(Channel, Track.channel_id == Channel.id)
+        .all()
+    )
     session.close()
 
     return tracks

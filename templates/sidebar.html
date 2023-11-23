@@ -53,16 +53,9 @@
   <hr class="sidebar__hr">
   <h3 class="heading-3 mb-medium">Your Playlists</h3>
   <ul class="side-nav">
-    {% for playlist in current_user.playlists %}
-    <li class="sidebar__item playlist__item">
-      <a href="/playlist/{{playlist.id}}" class="sidebar__link playlist__link">
-        <div class="playlist__details">
-          <p class="playlist__heading">{{playlist.name}}</p>
-          <p class="playlist__subheading">{{playlist.created_by.nickname}}</p>
-        </div>
-      </a>
-    </li>
-    {% endfor %}
+    {% with playlists = current_user.playlists %}
+    {% include 'widgets/playlist_tile.html' %}
+    {% endwith %}
   </ul>
   <a href="#playlist-modal" class="btn">
     &plus; Create Playlist

@@ -8,6 +8,13 @@ def search():
     # get the q parameter from the url
     q = request.args.get("q")
 
+    user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
+
+    if q == "":
+        return redirect(url_for(request.referrer.split("/")[3][4:]))
+
     track_search = music.services.track.search_tracks(q)
     track_results = []
     for track in track_search:
@@ -23,5 +30,5 @@ def search():
         "music/search.html",
         search_results_tracks=track_results,
         search_results_channels=channel_search,
-        # q=q,
+        q=q,
     )

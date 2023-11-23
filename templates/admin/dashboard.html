@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+{% block content %}
+<section id="admin-dashboard">
+  <div class="admin-dashboard__container">
+    <div class="admin-dashboard__header">
+      <h1 class="heading-1">Admin Dashboard</h1>
+    </div>
+    <div class="admin-dashboard__content">
+      <div class="admin-dashboard__content--item">
+        <div class="admin-dashboard__content--item-header">
+          <h2 class="heading-2">Users</h2>
+          <a href="/admin/users" class="btn btn--primary">View All</a>
+        </div>
+        <div class="admin-dashboard__content--item-content">
+          <p class="admin-dashboard__content--item-text">{{ users|length }}</p>
+        </div>
+      </div>
+      <div class="admin-dashboard__content--item">
+        <div class="admin-dashboard__content--item-header">
+          <h2 class="heading-2">Channels</h2>
+          <a href="/admin/channels" class="btn btn--primary">View All</a>
+        </div>
+        <div class="admin-dashboard__content--item-content">
+          <p class="admin-dashboard__content--item-text">{{ channels|length }}</p>
+        </div>
+      </div>
+      <div class="admin-dashboard__content--item">
+        <div class="admin-dashboard__content--item-header">
+          <h2 class="heading-2">Tracks</h2>
+          <a href="/admin/tracks" class="btn btn--primary">View All</a>
+        </div>
+        <div class="admin-dashboard__content--item-content">
+          <p class="admin-dashboard__content--item-text">{{ tracks|length }}</p>
+        </div>
+      </div>
+      <div class="admin-dashboard__content--item">
+        <div class="admin-dashboard__content--item-header">
+          <h2 class="heading-2">Playlists</h2>
+          <a href="/admin/playlists" class="btn btn--primary">View All</a>
+        </div>
+        <div class="admin-dashboard__content--item-content">
+          <p class="admin-dashboard__content--item-text">{{ playlists|length }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

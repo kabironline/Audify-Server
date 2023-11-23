@@ -2,7 +2,6 @@ from flask import render_template, redirect, url_for, send_file, request
 from music.services import *
 from membership.services import get_user_by_id, get_channel_by_id
 import core
-import music.services
 
 
 def player(track_id):
@@ -17,7 +16,7 @@ def player(track_id):
         comment.user = get_user_by_id(comment.user_id)
 
     user = core.get_current_user()
-    user_rating = music.services.get_rating_by_user_and_track_id(user.id, track_id)
+    user_rating = get_rating_by_user_and_track_id(user.id, track_id)
 
     if user_rating is not None:
         user_rating = user_rating.rating
@@ -32,7 +31,7 @@ def player(track_id):
         artist=artist,
         comments=comments,
         current_user=user,
-        average_rating=music.services.get_track_rating(track_id),
+        average_rating=get_track_rating(track_id),
     )
 
 
@@ -112,12 +111,18 @@ def player_list(album_id=None, playlist_id=None, position=0):
             track.channel = get_channel_by_id(track.created_by)
             list.append(track)
 
+        if list == []:
+            return redirect(url_for("album_page", album_id=album_id))
+
     elif playlist_id is not None:
         items = get_playlist_items_by_playlist_id(playlist_id)
         for item in items:
             track = get_track_by_id(item.track_id)
             track.channel = get_channel_by_id(track.created_by)
             list.append(track)
+
+        if list == []:
+            return redirect(url_for("playlist_page", playlist_id=playlist_id))
 
     return render_template(
         "music/player_list.html",

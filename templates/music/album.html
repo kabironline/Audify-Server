@@ -26,7 +26,7 @@
 
     <div class="playlist-header__buttons">
       {% if album.items|length > 1 %}
-      <a href="/" class="btn btn--white"><i class="fas fa-play"></i>Play</a>
+      <a href="/player/album/{{album.id}}" class="btn btn--white"><i class="fas fa-play"></i>Play</a>
       {% endif %}
       {% if album.author.id == current_user.channels[0]['id'] %}
       <a href="/album/{{album.id}}/edit" class="btn "><i class="fas fa-pencil"></i>Edit Album</a>

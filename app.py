@@ -14,7 +14,7 @@ import membership.api
 import music.routes
 import music.api
 import music.models
-
+import admin.routes
 
 app = Flask(__name__)
 app.secret_key = "secret_key"
@@ -268,6 +268,12 @@ app.add_url_rule(
     "/album/cover/<int:album_id>",
     "album_cover",
     music.routes.album_cover,
+)
+
+app.add_url_rule(
+    "/admin/dashboard",
+    "admin_dashboard",
+    admin.routes.admin_dashboard,
 )
 
 
