@@ -11,7 +11,12 @@
       <label for="title" class="form__label">Track Name</label>
     </div>
     <div class="form__group">
-      <input type="text" minlength="2 name=" genre" id="genre" placeholder="Genre" class="form__input" required>
+      <select aria-required="true" name="genre" id="genre" class="form__input" required>
+        <option value="" disabled selected>Genre</option>
+        {% for genre in genres %}
+        <option value="{{genre.id}}">{{genre.name}}</option>
+        {% endfor %}
+      </select>
       <label for="genre" aria-autocomplete="list" class="form__label">Genre</label>
     </div>
     <div class="form__group">

@@ -15,9 +15,7 @@
           ),url({{ url_for('track_cover', track_id = track.id) }}) center center / cover no-repeat;" alt=""
         class="player__cover--img-blur"> </div>
       <div class="player__cover--desc">
-        <marquee>
-          <h3 class="heading-3 player__cover--title">{{track.name}}</h3>
-        </marquee>
+        <h3 class="heading-3 player__cover--title">{{track.name}}</h3>
         <div class="player__cover--details">
           <a href="/" class="player__cover--artist">
             {{artist.name}}

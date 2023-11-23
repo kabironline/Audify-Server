@@ -25,6 +25,9 @@ def player(track_id):
 
     create_recent(user.id, track_id)
 
+    create_new_view(track, user.id)
+    track.views = get_views_by_track_id(track_id)
+
     return render_template(
         "music/player.html",
         track=track,
@@ -119,6 +122,7 @@ def player_list(album_id=None, playlist_id=None, position=0):
         for item in items:
             track = get_track_by_id(item.track_id)
             track.channel = get_channel_by_id(track.created_by)
+            track.views = get_views_by_track_id(track.id)
             list.append(track)
 
         if list == []:

@@ -1,17 +1,12 @@
 from datetime import datetime
 from flask import render_template, redirect, url_for, request
 import core
-from music.services import (
-    create_track,
-    get_tracks_by_channel,
-    create_album,
-    get_album_by_name,
-    create_album_item,
-)
+from music.services import create_track, get_all_genres
 
 
 def upload():
-    if core.get_current_user() is None:
+    user = core.get_current_user()
+    if user is None:
         return redirect(url_for("login"))
     if request.method == "POST":
         title = request.form.get("title")
@@ -21,14 +16,20 @@ def upload():
         cover_art = request.files.get("cover")
         audio_file = request.files.get("track")
 
+        release_date = datetime.strptime(release_date, "%Y-%m-%d")
+
         create_track(
             name=title,
             lyrics=lyrics,
             release_date=release_date,
             media=audio_file,
             track_art=cover_art,
-            user_id=core.get_current_user().id,
+            channel_id=user.channels[0]["id"],
+            genre_id=genre,
         )
 
         return redirect(url_for("home"))
-    return render_template("music/upload.html")
+
+    genres = get_all_genres()
+
+    return render_template("music/upload.html", genres=genres)

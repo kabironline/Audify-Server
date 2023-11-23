@@ -26,7 +26,8 @@
         <div class="player__cover--details">
           <a href="/" class="player__cover--artist">
             {{track.channel.name}}
-          </a> &VeryThinSpace; &middot; {{track.release_date.strftime('%Y-%m-%d')}}
+          </a> &VeryThinSpace; &middot; {{track.release_date.strftime('%Y-%m-%d')}} &middot;
+          {{track.views}} Views
           <div class="rating-container">
             <button class="player__rating--btn player__like--btn"> <i
                 class="{% if track.user_rating == 1%}fas {% else %}far {%endif%}fa-thumbs-up"></i></button>
