@@ -94,3 +94,36 @@ def track_delete():
             delete_track(id)
             return redirect(route)
     return render_template("music/track_delete.html")
+
+
+def player_list(album_id=None, playlist_id=None, position=0):
+    user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
+
+    if album_id is None and playlist_id is None:
+        return redirect(url_for("home"))
+
+    list = []
+    if album_id is not None:
+        items = get_album_items_by_album_id(album_id)
+        for item in items:
+            track = get_track_by_id(item.track_id)
+            track.channel = get_channel_by_id(track.created_by)
+            list.append(track)
+
+    elif playlist_id is not None:
+        items = get_playlist_items_by_playlist_id(playlist_id)
+        for item in items:
+            track = get_track_by_id(item.track_id)
+            track.channel = get_channel_by_id(track.created_by)
+            list.append(track)
+
+    return render_template(
+        "music/player_list.html",
+        list=list,
+        track=list[position],
+        position=position,
+        album_id=album_id,
+        playlist_id=playlist_id,
+    )

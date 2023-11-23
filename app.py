@@ -106,7 +106,7 @@ app.add_url_rule(
 app.add_url_rule("/search", "search", music.routes.search)
 
 app.add_url_rule("/upload", "upload", music.routes.upload, methods=["GET", "POST"])
-app.add_url_rule("/playlist", "playlist", music.routes.playlist, methods=["POST"])
+app.add_url_rule("/playlist", "playlist", music.routes.playlist_page, methods=["POST"])
 app.add_url_rule(
     "/playlist/<int:playlist_id>",
     "playlist_page",
@@ -169,6 +169,26 @@ app.add_url_rule(
 
 # Players and Tracks
 app.add_url_rule("/player/<int:track_id>", "player", music.routes.player)
+app.add_url_rule(
+    "/player/album/<int:album_id>",
+    "album_player",
+    music.routes.player_list,
+)
+app.add_url_rule(
+    "/player/album/<int:album_id>/<int:position>",
+    "album_player_pos",
+    music.routes.player_list,
+)
+app.add_url_rule(
+    "/player/playlist/<int:playlist_id>",
+    "playlist_player",
+    music.routes.player_list,
+)
+app.add_url_rule(
+    "/player/playlist/<int:playlist_id>/<int:position>",
+    "playlist_player_pos",
+    music.routes.player_list,
+)
 app.add_url_rule("/tracks/<int:track_id>", "track", music.routes.track)
 app.add_url_rule(
     "/tracks/<int:track_id>/cover", "track_cover", music.routes.track_cover

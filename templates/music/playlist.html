@@ -21,7 +21,7 @@
 
     <div class="playlist-header__buttons">
       {% if playlist.items|length > 1 %}
-      <a href="/" class="btn btn--white"><i class="fas fa-shuffle"></i>Shuffle Play</a>
+      <a href="/player/playlist/{{playlist.id}}" class="btn btn--white"><i class="fas fa-play"></i>Play</a>
       {% endif %}
       {% if playlist.author.id == current_user.id %}
       <a href="#playlist-edit-modal" class="btn "><i class="fas fa-pencil"></i>Edit Playlist</a>

@@ -84,10 +84,26 @@
   font-size: 1.8rem;
 }
 
+.track-item__link-player {
+  display: grid;
+  grid-template-columns: 3rem 100fr max-content;
+  grid-gap: 1rem;
+}
+
+.track-item-selected {
+  background-color: var(--color-hover);
+}
+
 .track-item__cover {
   width: 3rem;
   height: 3rem;
   position: relative;
+}
+
+.track-item__cover-player {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 
 .track-item__cover--playbutton {
@@ -99,6 +115,10 @@
   opacity: 0;
 }
 
+.track-selected {
+  background-color: var(--color-hover);
+}
+
 .track-item__cover--img {
   width: 3rem;
   height: 3rem;
@@ -106,8 +126,6 @@
 }
 
 .track-item__title {
-  font-weight: bold;
-  font-weight: bold;
   text-wrap: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

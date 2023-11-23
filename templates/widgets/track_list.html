@@ -3,7 +3,8 @@
   <li class="track-item">
     <a href="{{ url_for('player', track_id=track.id)}}" class="track-item__link">
       <div class="track-item__cover">
-        <img loading="lazy" p src="{{ url_for('track_cover', track_id=track.id)}}" alt="" class="track-item__cover--img">
+        <img loading="lazy" p src="{{ url_for('track_cover', track_id=track.id)}}" alt=""
+          class="track-item__cover--img">
         <i class="fas fa-play track-item__cover--playbutton"></i>
       </div>
       <span class="track-item__title">{{ track.name}}</span>

@@ -1,0 +1,477 @@
+{% if playlist_id != None %}
+{% set type = 'playlist' %}
+{% set id = playlist_id %}
+{% else %} {% if album_id != None %}
+{% set type = 'album' %}
+{% set id = album_id %}
+{% endif %} {% endif %}
+{% extends "base.html" %}
+{% block title %}Player {% endblock %}
+{% block m_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/player.css') }}">
+{% endblock %}
+{% block m_content %}
+<section class="section section-player">
+  <div class="player__cover--container">
+    <div class="player__cover">
+      <img src="{{ url_for('track_cover', track_id = track.id) }}" alt="" class="player__cover--img">
+      <div style="background: radial-gradient(
+            ellipse at center,
+            transparent 20%,
+            black 100%
+          ),url({{ url_for('track_cover', track_id = track.id) }}) center center / cover no-repeat;" alt=""
+        class="player__cover--img-blur"> </div>
+      <div class="player__cover--desc">
+        <marquee>
+          <h3 class="heading-3 player__cover--title">{{track.name}}</h3>
+        </marquee>
+        <div class="player__cover--details">
+          <a href="/" class="player__cover--artist">
+            {{track.channel.name}}
+          </a> &VeryThinSpace; &middot; {{track.release_date.strftime('%Y-%m-%d')}}
+          <div class="rating-container">
+            <button class="player__rating--btn player__like--btn"> <i
+                class="{% if track.user_rating == 1%}fas {% else %}far {%endif%}fa-thumbs-up"></i></button>
+            <button class="player__rating--btn player__dislike--btn"><i
+                class="{% if track.user_rating == 0%}fas {% else %}far {%endif%}fa-thumbs-down"></i></button>
+            <div class="rating">
+              <div class="rating__bar" style="width: {{track.average_rating}}%"></div>
+            </div>
+            <div class="player__rating--text">
+
+            </div>
+          </div>
+        </div>
+        <div class="player__time">
+          <span class="player__time--current">0:00</span>
+          <span class="player__time--remaining">0:00</span>
+        </div>
+        <audio src="{{ url_for('track_media', track_id = track.id) }}" class="player__audio" autoplay></audio>
+        <input type="range" min="0" max="100" value="0" class="player__progress-bar">
+        <div class="player__controls">
+          {% if position == 0 %}
+          <a href="/" class="player__controls--btn player__controls--btn-side" style="pointer-events: none; cursor: default;
+                      color:var(--text-placeholder-color)">
+            <i class="fas fa-backward-step"></i>
+          </a>
+          {% else %}
+          <a href="/player/{{type}}/{{id}}/{{position-1}}" class="player__controls--btn player__controls--btn-side">
+            <i class="fas fa-backward-step"></i>
+          </a>
+          {% endif %}
+          <button class="player__controls--btn play-pause">
+            <i class="fas fa-circle-play" id="player__controls--btn-ico" aria-hidden="true"></i>
+          </button>
+          {% if position == list|length-1 %}
+          <a href="/" class="player__controls--btn player__controls--btn-side" style="pointer-events: none; cursor: default;
+            color:var(--text-placeholder-color)">
+            <i class="fas fa-forward-step"></i>
+          </a>
+          {% else %}
+          <a href="/player/{{type}}/{{id}}/{{position+1}}" class="player__controls--btn player__controls--btn-side">
+            <i class="fas fa-forward-step"></i>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="vl"></div>
+  <div class="player__info">
+    <div class="player-tab--container">
+      {% if track.lyrics %}
+      <input type="radio" name="player-tabs" id="lyrics" class="player-tab--radio" checked="{{track.lyrics}}">
+      <label for="lyrics" class="player-tab--label">Lyrics</label>
+      {% endif %}
+      <input type="radio" name="player-tabs" id="comments" class="player-tab--radio" checked="{{not track.lyrics}}">
+      <label for="comments" class="player-tab--label comment-label">Comments</label>
+      <input type="radio" name="player-tabs" id="playlist" class="player-tab--radio" checked="{{not track.lyrics}}">
+      <label for="playlist" class="player-tab--label">Playlist</label>
+    </div>
+    <div class="player__view">
+      {% if track.lyrics %}
+      <div class="player__view--lyrics">
+        <p class="player__view--lyrics--text">
+          {{track.lyrics}}
+        </p>
+      </div>
+      {% endif %}
+      <div class="player__view--playlist">
+        {% with tracks = list , playlist_id=playlist_id, album_id=album_id, position=position, type=type, id=id%}
+        {% include 'widgets/track_list_player.html'%}
+        {% endwith %}
+      </div>
+      <div class="player__view--comments-container">
+        <div class="comments">
+          <!-- Comment Section -->
+        </div>
+        <form class="comment-box-container" onsubmit="sendComment()">
+          <div class="comment-box">
+            <input minlength="1" required type="text" autocomplete="off" name="comment" placeholder="Enter comment"
+              class="comment-box--bar">
+            <button type="submit" value="comment" class="comment-box--btn"><i class="fas fa-paper-plane"
+                aria-hidden="true"></i></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{% endblock %}
+{% block scripts %}
+<script>
+  let lyricsTab = document.querySelector('.player__view--lyrics');
+  let commentsTab = document.querySelector('.player__view--comments-container');
+  let playlistTab = document.querySelector('.player__view--playlist');
+  let lyricsRadio = document.querySelector('#lyrics');
+  let commentsRadio = document.querySelector('#comments');
+  let playlistRadio = document.querySelector('#playlist');
+  let playPause = document.querySelector('.play-pause');
+  let audio = document.querySelector('.player__audio');
+  let progressBar = document.querySelector('.player__progress-bar');
+  let current = document.querySelector('.player__time--current');
+  let remaining = document.querySelector('.player__time--remaining');
+  let likeButton = document.querySelector('.player__like--btn');
+  let dislikeButton = document.querySelector('.player__dislike--btn');
+  let commentLabel = document.querySelector('.comment-label');
+
+  let initalized = false;
+  if (!initalized) {
+    updateLikePercentage();
+    playTrack();
+    if (lyricsRadio != null) {
+      toggleLyrics(true);
+      toggleComments(false);
+      togglePlaylist(false);
+    } else {
+      toggleComments(false);
+      toggleLyrics(false);
+      togglePlaylist(true);
+    }
+    updateCommentSection();
+  }
+
+  function toggleLyrics(on = false) {
+    if (lyricsTab != null) {
+      if (on) {
+        lyricsTab.style.display = 'block';
+        lyricsRadio.checked = true;
+      } else {
+        lyricsTab.style.display = 'none';
+        lyricsRadio.checked = false;
+      }
+    }
+  }
+
+  function toggleComments(on = false) {
+    if (commentsTab != null) {
+      if (on) {
+        commentsTab.style.display = 'flex';
+        commentsRadio.checked = true;
+      } else {
+        commentsTab.style.display = 'none';
+        commentsRadio.checked = false;
+      }
+    }
+  }
+
+  function togglePlaylist(on = false) {
+    if (playlistTab != null) {
+      if (on) {
+        playlistTab.style.display = 'block';
+        playlistRadio.checked = true;
+      } else {
+        playlistTab.style.display = 'none';
+        playlistRadio.checked = false;
+      }
+    }
+  }
+
+  function formatTime(seconds) {
+    let minutes = Math.floor(seconds / 60);
+    seconds = Math.floor(seconds % 60);
+    if (seconds < 10) {
+      seconds = '0' + seconds;
+    }
+    return minutes + ':' + seconds;
+  }
+
+  function playTrack() {
+    audio.play();
+    playPause.innerHTML = '<i class="fas fa-circle-pause" id="player__controls--btn-ico" aria-hidden="true"></i>';
+  }
+
+  function pauseTrack() {
+    audio.pause();
+    playPause.innerHTML = '<i class="fas fa-circle-play" id="player__controls--btn-ico" aria-hidden="true"></i>';
+  }
+
+  function toggleLike(isOn) {
+    if (isOn) {
+      likeButton.children[0].classList.remove('far');
+      likeButton.children[0].classList.add('fas');
+      return;
+    } else {
+      likeButton.children[0].classList.remove('fas');
+      likeButton.children[0].classList.add('far');
+      return;
+    }
+  }
+
+  function toggleDislike(isOn) {
+    if (isOn) {
+      dislikeButton.children[0].classList.remove('far');
+      dislikeButton.children[0].classList.add('fas');
+      return;
+    } else {
+      dislikeButton.children[0].classList.remove('fas');
+      dislikeButton.children[0].classList.add('far');
+      return;
+    }
+  }
+
+  async function updateLikePercentage() {
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/rating/{{track.id}}`, {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      console.error('Failed to fetch rating');
+      return;
+    }
+
+    const responseData = await response.json();
+    const likePercentage = responseData.rating.toFixed(2) * 100;
+    document.querySelector('.rating__bar').style.width = `${likePercentage}%`;
+    document.querySelector('.player__rating--text').innerHTML = `${likePercentage}%`;
+  }
+
+  function addComment(comment) {
+    // Get the DOM element for the comments section and update it with the new comment
+    const commentSection = document.querySelector('.comments');
+    if (commentSection.children.length == 1 && commentSection.children[0].classList.contains('no-comment')) {
+      commentSection.innerHTML = '';
+    }
+    const commentDate = new Date(comment.created_at);
+    const formattedDate = `${commentDate.getFullYear()}-${commentDate.getMonth() + 1}-${commentDate.getDate()}`;
+    const commentHTML = `
+    <div class="comment">
+      <div class="comment__header">
+        <a class="comment__header--user" href="/user/${comment.user_id}"> {{ current_user.nickname }}</a>
+        <div>
+          <span class="comment__header--date">
+            ${formattedDate}
+          </span>
+          <button onclick="deleteComment(${comment.id}, {{current_user.id}})"
+            class="comment__header--delete"><i class="fas fa-trash-alt"></i>
+          </button>
+        </div>
+      </div>
+      <div class="comment__body">
+        <p class="comment__body--text">${comment.comment}</p>
+      </div>
+    </div>
+    `;
+
+    commentSection.innerHTML = commentHTML + commentSection.innerHTML;
+  }
+
+  function updateCommentSection() {
+    // This function will fetch the comments from the server and update the DOM
+
+    const commentSection = document.querySelector('.comments');
+
+    let comments = null;
+
+    const request = fetch(`http://127.0.0.1:5000/api/v1/comment/{{track.id}}`, {
+      method: 'GET',
+    }).then(response => response.json())
+      .then(data => {
+        comments = data.comments;
+
+
+        // Clearing the comment section
+        commentSection.innerHTML = '';
+
+        if (comments.length == 0) {
+          commentSection.innerHTML = `
+          <div class="no-comment">
+            No comments yet, Be the first to comment!
+          </div>
+          `;
+          return;
+        }
+
+        comments.forEach(comment => {
+
+          let user = null;
+          const userRequest = fetch(`http://192.168.1.69:5000/api/v1/user/${comment.user_id}`, {
+            method: 'GET',
+          }).then(response => response.json())
+            .then(data => {
+              comment.user = data;
+
+              addComment(comment);
+            });
+        });
+
+      });
+  }
+
+  async function sendComment() {
+    event.preventDefault();
+    // Get the data from the form and send it to the server
+    comment = document.querySelector('.comment-box--bar').value;
+    comment = comment.trim();
+    if (comment.length == 0) {
+      return;
+    }
+
+    document.querySelector('.comment-box--bar').value = '';
+
+    const requests = await fetch(`http://127.0.0.1:5000/api/v1/comment/{{track.id}}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        comment: comment,
+        user_id: {{ current_user.id }},
+      }),
+    });
+
+  if (!requests.ok) {
+    console.error('Failed to send comment');
+    return;
+  }
+
+  const responseData = await requests.json();
+  if (responseData.action == 'created') {
+    addComment(responseData.comment);
+  }
+  }
+
+  function deleteComment(commentId, userId) {
+    event.preventDefault();
+
+    const request = fetch(`http://127.0.0.1:5000/api/v1/comment/{{track.id}}/${commentId}`, {
+      method: 'DELETE',
+    }).then(response => response.json())
+      .then(data => {
+
+        if (data.action == 'deleted') {
+          updateCommentSection();
+        }
+      });
+
+  }
+
+  if (lyricsRadio != null) {
+    lyricsRadio.addEventListener('change', function () {
+      if (this.checked) {
+        toggleLyrics(true);
+        toggleComments(false);
+        togglePlaylist(false);
+      }
+
+    });
+  }
+
+  document.getElementById('comments').addEventListener('change', function () {
+    if (this.checked) {
+      toggleComments(true);
+      toggleLyrics(false);
+      togglePlaylist(false);
+    }
+  });
+
+  document.getElementById('playlist').addEventListener('change', function () {
+    if (this.checked) {
+      togglePlaylist(true);
+      toggleLyrics(false);
+      toggleComments(false);
+    }
+  });
+
+  playPause.addEventListener('click', function () {
+    if (audio.paused) {
+      playTrack();
+    } else {
+      pauseTrack();
+    }
+  });
+
+
+  audio.addEventListener('timeupdate', function () {
+    let position = audio.currentTime / audio.duration;
+    progressBar.value = position * 100;
+    current.innerHTML = formatTime(audio.currentTime);
+    remaining.innerHTML = `- ${formatTime(audio.duration - audio.currentTime)}`;
+  });
+
+  audio.addEventListener('ended', function () {
+    if ({%if position == list | length - 1 %} true {% else %} false {% endif %}) {
+    audio.currentTime = 0;
+    return;
+  }
+  window.location.href = `/player/{{type}}/{{id}}/{{position+1}}`;
+  });
+  progressBar.addEventListener('click', function (e) {
+    audio.pause();
+    let position = e.offsetX / this.offsetWidth;
+    audio.currentTime = position * audio.duration;
+    progressBar.value = position / 100;
+    playTrack();
+  });
+
+  dislikeButton.addEventListener('click', async function () {
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/rating/{{track.id}}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ rating: 0, user_id: {{ current_user.id }}})
+  });
+
+  if (response.ok) {
+    const responseData = await response.json();
+    if (responseData.action == 'created') {
+      toggleDislike(true);
+      toggleLike(false);
+    } else if (responseData.action == 'deleted') {
+      toggleDislike(false);
+    }
+    updateLikePercentage();
+  } else {
+    console.error('Failed to create/update rating');
+  }
+  });
+
+  likeButton.addEventListener('click', async function () {
+    const response = await fetch(`http://127.0.0.1:5000/api/v1/rating/{{track.id}}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ rating: 1, user_id: {{ current_user.id }}})
+  });
+
+  if (response.ok) {
+    const responseData = await response.json();
+    if (responseData.action == 'created') {
+      toggleLike(true);
+      toggleDislike(false);
+    } else if (responseData.action == 'deleted') {
+      toggleLike(false);
+    }
+    updateLikePercentage();
+  } else {
+    console.error('Failed to create/update rating');
+  }
+  });
+
+
+</script>
+{% endblock %}
