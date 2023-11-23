@@ -1,52 +1,55 @@
-{% extends "base.html" %}
-{% block title %}Admin Dashboard{% endblock %}
-{% block head %}
+{% extends "base.html"%}
+{%block title%}Admin Dashboard{%endblock%}
+{% block m_head %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
 {% endblock %}
-{% block content %}
-<section id="admin-dashboard">
-  <div class="admin-dashboard__container">
-    <div class="admin-dashboard__header">
-      <h1 class="heading-1">Admin Dashboard</h1>
-    </div>
-    <div class="admin-dashboard__content">
-      <div class="admin-dashboard__content--item">
-        <div class="admin-dashboard__content--item-header">
-          <h2 class="heading-2">Users</h2>
-          <a href="/admin/users" class="btn btn--primary">View All</a>
-        </div>
-        <div class="admin-dashboard__content--item-content">
-          <p class="admin-dashboard__content--item-text">{{ users|length }}</p>
-        </div>
+{% block m_content %}
+<section id="section section-statistics">
+  <div class="admin-dashboard__header mb-medium">
+    <h1 class="heading-1">Admin Dashboard</h1>
+  </div>
+  <div class="admin-header-tiles">
+    <a href="/admin/dashboard/users">
+      <div class="admin-header-tile">
+        <p class="admin-header-tile--title">Total Users</p>
+        <p class="admin-header-tile--number">{{ users|length}}</p>
       </div>
-      <div class="admin-dashboard__content--item">
-        <div class="admin-dashboard__content--item-header">
-          <h2 class="heading-2">Channels</h2>
-          <a href="/admin/channels" class="btn btn--primary">View All</a>
-        </div>
-        <div class="admin-dashboard__content--item-content">
-          <p class="admin-dashboard__content--item-text">{{ channels|length }}</p>
-        </div>
+    </a>
+    <a href="/admin/dashboard/channels">
+      <div class="admin-header-tile">
+        <p class="admin-header-tile--title">Total Channels</p>
+        <p class="admin-header-tile--number">{{ channels|length}}</p>
       </div>
-      <div class="admin-dashboard__content--item">
-        <div class="admin-dashboard__content--item-header">
-          <h2 class="heading-2">Tracks</h2>
-          <a href="/admin/tracks" class="btn btn--primary">View All</a>
-        </div>
-        <div class="admin-dashboard__content--item-content">
-          <p class="admin-dashboard__content--item-text">{{ tracks|length }}</p>
-        </div>
+    </a>
+    <a href="/admin/dashboard/playlists">
+      <div class="admin-header-tile">
+        <p class="admin-header-tile--title">Total Playlists</p>
+        <p class="admin-header-tile--number">{{ playlists|length}}</p>
       </div>
-      <div class="admin-dashboard__content--item">
-        <div class="admin-dashboard__content--item-header">
-          <h2 class="heading-2">Playlists</h2>
-          <a href="/admin/playlists" class="btn btn--primary">View All</a>
-        </div>
-        <div class="admin-dashboard__content--item-content">
-          <p class="admin-dashboard__content--item-text">{{ playlists|length }}</p>
-        </div>
+    </a>
+    <a href="/admin/dashboard/playlists">
+      <div class="admin-header-tile">
+        <p class="admin-header-tile--title">Total Albums</p>
+        <p class="admin-header-tile--number">{{ albums|length}}</p>
       </div>
-    </div>
+    </a>
+    <a href="/admin/dashboard/tracks">
+      <div class="admin-header-tile">
+        <p class="admin-header-tile--title">Total Tracks</p>
+        <p class="admin-header-tile--number">{{ tracks|length}}</p>
+      </div>
+    </a>
+    <a href="/admin/dashboard/genres">
+      <div class="admin-header-tile">
+        <p class="admin-header-tile--title">Total Genres</p>
+        <p class="admin-header-tile--number">{{ genres|length}}</p>
+      </div>
+    </a>
+  </div>
+  <div class="graph-container">
+    <h3 class="heading-3">Distribution Overview</h3>
+    <img src="{{url_for('genre_distribution_graph')}}" alt="genre-distribution">
+    <img src="{{url_for('user_channel_distribution_graph')}}" alt="user-distribution">
   </div>
 </section>
 {% endblock %}

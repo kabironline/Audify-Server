@@ -79,6 +79,7 @@ app.cli.add_command(get_track_list)
 app.cli.add_command(update_track_from_list)
 app.cli.add_command(update_genre_list)
 app.cli.add_command(generate_random_likes)
+app.cli.add_command(generate_random_views)
 app.cli.add_command(update_channelname)
 
 
@@ -225,7 +226,12 @@ app.add_url_rule(
     "/new_releases/tracks", "new_releases_tracks", music.routes.new_releases_tracks
 )
 app.add_url_rule("/top_charts", "top_charts", music.routes.top_charts)
-app.add_url_rule("/top_charts/tracks", "top_tracks", music.routes.top_charts_tracks)
+app.add_url_rule(
+    "/top_charts/tracks/views", "top_tracks_view", music.routes.top_charts_tracks
+)
+app.add_url_rule(
+    "/top_charts/tracks/rating", "top_tracks_rating", music.routes.top_rated_tracks
+)
 app.add_url_rule("/dashboard", "dashboard", membership.routes.dashboard)
 app.add_url_rule("/dashboard/<int:user_id>", "dashboard", membership.routes.dashboard)
 app.add_url_rule(
@@ -276,6 +282,18 @@ app.add_url_rule(
     admin.routes.admin_dashboard,
 )
 
+app.add_url_rule(
+    "/admin/dashboard/genre-graph",
+    "genre_distribution_graph",
+    admin.routes.genre_distribution_graph,
+)
+
+app.add_url_rule(
+    "/admin/dashboard/user-channel-graph",
+    "user_channel_distribution_graph",
+    admin.routes.user_channel_distribution_graph,
+)
+
 
 @app.context_processor
 def inject_user():
@@ -290,7 +308,6 @@ app.add_url_rule(
 )
 
 if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        debug=True,
-    )
+    from werkzeug.serving import run_simple
+
+    run_simple("localhost", 5000, app, use_reloader=True, use_debugger=True)

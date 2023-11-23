@@ -36,9 +36,17 @@
 </section>
 <section class="section section-top">
   <a href="/top_charts" class="heading-link">
-    <h2 class="heading-2">Top Charts</h2>
+    <h2 class="heading-2">Top Viewed Charts</h2>
   </a>
   {% with tracks=top_charts %}
+  {% include "widgets/track_tiles.html" %}
+  {% endwith %}
+</section>
+<section class="section section-top-rated">
+  <a href="/top_charts" class="heading-link">
+    <h2 class="heading-2">Top Rated Charts</h2>
+  </a>
+  {% with tracks=top_rated_tracks %}
   {% include "widgets/track_tiles.html" %}
   {% endwith %}
 </section>

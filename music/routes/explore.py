@@ -13,14 +13,21 @@ def explore():
         track.channel = membership.services.get_channel_by_id(track.channel_id)
 
     genres = music.services.get_all_genres()
+    from datetime import datetime
 
     top_rated = music.services.get_top_rated_tracks(count=12)
     for track in top_rated:
         track.channel = membership.services.get_channel_by_id(track.channel_id)
 
+    top_chart = music.services.get_top_tracks(count=12)
+    for track in top_chart:
+        track.channel = membership.services.get_channel_by_id(track.channel_id)
+
+
     return render_template(
         "music/explore.html",
         new_releases=new_releases,
         genres=genres,
-        top_charts=top_rated,
+        top_charts=top_chart,
+        top_rated_tracks=top_rated,
     )

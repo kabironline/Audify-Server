@@ -21,7 +21,8 @@
         <div class="player__cover--details">
           <a href="/" class="player__cover--artist">
             {{artist.name}}
-          </a> &VeryThinSpace; &middot; {{track.release_date.strftime('%Y-%m-%d')}}
+          </a> &VeryThinSpace; &middot; {{track.release_date.strftime('%Y-%m-%d')}} &VeryThinSpace; &middot;
+          {{track.views}} Views
           <div class="rating-container">
             <button class="player__rating--btn player__like--btn"> <i
                 class="{% if track.user_rating == 1%}fas {% else %}far {%endif%}fa-thumbs-up"></i></button>
@@ -31,7 +32,6 @@
               <div class="rating__bar" style="width: {{track.average_rating}}%"></div>
             </div>
             <div class="player__rating--text">
-
             </div>
           </div>
         </div>

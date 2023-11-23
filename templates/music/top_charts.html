@@ -9,7 +9,17 @@
   {% with tracks=top_charts %}
   {% include "widgets/track_tiles.html" %}
   {% endwith %}
-  <a href="/top_charts/tracks" class="btn btn--primary mb-medium">View All</a>
+  <a href="/top_charts/tracks/views" class="btn btn--primary mb-medium">View All</a>
+</section>
+<section class="section section-top-tracks">
+  <h3 class="heading-3">
+    <!-- Link to top 20 playlist -->
+    <a href="/" class="heading-link">Top Rated Tracks</a>
+  </h3>
+  {% with tracks=top_rated_charts %}
+  {% include "widgets/track_tiles.html" %}
+  {% endwith %}
+  <a href="/top_charts/tracks/rating" class="btn btn--primary mb-medium">View All</a>
 </section>
 <section class="section section-top-tracks">
   <h3 class="heading-3">
