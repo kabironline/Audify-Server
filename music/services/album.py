@@ -66,10 +66,10 @@ def get_album_by_name(album_name):
     pass
 
 
-def get_album_by_user(user_id):
+def get_album_by_user(channel_id, count=5):
     session = get_session()
 
-    album = session.query(Album).filter_by(created_by=user_id).all()
+    album = session.query(Album).filter_by(created_by=channel_id).limit(count).all()
 
     session.close()
 

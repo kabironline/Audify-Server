@@ -139,21 +139,14 @@ def update_user(user: user_model.User):
     session.commit()
 
 
-# def set_user_as_creator(user_id, test=False):
-#     """
-#     Sets the given user as the creator of the user with the given id.
-
-#     If there is no such user, it raises an exception.
-#     """
-#     user = get_user_by_id(user_id)
-#     if user is None:
-#         raise Exception("User not found")
-
-#     session = get_session() if not test else get_test_session()
-
-#     user.is_creator = True
-#     user.last_modified_at = datetime.datetime.now()
-#     session.commit()
+def get_all_users():
+    """
+    Returns a list of all users.
+    """
+    session = get_session()
+    users = session.query(user_model.User).all()
+    session.close()
+    return users
 
 
 def get_user_by_username(username):
