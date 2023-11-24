@@ -11,6 +11,7 @@ class Track(db.Model):
     release_date = db.Column(db.DateTime, nullable=False)
     duration = db.Column(db.Integer, nullable=True, default=0)
     flag_id = db.Column(db.Integer, ForeignKey("Flag.id"), nullable=True)
+    flagged = db.Column(db.Boolean, nullable=True)
     genre_id = db.Column(db.Integer, ForeignKey("Genre.id"), nullable=True)
     channel_id = db.Column(db.Integer, ForeignKey("Channel.id"), nullable=True)
     created_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=True)

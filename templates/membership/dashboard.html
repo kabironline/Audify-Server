@@ -33,13 +33,14 @@
       {% endif %}
     </div>
     <p class="hero__details--bio">
-      BIO: {{user.bio}}
+      BIO: {% if user.bio != '' %} {{user.bio}}
+      {% else %} Welcome to the channel of {{ user.nickname }} {% endif %}
     </p>
   </div>
 
 </section>
 <hr class="hr">
-{% if recent_tracks != [] %}
+{% if recent_tracks|length > 0 %}
 <section class="section section-recents section-recents-dashboard">
   <h2 class="heading-2 mb-medium">
     Recently Played
@@ -49,6 +50,7 @@
   {% endwith %}
 </section>
 {% endif %}
+{% if playlists|length > 0 %}
 <section class="section section-playlists">
   <h2 class="heading-2 mb-medium">
     {{ user.nickname }}'s Playlists
@@ -57,4 +59,13 @@
   {% include "widgets/playlist_tile.html" %}
   {% endwith %}
 </section>
+{% endif %}
+{% if recent_tracks|length == 0 and playlists|length == 0 %}
+<section class="section section-nothing">
+  <h2 class="heading-2 mb-medium">
+    User has no recent tracks or playlists
+  </h2>
+</section>
+{% endif %}
+
 {% endblock %}

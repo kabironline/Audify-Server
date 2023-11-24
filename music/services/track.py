@@ -57,7 +57,7 @@ def create_track(
     if media is not None:
         if not media.filename.endswith(".mp3") or media.filename == "":
             raise Exception("Invalid media file")
-        duration = mutagen.mp3.MP3(media).info.length
+        duration = int(mutagen.mp3.MP3(media).info.length)
 
     track = Track(
         name=name,
@@ -66,7 +66,8 @@ def create_track(
         channel_id=channel_id,
         genre_id=genre_id,
         created_by=channel_id,
-        duration=duration,
+        duration=int(duration),
+        flagged=False,
         last_modified_by=channel_id,
         created_at=datetime.now(),
         last_modified_at=datetime.now(),
@@ -223,7 +224,7 @@ def update_track(
     lyrics=None,
     genre=None,
     release_date=None,
-    duration=0,
+    duration: int = 0,
     media: FileStorage = None,
     track_art: FileStorage = None,
 ):
@@ -243,7 +244,7 @@ def update_track(
     track.duration = duration if duration is not 0 else track.duration
     try:
         if media is not None:
-            track.duration = mutagen.mp3.MP3(media).info.length
+            track.duration = int(mutagen.mp3.MP3(media).info.length)
             media.save(f"media/tracks/{track_id}/audio.mp3")
         if track_art is not None:
             track_art.save(f"media/tracks/{track_id}/track-art.png")

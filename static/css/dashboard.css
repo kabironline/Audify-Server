@@ -1,6 +1,6 @@
 .hero {
   display: grid;
-  grid-template-columns: 20rem 1fr;
+  grid-template-columns: 20rem 1fr max-content;
   grid-template-rows: 1fr;
   grid-gap: 2rem;
   align-items: center;
@@ -44,4 +44,11 @@
   font-size: 1.8rem;
   font-weight: lighter;
   color: var(--text-subtitle-color);
+}
+
+.hero__cta {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  align-items: flex-start;
 }

@@ -253,6 +253,18 @@ app.add_url_rule(
 )
 
 app.add_url_rule(
+    "/channels/<int:channel_id>/whitelist",
+    "whitelist_channel",
+    admin.routes.whitelist_channel,
+)
+
+app.add_url_rule(
+    "/channels/<int:channel_id>/blacklist",
+    "blacklist_channel",
+    admin.routes.blacklist_channel,
+)
+
+app.add_url_rule(
     "/edit_profile",
     "edit_profile",
     membership.routes.edit_profile,

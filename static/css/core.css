@@ -39,7 +39,26 @@ html {
   font-size: 62.5%;
   scroll-behavior: smooth;
 
-  /* Add a custom scrollbar with black tracks and light blakc handle */
+  /* width */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: var(--color-background);
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: var(--color-background-light);
+    border-radius: 8px;
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 }
 
 body {

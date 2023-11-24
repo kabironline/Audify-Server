@@ -20,22 +20,37 @@
           {{channel.name}}
         </h2>
       </div>
-      <!-- TOOD Fix this -->
-      {% if own_profile == True %}
-      <div class="hero__cta">
-        <a href="/edit_profile_creator" class="btn btn--white">
-          <i class="fas fa-pen-to-square"></i> Edit Profile
-        </a>
-      </div>
-      {% endif %}
     </div>
     <p class="hero__details--bio">
       BIO: {% if channel.description != '' %} {{channel.description}}
       {% else %} Welcome to the channel of {{ channel.name }} {% endif %}
     </p>
   </div>
-
-
+  <div class="hero__cta">
+    {% if own_profile == True %}
+    <a href="/edit_profile_creator" class="btn btn--primary">
+      <i class="fas fa-pen-to-square"></i> Edit Profile
+    </a>
+    {% endif %}
+    {% if channel.whitelist != None %}
+    <a href="/channels/{{channel.id}}/whitelist" class="btn btn--white">
+      <i class="fas fa-user-slash"></i> Remove Whitelist
+    </a>
+    {% elif channel.blacklisted %}
+    <a href="/channels/{{channel.id}}/blacklist" class="btn btn--secondary">
+      <i class="fas fa-user-check"></i> Remove Blacklist
+    </a>
+    {% else %}
+    {% if not own_profile %}
+    <a href="/channels/{{channel.id}}/whitelist" class="btn btn--white">
+      <i class="fas fa-user-shield"></i> Add Whitelist
+    </a>
+    <a href="/channels/{{channel.id}}/blacklist" class="btn btn--secondary">
+      <i class="fas fa-user-slash"></i> Blacklist User
+    </a>
+    {% endif %}
+    {% endif %}
+  </div>
 </section>
 <hr class="hr">
 <section class="section section-tracks">
@@ -50,8 +65,22 @@
   {% include "widgets/track_carousel.html" %}
   {% endwith %}
   {% if channel_tracks|length > 5 %}
-  <a href="/dashboard/channel/{{channel.id}}/tracks" class="btn btn--white">See all</a>
+  <a href="/da/{channels{channel.id}}shboard/channel/tracks" class="btn btn--white">See all</a>
   {% endif %}
   {% endif %}
 </section>
+{% if channel_tracks|length == 0 %}
+<section class="section section-nothing">
+  <h2 class="heading-2">Nothing here yet</h2>
+  <br>
+  {% if own_profile == True %}
+  <p class="heading-3">When you upload tracks, they will appear here</p>
+  <br>
+  <a href="/upload" class="btn btn--white">Upload a track</a>
+  {% else %}
+  <p class="heading-3">When {{channel.name}} uploads tracks, they will appear here</p>
+  {% endif %}
+</section>
+{% endif %}
+
 {% endblock %}

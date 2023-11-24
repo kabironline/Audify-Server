@@ -1,6 +1,7 @@
 from flask import render_template, request, redirect, url_for
 from membership.services import get_user_by_id, get_channel_by_id, get_channel_members
 import music.services
+from admin.services import get_whitelist_by_channel_id
 import core
 
 
@@ -28,13 +29,13 @@ def dashboard(user_id=None):
     for playlist in playlists:
         playlist.created_by = user
 
-        return render_template(
-            "membership/dashboard.html",
-            user=user,
-            own_profile=False,
-            recent_tracks=recent_tracks,
-            playlists=playlists,
-        )
+    return render_template(
+        "membership/dashboard.html",
+        user=user,
+        own_profile=False,
+        recent_tracks=recent_tracks,
+        playlists=playlists,
+    )
 
 
 def dashboard_channel(channel_id=None):
@@ -49,6 +50,9 @@ def dashboard_channel(channel_id=None):
         [member.user_id == user.id for member in get_channel_members(channel_id)]
     )
 
+    if channel.blacklisted:
+        return redirect(url_for("home"))
+
     if channel is None:
         # TODO: Redirect to 404 page
         return redirect(url_for("home"))
@@ -57,7 +61,11 @@ def dashboard_channel(channel_id=None):
     for track in channel_tracks:
         track.channel = channel
 
-    # TODO: Add Album and Playlist information to the channel
+    albums = music.services.get_album_by_user(channel_id)
+    for album in albums:
+        album.channel = channel
+
+    channel.whitelist = get_whitelist_by_channel_id(channel_id)
 
     return render_template(
         "membership/dashboard_channel.html",
