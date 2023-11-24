@@ -21,7 +21,7 @@
     </p>
     {% endif %}
     <p class="playlist-header__description">
-      {{ album.author.name }} • {{album.items|length}} songs, 30 min
+      {{ album.author.name }} • {{album.items|length}} songs, {{ tracks| playlist_total_duration}}
     </p>
 
     <div class="playlist-header__buttons">
@@ -31,8 +31,6 @@
       {% if album.author.id == current_user.channels[0]['id'] %}
       <a href="/album/{{album.id}}/edit" class="btn "><i class="fas fa-pencil"></i>Edit Album</a>
       <a href="#delete-album-modal" class="btn ">Delete Album</a>
-      {% else %}
-      <!-- <a href="/" class="btn "><i class="fas fa-check-to-slot"></i>Add to library</a> -->
       {% endif %}
     </div>
   </div>

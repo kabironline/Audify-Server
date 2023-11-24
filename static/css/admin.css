@@ -1,0 +1,32 @@
+.section-statistics {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-header-tiles {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.admin-header-tile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem 3rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-background-light);
+  color: var(--color-white);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.admin-header-tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}

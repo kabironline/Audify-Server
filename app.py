@@ -303,6 +303,8 @@ def inject_user():
 
 
 app.jinja_env.filters["format_duration"] = format_duration
+app.jinja_env.filters["format_duration_words"] = format_duration_words
+app.jinja_env.filters["playlist_total_duration"] = playlist_total_duration
 
 app.add_url_rule(
     "/media/<path:filename>",

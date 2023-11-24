@@ -232,7 +232,7 @@
   }
 
   async function updateLikePercentage() {
-    const response = await fetch(`http://127.0.0.1:5000/api/v1/rating/{{track.id}}`, {
+    const response = await fetch(`/api/v1/rating/{{track.id}}`, {
       method: 'GET',
     });
 
@@ -285,7 +285,7 @@
 
     let comments = null;
 
-    const request = fetch(`http://127.0.0.1:5000/api/v1/comment/{{track.id}}`, {
+    const request = fetch(`/api/v1/comment/{{track.id}}`, {
       method: 'GET',
     }).then(response => response.json())
       .then(data => {
@@ -307,7 +307,7 @@
         comments.forEach(comment => {
 
           let user = null;
-          const userRequest = fetch(`http://127.0.0.1:5000/api/v1/user/${comment.user_id}`, {
+          const userRequest = fetch(`/api/v1/user/${comment.user_id}`, {
             method: 'GET',
           }).then(response => response.json())
             .then(data => {
@@ -331,7 +331,7 @@
 
     document.querySelector('.comment-box--bar').value = '';
 
-    const requests = await fetch(`http://127.0.0.1:5000/api/v1/comment/{{track.id}}`, {
+    const requests = await fetch(`/api/v1/comment/{{track.id}}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -356,7 +356,7 @@
   function deleteComment(commentId, userId) {
     event.preventDefault();
 
-    const request = fetch(`http://127.0.0.1:5000/api/v1/comment/{{track.id}}/${commentId}`, {
+    const request = fetch(`/api/v1/comment/{{track.id}}/${commentId}`, {
       method: 'DELETE',
     }).then(response => response.json())
       .then(data => {
@@ -427,7 +427,7 @@
   });
 
   dislikeButton.addEventListener('click', async function () {
-    const response = await fetch(`http://127.0.0.1:5000/api/v1/rating/{{track.id}}`, {
+    const response = await fetch(`/api/v1/rating/{{track.id}}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -450,7 +450,7 @@
   });
 
   likeButton.addEventListener('click', async function () {
-    const response = await fetch(`http://127.0.0.1:5000/api/v1/rating/{{track.id}}`, {
+    const response = await fetch(`/api/v1/rating/{{track.id}}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

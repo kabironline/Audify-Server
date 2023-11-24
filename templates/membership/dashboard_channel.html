@@ -54,22 +54,4 @@
   {% endif %}
   {% endif %}
 </section>
-<section class="section section-playlists">
-  <h2 class="heading-2 mb-medium">
-    {{ channel.name }}'s Playlists
-  </h2>
-  <div class="playlist-container">
-    {% for n in range (5)%}
-    <div class="playlist__item">
-      <a href="/" class=" playlist__link">
-        <div class="playlist__details">
-          <p class="playlist__heading">Playlist Name</p>
-          <p class="playlist__subheading">Playlist Author</p>
-        </div>
-        <i class="fas fa-circle-play playlist__playbutton"></i>
-      </a>
-    </div>
-    {% endfor %}
-  </div>
-</section>
 {% endblock %}

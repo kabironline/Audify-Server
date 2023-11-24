@@ -116,7 +116,7 @@ input[type="range"] {
   color: var(--color-primary);
   --thumb-height: 1.125em;
   --track-height: 0.125em;
-  --track-color: rgba(0, 0, 0, 0.2);
+  --track-color: var(--color-background-light);
   --brightness-hover: 180%;
   --brightness-down: 80%;
   --clip-edges: 0.125em;

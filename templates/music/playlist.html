@@ -16,7 +16,7 @@
     </p>
     {% endif %}
     <p class="playlist-header__description">
-      {{ playlist.author.nickname }} • {{playlist.items|length}} songs, 30 min
+      {{ playlist.author.nickname }} • {{playlist.items|length}} songs, {{ playlist.items| playlist_total_duration}}
     </p>
 
     <div class="playlist-header__buttons">
@@ -26,8 +26,6 @@
       {% if playlist.author.id == current_user.id %}
       <a href="#playlist-edit-modal" class="btn "><i class="fas fa-pencil"></i>Edit Playlist</a>
       <a href="/playlist/{{playlist.id}}/delete" class="btn ">Delete Playlist</a>
-      {% else %}
-      <a href="/" class="btn "><i class="fas fa-check-to-slot"></i>Add to library</a>
       {% endif %}
     </div>
   </div>

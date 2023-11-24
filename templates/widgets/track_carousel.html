@@ -31,7 +31,7 @@
                 </a>
               </li>
               {% endif %}
-              {% if current_user.channels|length > 0 %}
+              {% if current_user.channels != None %}
               {% if track.channel_id == current_user.channels[0].id %}
               <li class="dropdown-item">
                 <a href="?id={{track.id}}#delete-track-modal" class="dropdown-item--link">
