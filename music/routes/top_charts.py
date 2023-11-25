@@ -9,12 +9,8 @@ def top_charts():
         return redirect(url_for("login"))
 
     top_rated = music.services.get_top_rated_tracks(count=12)
-    for track in top_rated:
-        track.channel = membership.services.get_channel_by_id(track.channel_id)
 
     top_charts = music.services.get_top_tracks(count=12)
-    for track in top_charts:
-        track.channel = membership.services.get_channel_by_id(track.channel_id)
 
     top_channels = music.services.get_top_rated_channels(count=12)
     return render_template(
@@ -30,8 +26,6 @@ def top_charts_tracks():
         return redirect(url_for("login"))
 
     top_rated = music.services.get_top_tracks(count=30)
-    for track in top_rated:
-        track.channel = membership.services.get_channel_by_id(track.channel_id)
 
     return render_template(
         "music/all_tracks.html", all_tracks=top_rated, title="Top Tracks"
@@ -43,9 +37,6 @@ def top_rated_tracks():
         return redirect(url_for("login"))
 
     top_rated = music.services.get_top_rated_tracks(count=30)
-    for track in top_rated:
-        track.channel = membership.services.get_channel_by_id(track.channel_id)
-
     return render_template(
         "music/all_tracks.html", all_tracks=top_rated, title="Top Rated Tracks"
     )

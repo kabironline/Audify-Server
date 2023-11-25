@@ -26,6 +26,11 @@
     </a>
   </div>
 </section> -->
+<section class="section sections-genre">
+  {% with genres=genres %}
+  {% include "widgets/genre_tile.html" %}
+  {% endwith %}
+</section>
 <section class="section section-options">
   <a href="/new_releases" class="heading-link">
     <h2 class="heading-2">New Releases</h2>
@@ -48,14 +53,6 @@
   </a>
   {% with tracks=top_rated_tracks %}
   {% include "widgets/track_tiles.html" %}
-  {% endwith %}
-</section>
-<section class="section sections-genre">
-  <a href="/" class="heading-link">
-    <h2 class="heading-2">Genres</h2>
-  </a>
-  {% with genres=genres %}
-  {% include "widgets/genre_tile.html" %}
   {% endwith %}
 </section>
 {% endblock %}

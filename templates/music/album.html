@@ -21,14 +21,14 @@
     </p>
     {% endif %}
     <p class="playlist-header__description">
-      {{ album.author.name }} • {{album.items|length}} songs, {{ tracks| playlist_total_duration}}
+      {{ album.channel.name }} • {{album.items|length}} songs, {{ album.items| playlist_total_duration}}
     </p>
 
     <div class="playlist-header__buttons">
       {% if album.items|length > 1 %}
       <a href="/player/album/{{album.id}}" class="btn btn--white"><i class="fas fa-play"></i>Play</a>
       {% endif %}
-      {% if album.author.id == current_user.channels[0]['id'] %}
+      {% if album.channel.id == current_user.channels[0]['id'] %}
       <a href="/album/{{album.id}}/edit" class="btn "><i class="fas fa-pencil"></i>Edit Album</a>
       <a href="#delete-album-modal" class="btn ">Delete Album</a>
       {% endif %}
@@ -48,7 +48,7 @@
 </section>
 {% endblock %}
 {%block extra_modals%}
-{% if album.author.id == current_user.channels[0]['id'] %}
+{% if album.channel.id == current_user.channels[0]['id'] %}
 <section id="delete-album-modal" class="modal">
   <div class="modal__backdrop">
   </div>

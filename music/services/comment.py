@@ -1,6 +1,8 @@
 from music.models import Comment
+from membership.models import User
 from core.db import get_session
 from datetime import datetime
+from sqlalchemy.orm import joinedload
 
 
 def create_comment(comment, track_id, user_id):
@@ -28,7 +30,13 @@ def create_comment(comment, track_id, user_id):
 def get_comments_by_track_id(track_id):
     session = get_session()
 
-    comments = session.query(Comment).filter(Comment.track_id == track_id).all()
+    comments = (
+        session.query(Comment)
+        .join(User, Comment.user_id == User.id)
+        .options(joinedload(Comment.user))
+        .filter(Comment.track_id == track_id)
+        .all()
+    )
 
     return comments
 

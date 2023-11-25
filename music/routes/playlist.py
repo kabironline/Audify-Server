@@ -36,17 +36,18 @@ def playlist_page(playlist_id=None):
         core.set_current_user(user, channel, playlist)
 
         return redirect(route)
+
     timer = datetime.datetime.now()
     playlist = get_playlist_by_id(playlist_id)
-    playlist_items = get_playlist_items_by_playlist_id(playlist_id)
-    playlist.items = []
-    for item in playlist_items:
-        track = get_track_by_id(item.track_id)
-        track.channel = get_channel_by_id(track.channel_id)
-        rating = get_rating_by_user_and_track_id(user.id, track.id)
-        if rating is not None:
-            track.rating = rating.rating
-        playlist.items.append(track)
+    
+    if playlist is None:
+        return redirect(url_for("home"))
+    playlist.items = get_playlist_items_by_playlist_id(playlist_id)
+
+    ratings = get_track_rating_for_user(user.id, *[item.id for item in playlist.items])
+    for item in playlist.items:
+        item.rating = ratings[item.id] if item.id in ratings else None
+
     playlist.author = get_user_by_id(playlist.created_by)
 
     print(datetime.datetime.now() - timer)

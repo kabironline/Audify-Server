@@ -11,12 +11,12 @@ from music.services.album import (
 )
 from music.services.comment import delete_all_comments_by_track_id
 from music.services.recent import delete_recent_by_track_id
-from membership.services.channel import get_channel_by_id
 from core.db import get_session, get_db
 from datetime import datetime
 from werkzeug.datastructures import FileStorage
 import os
 import mutagen.mp3
+from sqlalchemy.orm import joinedload
 
 db = get_db()
 
@@ -97,7 +97,13 @@ def create_track(
 def get_track_by_id(track_id, user_id=None, rating=False):
     session = get_session()
 
-    track = session.query(Track).filter(Track.id == track_id).first()
+    track = (
+        session.query(Track)
+        .join(Channel, Track.channel_id == Channel.id)
+        .options(joinedload(Track.channel))
+        .filter(Track.id == track_id)
+        .first()
+    )
 
     if rating:
         track.rating = get_rating_by_user_and_track_id(user_id, track.id)
@@ -150,69 +156,56 @@ def get_tracks_by_channel(channel_id, user_id=None, rating=False, count=None):
     return tracks
 
 
-def get_top_rated_tracks(count=None):
+def get_top_rated_tracks(count=5):
     session = get_session()
 
-    db = get_db()
-
-    average_ratings = (
-        db.session.query(Track, db.func.avg(Rating.rating).label("average_rating"))
+    query = (
+        session.query(Track)
         .join(Rating, Track.id == Rating.track_id)
+        .join(Channel, Track.channel_id == Channel.id)
+        .options(joinedload(Track.channel))
+        .filter(Channel.blacklisted.is_(None), Track.flagged.is_(None))
         .group_by(Track.id)
+        .having(db.func.avg(Rating.rating) > 0, db.func.count(Rating.rating) > 0)
         .order_by(db.func.avg(Rating.rating).desc())
+        .limit(count)
+        .all()
     )
 
-    if count is not None:
-        average_ratings = average_ratings.limit(count)
-    else:
-        average_ratings = average_ratings.all()
-
-    top_rated = []
-
-    for track, average_rating in average_ratings:
-        if average_rating is None or average_rating == 0:
-            continue
-
-        top_rated.append(track)
-
-    session.close()
-
-    return top_rated
+    return query
 
 
-def get_top_rated_channels(count=None):
+def get_top_rated_channels(count=5):
     session = get_session()
 
     db = get_db()
 
-    average_ratings = (
-        db.session.query(Track, db.func.avg(Rating.rating).label("average_rating"))
-        .distinct(Track.channel_id)
+    query = (
+        db.session.query(Channel)
+        .join(Track, Channel.id == Track.channel_id)
         .join(Rating, Track.id == Rating.track_id)
-        .group_by(Track.channel_id)
+        .filter(Channel.blacklisted.is_(None), Track.flagged.is_(None))
+        .group_by(Channel.id)
+        .having(db.func.avg(Rating.rating) > 0, db.func.count(Rating.rating) > 0)
         .order_by(db.func.avg(Rating.rating).desc())
+        .limit(count)
+        .all()
     )
 
-    if count is not None:
-        average_ratings = average_ratings.limit(count)
-    else:
-        average_ratings = average_ratings.all()
-
-    top_rated_channels = []
-    for track, average_rating in average_ratings:
-        if average_rating is None or average_rating == 0:
-            continue
-
-        top_rated_channels.append(get_channel_by_id(track.channel_id))
-
-    session.close()
-
-    return top_rated_channels
+    return query
 
 
 def get_latest_tracks(count=5):
     session = get_session()
-    tracks = session.query(Track).order_by(Track.id.desc()).limit(count).all()
+    tracks = (
+        session.query(Track)
+        .join(Channel, Track.channel_id == Channel.id)
+        .options(joinedload(Track.channel))
+        .filter(Channel.blacklisted.is_(None), Track.flagged.is_(None))
+        .order_by(Track.last_modified_at.desc())
+        .limit(count)
+        .all()
+    )
     session.close()
 
     return tracks
@@ -241,7 +234,7 @@ def update_track(
         release_date if release_date is not None else track.release_date
     )
     track.genre_id = genre if genre is not None else track.genre_id
-    track.duration = duration if duration is not 0 else track.duration
+    track.duration = duration if duration != 0 else track.duration
     try:
         if media is not None:
             track.duration = int(mutagen.mp3.MP3(media).info.length)

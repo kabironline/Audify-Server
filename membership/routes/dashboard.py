@@ -14,20 +14,14 @@ def dashboard(user_id=None):
     user = get_user_by_id(user_id) if user_id is not user.id else user
 
     recent_tracks = music.services.get_recent_by_user_id(user_id)
+    ratings = music.services.get_track_rating_for_user(
+        user_id, *[t.id for t in recent_tracks]
+    )
 
-    for i in range(len(recent_tracks)):
-        recent_tracks[i] = music.services.get_track_by_id(recent_tracks[i].track_id)
-        recent_tracks[i].channel = get_channel_by_id(recent_tracks[i].channel_id)
-        rating = music.services.get_rating_by_user_and_track_id(
-            user_id, recent_tracks[i].id
-        )
-
-        if rating is not None:
-            recent_tracks[i].rating = rating.rating
+    for track in recent_tracks:
+        track.rating = ratings[track.id] if track.id in ratings else None
 
     playlists = music.services.get_playlist_by_user(user_id)
-    for playlist in playlists:
-        playlist.created_by = user
 
     return render_template(
         "membership/dashboard.html",

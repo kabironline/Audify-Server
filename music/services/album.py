@@ -6,6 +6,7 @@ from core import get_current_user
 from werkzeug.datastructures import FileStorage
 import os.path
 from datetime import datetime
+from sqlalchemy.orm import joinedload
 
 
 def create_album(
@@ -55,7 +56,13 @@ def create_album(
 def get_album_by_id(album_id):
     session = get_session()
 
-    album = session.query(Album).filter_by(id=album_id).first()
+    album = (
+        session.query(Album)
+        .join(Channel, Album.created_by == Channel.id)
+        .options(joinedload(Album.channel))
+        .filter(Album.id == album_id)
+        .first()
+    )
 
     session.close()
 
@@ -79,7 +86,14 @@ def get_album_by_user(channel_id, count=5):
 def get_latest_albums(limit=5):
     session = get_session()
 
-    albums = session.query(Album).order_by(Album.created_at.desc()).limit(limit).all()
+    albums = (
+        session.query(Album)
+        .join(Channel, Album.created_by == Channel.id)
+        .options(joinedload(Album.channel))
+        .order_by(Album.created_at.desc())
+        .limit(limit)
+        .all()
+    )
 
     session.close()
 
@@ -228,7 +242,15 @@ def create_album_item(album_id, track_id, user_id=0, api=False):
 def get_album_items_by_album_id(album_id):
     session = get_session()
 
-    album_items = session.query(AlbumItem).filter_by(album_id=album_id).all()
+    album_items = (
+        session.query(Track)
+        .join(AlbumItem, Track.id == AlbumItem.track_id)
+        .join(Channel, Track.channel_id == Channel.id)
+        .options(joinedload(Track.channel))
+        .filter(Track.flagged.is_(None), Channel.blacklisted.is_(None))
+        .filter(AlbumItem.album_id == album_id)
+        .all()
+    )
 
     session.close()
 
@@ -238,7 +260,15 @@ def get_album_items_by_album_id(album_id):
 def get_track_albums(track_id):
     session = get_session()
 
-    album_items = session.query(AlbumItem).filter_by(track_id=track_id).all()
+    album_items = (
+        session.query(Track)
+        .join(AlbumItem, Track.id == AlbumItem.track_id)
+        .join(Channel, Track.channel_id == Channel.id)
+        .options(joinedload(Track.channel))
+        .filter(Track.flagged.is_(None), Channel.blacklisted.is_(None))
+        .filter(AlbumItem.track_id == track_id)
+        .all()
+    )
 
     session.close()
 

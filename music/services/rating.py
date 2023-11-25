@@ -1,6 +1,7 @@
 from music.models import Rating
 from core.db import get_session
 from datetime import datetime
+from sqlalchemy import tuple_
 
 
 def like_track(track_id, user_id):
@@ -89,6 +90,26 @@ def get_rating_by_user_and_track_id(user_id, track_id):
     )
 
     return rating
+
+
+def get_track_rating_for_user(user_id, *track_ids):
+    """
+    This function returns the rating of a track by a user.
+
+    It returns a dictionary of track_id and rating.
+    """
+    session = get_session()
+
+    ratings = (
+        session.query(Rating)
+        .filter(Rating.track_id.in_(track_ids))
+        .filter(Rating.user_id == user_id)
+        .all()
+    )
+
+    ratings = {rating.track_id: rating.rating for rating in ratings}
+
+    return ratings
 
 
 def clear_track_rating(track_id):

@@ -6,30 +6,24 @@ import music.services
 
 
 def album_page(album_id):
-    if core.get_current_user() is None:
+    user = core.get_current_user()
+    if user is None:
         return redirect(url_for("login"))
 
     album = get_album_by_id(album_id)
-    album.author = get_channel_by_id(album.created_by)
-    artist = get_channel_by_id(album.created_by)
-    album_items = get_album_items_by_album_id(album_id)
-    tracks = []
-    for album_item in album_items:
-        track = get_track_by_id(album_item.track_id)
-        track.channel = get_channel_by_id(track.created_by)
-        rating = music.services.get_rating_by_user_and_track_id(
-            core.get_current_user().id, track.id
-        )
-        if rating is not None:
-            track.rating = rating.rating
-        tracks.append(track)
+    if album is None:
+        return redirect(url_for("home"))
+    album.items = get_album_items_by_album_id(album_id)
 
-    album.items = tracks
+    ratings = get_track_rating_for_user(user.id, *[item.id for item in album.items])
+
+    for album_item in album.items:
+        album_item.rating = ratings[album_item.id] if album_item.id in ratings else None
 
     return render_template(
         "music/album.html",
         album=album,
-        artist=artist,
+        artist=album.channel,
     )
 
 

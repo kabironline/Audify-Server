@@ -8,10 +8,12 @@ class Album(db.Model):
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=True)
     release_date = db.Column(db.DateTime, nullable=False)
-    created_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=True)
-    last_modified_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=True)
+    created_by = db.Column(db.Integer, ForeignKey("Channel.id"), nullable=True)
+    last_modified_by = db.Column(db.Integer, ForeignKey("Channel.id"), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
     last_modified_at = db.Column(db.DateTime, nullable=False)
+
+    channel = db.relationship("Channel", foreign_keys=[created_by])
 
 
 class AlbumItem(db.Model):

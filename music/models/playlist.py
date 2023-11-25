@@ -12,6 +12,8 @@ class Playlist(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     last_modified_at = db.Column(db.DateTime, nullable=False)
 
+    user = db.relationship("User", foreign_keys=[created_by])
+
 
 class PlaylistItem(db.Model):
     __tablename__ = "PlaylistItem"

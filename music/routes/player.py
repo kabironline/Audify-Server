@@ -9,11 +9,7 @@ def player(track_id):
         return redirect(url_for("login"))
 
     track = get_track_by_id(track_id)
-    artist = get_channel_by_id(track.created_by)
     comments = get_comments_by_track_id(track_id)
-    # joining the comments with the users who created them
-    for comment in comments:
-        comment.user = get_user_by_id(comment.user_id)
 
     user = core.get_current_user()
     user_rating = get_rating_by_user_and_track_id(user.id, track_id)
@@ -24,14 +20,14 @@ def player(track_id):
     track.user_rating = user_rating
 
     create_recent(user.id, track_id)
-
     create_new_view(track, user.id)
+
     track.views = get_views_by_track_id(track_id)
 
     return render_template(
         "music/player.html",
         track=track,
-        artist=artist,
+        artist=track.channel,
         comments=comments,
         current_user=user,
         average_rating=get_track_rating(track_id),

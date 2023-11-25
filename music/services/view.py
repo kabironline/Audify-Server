@@ -1,7 +1,9 @@
-from music.models import View
+from music.models import View, Track
+from membership.models import Channel
 from music.services.track import get_track_by_id
 from core.db import get_session, db
 from datetime import datetime
+from sqlalchemy.orm import joinedload
 
 
 def create_new_view(track, user_id):
@@ -55,17 +57,19 @@ def get_all_views():
 
 def get_top_tracks(count=5):
     session = get_session()
-    views = (
-        session.query(View)
-        .group_by(View.track_id)
+
+    query = (
+        session.query(Track)
+        .join(View, Track.id == View.track_id)
+        .join(Channel, Track.channel_id == Channel.id)
+        .options(joinedload(Track.channel))
+        .group_by(Track.id)
+        .filter(Channel.blacklisted.is_(None), Track.flagged.is_(None))
         .order_by(db.func.count(View.id).desc())
         .limit(count)
+        .all()
     )
-    top_tracks = []
-    for view in views:
-        track = get_track_by_id(view.track_id)
-        top_tracks.append(track)
-    return top_tracks
+    return query
 
 
 def delete_view_by_id(view_id):

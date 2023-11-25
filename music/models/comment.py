@@ -12,3 +12,5 @@ class Comment(db.Model):
     last_modified_at = db.Column(db.DateTime, nullable=False)
     created_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=False)
     last_modified_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=False)
+
+    user = db.relationship("User", foreign_keys=[user_id])

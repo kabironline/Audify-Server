@@ -19,6 +19,8 @@ class Track(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     last_modified_at = db.Column(db.DateTime, nullable=False)
 
+    channel = db.relationship("Channel")
+
 
 class TrackSearch(db.Model):
     __tablename__ = "TrackSearch"

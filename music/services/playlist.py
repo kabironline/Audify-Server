@@ -1,9 +1,10 @@
-from music.models import Playlist, PlaylistItem, Track, PlaylistSearch
-from membership.models import User
+from music.models import Playlist, PlaylistItem, Track, PlaylistSearch, Rating
+from membership.models import User, Channel
 from membership.services import get_user_by_username, get_user_by_id, get_user_dict
 from core.db import get_session
 from core import get_current_user
 from datetime import datetime
+from sqlalchemy.orm import joinedload
 
 
 def create_playlist(name, description="", api=False):
@@ -34,7 +35,13 @@ def create_playlist(name, description="", api=False):
 def get_playlist_by_id(playlist_id):
     session = get_session()
 
-    playlist = session.query(Playlist).filter_by(id=playlist_id).first()
+    playlist = (
+        session.query(Playlist)
+        .join(User, Playlist.created_by == User.id)
+        .options(joinedload(Playlist.user))
+        .filter(Playlist.id == playlist_id)
+        .first()
+    )
 
     session.close()
 
@@ -49,7 +56,12 @@ def get_latest_playlist(limit=5):
     session = get_session()
 
     playlist = (
-        session.query(Playlist).order_by(Playlist.created_at.desc()).limit(limit).all()
+        session.query(Playlist)
+        .join(User, Playlist.created_by == User.id)
+        .options(joinedload(Playlist.user))
+        .order_by(Playlist.created_at.desc())
+        .limit(limit)
+        .all()
     )
 
     session.close()
@@ -60,7 +72,13 @@ def get_latest_playlist(limit=5):
 def get_playlist_by_user(user_id):
     session = get_session()
 
-    playlist = session.query(Playlist).filter_by(created_by=user_id).all()
+    playlist = (
+        session.query(Playlist)
+        .join(User, Playlist.created_by == User.id)
+        .filter(Playlist.created_by == user_id)
+        .options(joinedload(Playlist.user))
+        .all()
+    )
 
     session.close()
 
@@ -128,8 +146,9 @@ def get_playlist_dict(playlist):
         "description": playlist.description,
         "created_at": playlist.created_at,
         "last_modified_at": playlist.last_modified_at,
-        "created_by": user,
+        "created_by": playlist.created_by,
         "last_modified_by": playlist.last_modified_by,
+        "user": user,
     }
 
     return playlist_dict
@@ -182,9 +201,17 @@ def create_playlist_item(playlist_id, track_id, user_id=0, api=False):
 
 def get_playlist_items_by_playlist_id(playlist_id):
     session = get_session()
+    user = get_current_user()
 
     playlist_items = (
-        session.query(PlaylistItem).filter_by(playlist_id=playlist_id).all()
+        session.query(Track)
+        .join(PlaylistItem, Track.id == PlaylistItem.track_id)
+        .join(Channel, Track.channel_id == Channel.id)
+        .join(Rating, Track.id == Rating.track_id)
+        .options(joinedload(Track.channel))
+        .filter(Track.flagged.is_(None), Channel.blacklisted.is_(None))
+        .filter(PlaylistItem.playlist_id == playlist_id)
+        .all()
     )
 
     session.close()
