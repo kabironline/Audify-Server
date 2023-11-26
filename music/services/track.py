@@ -1,5 +1,5 @@
 from membership.models import Channel
-from music.models import Track, Rating, TrackSearch
+from music.models import Track, Rating, TrackSearch, View
 from music.services.rating import *
 from music.services.playlist import (
     get_track_playlists,
@@ -11,6 +11,7 @@ from music.services.album import (
 )
 from music.services.comment import delete_all_comments_by_track_id
 from music.services.recent import delete_recent_by_track_id
+from music.services.view import delete_views_by_track_id
 from core.db import get_session, get_db
 from datetime import datetime
 from werkzeug.datastructures import FileStorage
@@ -67,7 +68,7 @@ def create_track(
         genre_id=genre_id,
         created_by=channel_id,
         duration=int(duration),
-        flagged=False,
+        flagged=None,
         last_modified_by=channel_id,
         created_at=datetime.now(),
         last_modified_at=datetime.now(),
@@ -128,28 +129,59 @@ def get_all_tracks(channel=True):
     return tracks
 
 
-def get_tracks_by_channel(channel_id, user_id=None, rating=False, count=None):
+def get_tracks_by_channel(channel_id, user_id=None, rating=False, count=5):
     session = get_session()
     tracks = None
     if rating:
         tracks = (
             session.query(Track)
-            .filter(Track.channel_id == channel_id)
+            .join(Channel, Track.channel_id == Channel.id)
+            .options(joinedload(Track.channel))
+            .filter(
+                Track.channel_id == channel_id,
+                Track.flagged.is_(None),
+                Channel.blacklisted.is_(None),
+            )
             .order_by(Track.last_modified_at.desc())
+            .limit(count)
+            .all()
         )
         for track in tracks:
             track.rating = get_rating_by_user_and_track_id(user_id, track.id)
     else:
         tracks = (
             session.query(Track)
-            .filter(Track.channel_id == channel_id)
+            .join(Channel, Track.channel_id == Channel.id)
+            .options(joinedload(Track.channel))
+            .filter(
+                Track.channel_id == channel_id,
+                Track.flagged.is_(None),
+                Channel.blacklisted.is_(None),
+            )
             .order_by(Track.last_modified_at.desc())
+            .limit(count)
+            .all()
         )
 
-    if count is not None:
-        tracks = tracks.limit(count)
-    else:
-        tracks = tracks.all()
+    session.close()
+
+    return tracks
+
+
+def get_channel_tracks_by_views(channel_id, count=5):
+    session = get_session()
+
+    tracks = (
+        session.query(Track)
+        .join(Channel, Track.channel_id == Channel.id)
+        .join(View, Track.id == View.track_id)
+        .options(joinedload(Track.channel))
+        .filter(Channel.id == channel_id, Track.flagged.is_(None))
+        .group_by(Track.id)
+        .order_by(View.count.desc())
+        .limit(count)
+        .all()
+    )
 
     session.close()
 
@@ -202,7 +234,7 @@ def get_latest_tracks(count=5):
         .join(Channel, Track.channel_id == Channel.id)
         .options(joinedload(Track.channel))
         .filter(Channel.blacklisted.is_(None), Track.flagged.is_(None))
-        .order_by(Track.last_modified_at.desc())
+        .order_by(Track.created_at.desc())
         .limit(count)
         .all()
     )
@@ -236,10 +268,10 @@ def update_track(
     track.genre_id = genre if genre is not None else track.genre_id
     track.duration = duration if duration != 0 else track.duration
     try:
-        if media is not None:
+        if media.filename != "":
             track.duration = int(mutagen.mp3.MP3(media).info.length)
             media.save(f"media/tracks/{track_id}/audio.mp3")
-        if track_art is not None:
+        if track_art.filename != "":
             track_art.save(f"media/tracks/{track_id}/track-art.png")
     except Exception as e:
         pass
@@ -282,6 +314,8 @@ def delete_track(track_id):
     delete_recent_by_track_id(track.id)
 
     delete_all_comments_by_track_id(track.id)
+
+    delete_views_by_track_id(track.id)
 
     session.delete(track)
     session.commit()

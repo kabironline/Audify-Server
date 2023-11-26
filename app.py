@@ -203,6 +203,14 @@ app.add_url_rule(
     "/track/delete", "track_delete", music.routes.track_delete, methods=["POST"]
 )
 
+app.add_url_rule(
+    "/tracks/<int:track_id>/edit",
+    "track_edit",
+    music.routes.track_edit,
+    methods=["GET", "POST"],
+)
+
+
 # Comments
 app.add_url_rule(
     "/tracks/<int:track_id>/comments",
@@ -246,6 +254,13 @@ app.add_url_rule(
     "dashboard_channel_tracks",
     membership.routes.dashboard_channel_tracks,
 )
+
+app.add_url_rule(
+    "/dashboard/channel/<int:channel_id>/tracks/list",
+    "dashboard_channel_tracks_list",
+    membership.routes.dashboard_channel_track_list,
+)
+
 app.add_url_rule(
     "/rating/<int:track_id>/<int:rating>",
     "update_rating",
@@ -268,6 +283,12 @@ app.add_url_rule(
     "/edit_profile",
     "edit_profile",
     membership.routes.edit_profile,
+    methods=["GET", "POST"],
+)
+app.add_url_rule(
+    "/edit_profile_creator",
+    "edit_profile_creator",
+    membership.routes.edit_profile_creator,
     methods=["GET", "POST"],
 )
 
@@ -296,17 +317,17 @@ app.add_url_rule(
     admin.routes.admin_dashboard,
 )
 
-# app.add_url_rule(
-#     "/admin/dashboard/genre-graph",
-#     "genre_distribution_graph",
-#     admin.routes.genre_distribution_graph,
-# )
+app.add_url_rule(
+    "/admin/dashboard/blacklist",
+    "admin_dashboard_blacklist",
+    admin.routes.admin_dashboard_blacklist,
+)
 
-# app.add_url_rule(
-#     "/admin/dashboard/user-channel-graph",
-#     "user_channel_distribution_graph",
-#     admin.routes.user_channel_distribution_graph,
-# )
+app.add_url_rule(
+    "/admin/dashboard/whitelist",
+    "admin_dashboard_whitelist",
+    admin.routes.admin_dashboard_whitelist,
+)
 
 
 @app.context_processor
@@ -317,6 +338,9 @@ def inject_user():
 app.jinja_env.filters["format_duration"] = format_duration
 app.jinja_env.filters["format_duration_words"] = format_duration_words
 app.jinja_env.filters["playlist_total_duration"] = playlist_total_duration
+app.jinja_env.filters[
+    "format_datetime_for_html_default"
+] = format_datetime_for_html_default
 
 app.add_url_rule(
     "/media/<path:filename>",

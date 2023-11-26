@@ -1,15 +1,15 @@
 .playlist__item {
-  /* width: 100%; */
+  max-width: 30rem;
   font-size: 2rem;
+  /* width: 100%; */
   display: flex;
-
   align-items: center;
   justify-content: flex-start;
   color: white;
   transition: all 0.1s ease-out;
   border-radius: 5px;
   border: 1px solid transparent;
-  padding: 1rem;
+  padding: 1.5rem;
   margin-bottom: 1rem;
   background-color: var(--color-background-light);
 
@@ -30,7 +30,7 @@
 .playlist__heading {
   font-size: 1.6rem;
   font-weight: 500;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
 }
 
 .playlist__subheading {
@@ -40,7 +40,7 @@
 }
 
 .playlist__playbutton {
-  font-size: 3rem;
+  font-size: 2.5rem;
 }
 
 /* TRACK ITEM */
@@ -157,12 +157,16 @@
 
 /* track Carousel */
 .track-carousel {
-  margin: 2rem 0;
   display: grid;
   /* Autofit rows according to size */
-  grid-template-columns: repeat(auto-fit, minmax(15%, 18.86%));
+  grid-template-columns: repeat(auto-fit, minmax(25rem, max-content));
   flex-wrap: wrap;
   gap: 2rem;
+  margin: 3rem 0;
+}
+
+.track-carousel__item {
+  max-width: 30rem;
 }
 
 .track-carousel__item--cover {
@@ -243,6 +247,7 @@
   text-decoration: none;
   color: white;
   display: block;
+  cursor: pointer;
 }
 
 .track-dropdown-container {

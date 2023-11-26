@@ -11,9 +11,9 @@ class UserAPI(Resource):
     def get(self, user_id: int = None, username: str = None):
         if user_id is None and username is None:
             return {"error": "user_id or username is required"}, 400
-        if user_id is None:
+        if user_id is not None:
             user = services.get_user_by_id(user_id)
-        elif username is None:
+        elif username is not None:
             user = services.get_user_by_username(username=username)
 
         if user is None:
@@ -23,7 +23,7 @@ class UserAPI(Resource):
             user, avatar=url_for("user_avatar", user_id=user_id)
         )
 
-        return jsonify(user_dict), 200
+        return user_dict, 200
 
     def post(self) -> [dict, int]:
         request_data = request.get_json()

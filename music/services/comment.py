@@ -97,4 +97,13 @@ def get_comment_dict(comment: Comment) -> dict:
         "created_by": comment.created_by,
         "last_modified_at": comment.last_modified_at,
         "last_modified_by": comment.last_modified_by,
+        "user": {
+            "id": comment.user.id,
+            "username": comment.user.username,
+            "nickname": comment.user.nickname,
+            "created_at": comment.user.created_at,
+            "last_modified_at": comment.user.last_modified_at,
+            "created_by": comment.user.created_by,
+            "last_modified_by": comment.user.last_modified_by,
+        },
     }

@@ -5,11 +5,8 @@ from music.services import (
     get_all_albums,
     get_all_playlists,
 )
-from membership.services import get_all_channels, get_all_users
-from admin.services import (
-    generate_genre_distribution_graph,
-    generate_user_channel_distribution_graph,
-)
+from membership.services import get_all_channels, get_all_users, get_user_by_id
+from admin.services import *
 import core
 
 
@@ -32,6 +29,10 @@ def admin_dashboard():
 
     channels = get_all_channels()
 
+    blacklisted_channels = get_blacklist()
+
+    whitelisted_channels = get_whitelist()
+
     return render_template(
         "admin/dashboard.html",
         user=user,
@@ -41,24 +42,46 @@ def admin_dashboard():
         playlists=playlists,
         users=users,
         channels=channels,
+        blacklisted_channels=blacklisted_channels,
+        whitelisted_channels=whitelisted_channels,
+        genre_distribution_graph=generate_genre_distribution_graph(),
+        user_channel_distribution_graph=generate_user_channel_distribution_graph(),
+        genre_listener_graph=generate_genre_listener_graph(),
+        viewership_graph=generate_recent_viewership_graph(),
     )
 
 
-def genre_distribution_graph():
+def admin_dashboard_blacklist():
     user = core.get_current_user()
     if user is None:
         return redirect(url_for("login"))
     elif not user.is_admin:
         return redirect(url_for("home"))
 
-    return generate_genre_distribution_graph()
+    blacklisted_channels = get_blacklist()
+    for channel in blacklisted_channels:
+        channel.blacklisted_by = get_user_by_id(channel.last_modified_by)
+
+    return render_template(
+        "admin/blacklisted.html",
+        user=user,
+        blacklisted_channels=blacklisted_channels,
+    )
 
 
-def user_channel_distribution_graph():
+def admin_dashboard_whitelist():
     user = core.get_current_user()
     if user is None:
         return redirect(url_for("login"))
     elif not user.is_admin:
         return redirect(url_for("home"))
 
-    return generate_user_channel_distribution_graph()
+    whitelisted_channels = get_whitelist()
+    for channel in whitelisted_channels:
+        channel.whitelisted_by = get_user_by_id(channel.last_modified_by)
+
+    return render_template(
+        "admin/whitelisted.html",
+        user=user,
+        whitelisted_channels=whitelisted_channels,
+    )

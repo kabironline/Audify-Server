@@ -5,6 +5,7 @@
   align-items: center;
   grid-column: 2;
   position: sticky;
+  height: 7rem;
   top: 0;
   z-index: 100;
 }
@@ -49,6 +50,10 @@
   &::placeholder {
     color: var(--text-placeholder-color);
   }
+}
+
+.profile-icon-container {
+  background-color: var(--color-background);
 }
 
 .search--button {
@@ -117,15 +122,19 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
 
-  .fas {
-    border-radius: 50%;
-    outline-offset: 0px;
-    outline: 3px solid transparent;
-    transition: all 0.2s ease-out;
-  }
+.navbar__profile--image {
+  width: 4rem;
+  height: 4rem;
+  margin-right: 1rem;
+  border-radius: 50%;
 
-  &:hover .fas {
+  outline-offset: 0px;
+  outline: 3px solid transparent;
+  transition: all 0.2s ease-out;
+
+  &:hover {
     outline: 3px solid white;
     outline-offset: 5px;
   }

@@ -1,13 +1,17 @@
 .page-container {
-  display: grid;
-  grid-template-columns: 25rem 1fr;
-  grid-template-rows: 7rem 1fr 5rem;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  overflow: hidden;
 }
 
 .page-content {
-  grid-column: 2 / -1;
-  grid-row: 2 / -1;
-  padding: 5rem 10rem;
+  width: 100%;
+  overflow-y: auto;
+}
+
+.container {
+  padding: 3rem 7rem;
 }
 
 .btn {
@@ -52,9 +56,12 @@
 
 .playlist-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 23.9%));
+  grid-template-columns: repeat(auto-fit, minmax(22rem, max-content));
   row-gap: 2rem;
   column-gap: 2rem;
+  /* display: inline-flex;
+  flex-wrap: wrap;
+  gap: 2rem; */
 }
 
 .section {
@@ -67,7 +74,7 @@
 }
 
 .heading-2 {
-  font-size: 4rem;
+  font-size: 3.5rem;
   font-weight: bold;
 }
 

@@ -19,7 +19,7 @@ def player(track_id):
 
     track.user_rating = user_rating
 
-    create_recent(user.id, track_id)
+    create_recent(user.id, track.id)
     create_new_view(track, user.id)
 
     track.views = get_views_by_track_id(track_id)
@@ -104,25 +104,22 @@ def player_list(album_id=None, playlist_id=None, position=0):
 
     list = []
     if album_id is not None:
-        items = get_album_items_by_album_id(album_id)
-        for item in items:
-            track = get_track_by_id(item.track_id)
-            track.channel = get_channel_by_id(track.created_by)
-            list.append(track)
+        list = get_album_items_by_album_id(album_id)
+        for item in list:
+            item.views = get_views_by_track_id(item.id)
 
         if list == []:
             return redirect(url_for("album_page", album_id=album_id))
 
     elif playlist_id is not None:
-        items = get_playlist_items_by_playlist_id(playlist_id)
-        for item in items:
-            track = get_track_by_id(item.track_id)
-            track.channel = get_channel_by_id(track.created_by)
-            track.views = get_views_by_track_id(track.id)
-            list.append(track)
+        list = get_playlist_items_by_playlist_id(playlist_id)
+        for item in list:
+            item.views = get_views_by_track_id(item.id)
 
         if list == []:
             return redirect(url_for("playlist_page", playlist_id=playlist_id))
+
+    create_recent(user.id, list[position].id)
 
     return render_template(
         "music/player_list.html",
@@ -132,3 +129,48 @@ def player_list(album_id=None, playlist_id=None, position=0):
         album_id=album_id,
         playlist_id=playlist_id,
     )
+
+
+def track_edit(track_id):
+    user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
+
+    track = get_track_by_id(track_id)
+    is_creator = False
+    for channel in user.channels:
+        if channel["id"] == track.channel_id:
+            is_creator = True
+            break
+
+    if not is_creator:
+        return redirect(url_for("home"))
+
+    if request.method == "POST":
+        request_data = request.form
+        name = request_data.get("title")
+        lyrics = request_data.get("lyrics")
+        release_date = request_data.get("release_date")
+        genre_id = request_data.get("genre_id")
+
+        release_date = datetime.strptime(release_date, "%Y-%m-%dT%H:%M")
+
+        track_media = request.files.get("track_media")
+        track_art = request.files.get("track_art")
+
+        update_track(
+            track_id,
+            name=name,
+            lyrics=lyrics,
+            release_date=release_date,
+            genre=genre_id,
+            track_art=track_art,
+            media=track_media,
+        )
+
+        track = get_track_by_id(track_id)
+        genres = get_all_genres()
+        return render_template("music/track_edit.html", track=track, genres=genres)
+
+    genres = get_all_genres()
+    return render_template("music/track_edit.html", track=track, genres=genres)

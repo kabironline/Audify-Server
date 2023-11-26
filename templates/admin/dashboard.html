@@ -8,48 +8,58 @@
   <div class="admin-dashboard__header mb-medium">
     <h1 class="heading-1">Admin Dashboard</h1>
   </div>
-  <div class="admin-header-tiles">
-    <a href="/admin/dashboard/users">
-      <div class="admin-header-tile">
-        <p class="admin-header-tile--title">Total Users</p>
-        <p class="admin-header-tile--number">{{ users|length}}</p>
+  <div class="header-tiles">
+    <div class="header-tile">
+      <p class="header-tile--number">{{ users|length}}</p>
+      <p class="header-tile--title">Total Users</p>
+    </div>
+    <div class="header-tile">
+      <p class="header-tile--number">{{ channels|length}}</p>
+      <p class="header-tile--title">Total Channels</p>
+    </div>
+    <div class="header-tile">
+      <p class="header-tile--number">{{ playlists|length}}</p>
+      <p class="header-tile--title">Total Playlists</p>
+    </div>
+    <div class="header-tile">
+      <p class="header-tile--number">{{ albums|length}}</p>
+      <p class="header-tile--title">Total Albums</p>
+    </div>
+    <div class="header-tile">
+      <p class="header-tile--number">{{ tracks|length}}</p>
+      <p class="header-tile--title">Total Tracks</p>
+    </div>
+    <div class="header-tile">
+      <p class="header-tile--number">{{ genres|length}}</p>
+      <p class="header-tile--title">Total Genres</p>
+    </div>
+    <a href="/admin/dashboard/blacklist">
+      <div class="header-tile">
+        <p class="header-tile--number">{{ blacklisted_channels|length}}</p>
+        <p class="header-tile--title">Blacklisted Channels</p>
       </div>
     </a>
-    <a href="/admin/dashboard/channels">
-      <div class="admin-header-tile">
-        <p class="admin-header-tile--title">Total Channels</p>
-        <p class="admin-header-tile--number">{{ channels|length}}</p>
-      </div>
-    </a>
-    <a href="/admin/dashboard/playlists">
-      <div class="admin-header-tile">
-        <p class="admin-header-tile--title">Total Playlists</p>
-        <p class="admin-header-tile--number">{{ playlists|length}}</p>
-      </div>
-    </a>
-    <a href="/admin/dashboard/playlists">
-      <div class="admin-header-tile">
-        <p class="admin-header-tile--title">Total Albums</p>
-        <p class="admin-header-tile--number">{{ albums|length}}</p>
-      </div>
-    </a>
-    <a href="/admin/dashboard/tracks">
-      <div class="admin-header-tile">
-        <p class="admin-header-tile--title">Total Tracks</p>
-        <p class="admin-header-tile--number">{{ tracks|length}}</p>
-      </div>
-    </a>
-    <a href="/admin/dashboard/genres">
-      <div class="admin-header-tile">
-        <p class="admin-header-tile--title">Total Genres</p>
-        <p class="admin-header-tile--number">{{ genres|length}}</p>
+    <a href="/admin/dashboard/whitelist">
+      <div class="header-tile">
+        <p class="header-tile--number">{{ whitelisted_channels|length}}</p>
+        <p class="header-tile--title">Whitelisted Channels</p>
       </div>
     </a>
   </div>
+  <h3 class="heading-3">Graphical Overview</h3>
   <div class="graph-container">
-    <h3 class="heading-3">Distribution Overview</h3>
-    <img src="{{url_for('genre_distribution_graph')}}" alt="genre-distribution">
-    <img src="{{url_for('user_channel_distribution_graph')}}" alt="user-distribution">
+    <div class="graph-container__graph">
+      {{genre_distribution_graph|safe}}
+    </div>
+    <div class="graph-container__graph">
+      {{user_channel_distribution_graph|safe}}
+    </div>
+    <div class="graph-container__graph graph-container__graph-main">
+      {{genre_listener_graph|safe}}
+    </div>
+    <div class="graph-container__graph">
+      {{viewership_graph|safe}}
+    </div>
   </div>
 </section>
 {% endblock %}

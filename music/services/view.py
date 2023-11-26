@@ -1,9 +1,9 @@
 from music.models import View, Track
 from membership.models import Channel
-from music.services.track import get_track_by_id
 from core.db import get_session, db
 from datetime import datetime
 from sqlalchemy.orm import joinedload
+from sqlalchemy import func
 
 
 def create_new_view(track, user_id):
@@ -47,6 +47,21 @@ def get_views_by_genre_id(genre_id):
     session = get_session()
     views = session.query(View.id).filter(View.genre_id == genre_id).count()
     return views
+
+
+def get_views_by_date(date):
+    session = get_session()
+
+    # Returns the count of views for a given date
+    views_count = (
+        session.query(func.count(View.id))
+        .filter(func.date(View.created_at) == date.date())
+        .scalar()
+    )
+
+    session.close()
+
+    return views_count
 
 
 def get_all_views():

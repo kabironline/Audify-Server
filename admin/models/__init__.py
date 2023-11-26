@@ -9,3 +9,5 @@ class Whitelist(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     last_modified_at = db.Column(db.DateTime, nullable=False)
     last_modified_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=True)
+
+    channel = db.relationship("Channel", foreign_keys=[channel_id])

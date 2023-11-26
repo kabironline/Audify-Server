@@ -5,6 +5,7 @@ from membership.services import (
     get_user_channels,
     get_channel_dict,
     get_channel_by_id,
+    update_channel,
 )
 from music.services import get_playlist_by_user, get_playlist_dict
 
@@ -53,3 +54,46 @@ def edit_profile():
         return redirect(url_for("edit_profile"))
 
     return render_template("membership/edit_profile.html", current_user=user)
+
+
+def edit_profile_creator():
+    user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        request_data = request.form
+        if request_data.get("password") != user.password:
+            return render_template(
+                "membership/edit_profile_creator.html",
+                channel=user.channels[0],
+                error="Incorrect Password Password",
+            )
+
+        name = request_data.get("name").strip()
+        description = request_data.get("description")
+
+        avatar = request.files.get("avatar")
+
+        update_channel(user.channels[0]["id"], name, description, avatar)
+
+        # Checking if user is a part of any channel
+        members = get_user_channels(user.id)
+        channel = None
+        if len(members) != 0:
+            channel = []
+            for member in members:
+                channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))
+
+        playlist = []
+        playlist_search = get_playlist_by_user(user.id)
+        for playlist_item in playlist_search:
+            playlist.append(get_playlist_dict(playlist_item))
+
+        channel = channel[0]
+
+        return render_template("membership/edit_profile_creator.html", channel=channel)
+
+    return render_template(
+        "membership/edit_profile_creator.html", channel=user.channels[0]
+    )

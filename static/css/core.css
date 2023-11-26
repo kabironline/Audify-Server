@@ -40,23 +40,23 @@ html {
   scroll-behavior: smooth;
 
   /* width */
-  &::-webkit-scrollbar {
+  ::-webkit-scrollbar {
     width: 6px;
   }
 
   /* Track */
-  &::-webkit-scrollbar-track {
+  ::-webkit-scrollbar-track {
     background: var(--color-background);
   }
 
   /* Handle */
-  &::-webkit-scrollbar-thumb {
+  ::-webkit-scrollbar-thumb {
     background: var(--color-background-light);
     border-radius: 8px;
   }
 
   /* Handle on hover */
-  &::-webkit-scrollbar-thumb:hover {
+  ::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
 }

@@ -1,0 +1,46 @@
+{% extends "base.html"%}
+{%block title%}Blacklisted Users{%endblock%}
+{% block m_head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+{% block m_content %}
+<section id="section section-blacklisted">
+  <div class="admin-dashboard__header mb-medium">
+    <h1 class="heading-1">Blacklisted Users</h1>
+  </div>
+  {% if whitelisted_channels|length > 0 %}
+  <div class="admin-dashboard__table">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Channel Name</th>
+          <th>Channel ID</th>
+          <th>Blacklisted By</th>
+          <th>Blacklisted On</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for channel in whitelisted_channels %}
+        <tr>
+          <td>{{ channel.name }}</td>
+          <td>{{ channel.id }}</td>
+          <td><a href="/dashboard/{{ channel.whitelisted_by.id}}">
+              @{{ channel.whitelisted_by.username }}
+            </a></td>
+          <td>{{ channel.last_modified_at }}</td>
+          <td>
+            <a href="/channels/{{channel.id}}/whitelist" class="btn btn--primary">Unwhitelist</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="admin-dashboard__empty">
+    <p class="admin-dashboard__empty--text">No blacklisted channels.</p>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

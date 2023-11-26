@@ -52,24 +52,27 @@ def dashboard_channel(channel_id=None):
         return redirect(url_for("home"))
 
     channel_tracks = music.services.get_tracks_by_channel(channel_id)
-    for track in channel_tracks:
-        track.channel = channel
 
     albums = music.services.get_album_by_user(channel_id)
-    for album in albums:
-        album.channel = channel
 
     channel.whitelist = get_whitelist_by_channel_id(channel_id)
+
+    channel_views = music.services.get_views_by_channel_id(channel_id)
 
     return render_template(
         "membership/dashboard_channel.html",
         channel=channel,
         own_profile=is_member,
         channel_tracks=channel_tracks,
+        views=channel_views,
     )
 
 
 def dashboard_channel_tracks(channel_id=None):
+    user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
+
     channel = get_channel_by_id(channel_id)
 
     if channel is None:
@@ -77,9 +80,30 @@ def dashboard_channel_tracks(channel_id=None):
         return redirect(url_for("home"))
 
     channel_tracks = music.services.get_tracks_by_channel(channel_id)
-    for track in channel_tracks:
-        track.channel = channel
 
     return render_template(
-        "music/all_tracks.html", all_tracks=channel_tracks, title=channel.name
+        "music/all_tracks.html",
+        all_tracks=channel_tracks,
+        title=channel.name,
+    )
+
+
+def dashboard_channel_track_list(channel_id=None):
+    user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
+
+    channel = get_channel_by_id(channel_id)
+
+    if channel is None:
+        return redirect(url_for("home"))
+
+    tracks = music.services.get_tracks_by_channel(channel_id)
+    for track in tracks:
+        track.views = music.services.get_views_by_track_id(track.id)
+
+    return render_template(
+        "music/all_tracks_list.html",
+        all_tracks=tracks,
+        title=channel.name,
     )

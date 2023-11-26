@@ -41,7 +41,7 @@
       <i class="fas fa-user-check"></i> Remove Blacklist
     </a>
     {% else %}
-    {% if not own_profile %}
+    {% if current_user.is_admin %}
     <a href="/channels/{{channel.id}}/whitelist" class="btn btn--white">
       <i class="fas fa-user-shield"></i> Add Whitelist
     </a>
@@ -53,6 +53,31 @@
   </div>
 </section>
 <hr class="hr">
+<section class="section section-stats">
+  <div class="header-tiles">
+    {% if own_profile == True %}
+    <a href="/dashboard/channel/{{channel.id}}/tracks/list">
+      <div class="header-tile">
+        <p class="header-tile--number">{{ channel_tracks|length}}</p>
+        <p class="header-tile--title">Total Tracks</p>
+      </div>
+    </a>
+    {% else %}
+    <div class="header-tile">
+      <p class="header-tile--number">{{ channel_tracks|length}}</p>
+      <p class="header-tile--title">Total Tracks</p>
+    </div>
+    {% endif %}
+    <div class="header-tile">
+      <p class="header-tile--number">{{ channel_albums|length}}</p>
+      <p class="header-tile--title">Total Albums</p>
+    </div>
+    <div class="header-tile">
+      <p class="header-tile--number">{{ views }}</p>
+      <p class="header-tile--title">Total Views</p>
+    </div>
+  </div>
+</section>
 <section class="section section-tracks">
   {% if channel_tracks|length == 0 %}
   <p class="heading-2">No tracks yet</p>

@@ -9,10 +9,12 @@
 {% endblock %}
 {% block content %}
 <div class="page-container">
-  {% include "navbar.html" %}
   {% include "sidebar.html" %}
   <div class="page-content">
-    {% block m_content %}{% endblock %}
+    {% include "navbar.html" %}
+    <div class="container">
+      {% block m_content %}{% endblock %}
+    </div>
   </div>
   <!-- <div class="player-frame-container">
     <iframe class="player-bar" src="/player_controls" frameborder="0" width="100%"> Player </iframe>

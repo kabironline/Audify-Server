@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for
+from flask import request, redirect, url_for
 from membership.services import get_channel_by_id
 from admin.services import (
     create_blacklist,
@@ -24,7 +24,7 @@ def whitelist_channel(channel_id):
     else:
         delete_whitelist_by_channel_id(channel_id)
 
-    return redirect(url_for("dashboard_channel", channel_id=channel_id))
+    return redirect(f"/{'/'.join(request.referrer.split('/')[3:])}")
 
 
 def blacklist_channel(channel_id):
@@ -40,4 +40,4 @@ def blacklist_channel(channel_id):
     else:
         create_blacklist(channel_id, user.id)
 
-    return redirect(url_for("dashboard_channel", channel_id=channel_id))
+    return redirect(f"/{'/'.join(request.referrer.split('/')[3:])}")

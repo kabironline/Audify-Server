@@ -3,6 +3,7 @@ from membership.models import Channel
 from core.db import get_session, db
 from datetime import datetime
 from sqlalchemy.orm import joinedload
+from sqlalchemy import desc
 
 
 def create_recent(user_id, track_id):
@@ -11,10 +12,7 @@ def create_recent(user_id, track_id):
     # Checking if the track is already in the recent table for the user
     recent = get_recent_by_user_and_track_id(user_id, track_id)
     if recent is not None:
-        recent.last_modified_at = datetime.now()
-        recent.last_modified_by = user_id
-        session.commit()
-        return recent
+        delete_recent_by_user_and_track_id(user_id, track_id)
 
     recent = Recent(
         user_id=user_id,
@@ -50,19 +48,24 @@ def get_recent_by_user_id(user_id, count=10):
     session = get_session()
     # sort them in descending order by last_modified_at
     query = (
-        session.query(Track)
+        session.query(Track, Recent.last_modified_at)
         .join(Recent, Track.id == Recent.track_id)
         .join(Channel, Track.channel_id == Channel.id)
         .options(joinedload(Track.channel))
+        .order_by(desc(Recent.last_modified_at))
         .filter(
-            Recent.user_id == user_id, Channel.blacklisted.is_(None), Track.flagged.is_(None)
+            Recent.user_id == user_id,
+            Channel.blacklisted.is_(None),
+            Track.flagged.is_(None),
         )
-        .order_by(Recent.last_modified_at.desc())
         .limit(count)
         .all()
     )
+    tracks = []
+    for item in query:
+        tracks.append(item[0])
 
-    return query
+    return tracks
 
 
 def delete_recent_by_user_id(user_id):
@@ -75,5 +78,14 @@ def delete_recent_by_user_id(user_id):
 def delete_recent_by_track_id(track_id):
     session = get_session()
     session.query(Recent).filter(Recent.track_id == track_id).delete()
+    session.commit()
+    return True
+
+
+def delete_recent_by_user_and_track_id(user_id, track_id):
+    session = get_session()
+    session.query(Recent).filter(
+        Recent.user_id == user_id, Recent.track_id == track_id
+    ).delete()
     session.commit()
     return True

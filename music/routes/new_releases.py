@@ -10,13 +10,24 @@ def new_releases():
 
     new_releases = music.services.get_latest_tracks()
 
-    return render_template("music/new_releases.html", new_releases=new_releases)
+    new_releases_albums = music.services.get_latest_albums()
+
+    return render_template(
+        "music/new_releases.html",
+        new_releases=new_releases,
+        new_releases_albums=new_releases_albums,
+    )
 
 
 def new_releases_albums():
     if core.get_current_user() is None:
         return redirect(url_for("login"))
-    return render_template("music/new_releases_albums.html")
+
+    latest_albums = music.services.get_latest_albums(30)
+
+    return render_template(
+        "music/new_releases_albums.html", latest_albums=latest_albums
+    )
 
 
 def new_releases_tracks():

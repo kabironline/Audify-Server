@@ -26,3 +26,10 @@ def playlist_total_duration(tracks: list):
         total_duration += track.duration
 
     return format_duration_words(total_duration)
+
+
+def format_datetime_for_html_default(dt):
+    """
+    Function to format a datetime object to a string compatible with HTML datetime-local input.
+    """
+    return dt.strftime("%Y-%m-%dT%H:%M:%S")

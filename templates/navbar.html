@@ -16,7 +16,12 @@
         </li>
         {% if current_user.channels != None %}
         <li class="dropdown-item">
-          <a class="dropdown-item--link" href="/dashboard/channel/{{current_user.channels[0].id}}">Channel Dashboard</a>
+          <a class="dropdown-item--link" href="/dashboard/channel/{{current_user.channels[0]['id']}}">Channel Dashboard</a>
+        </li>
+        {% endif %}
+        {% if current_user.is_admin %}
+        <li class="dropdown-item">
+          <a class="dropdown-item--link" href="/admin/dashboard">Admin Dashboard</a>
         </li>
         {% endif %}
         <li class="dropdown-item">
@@ -29,7 +34,7 @@
         {% endif %}
         {% if current_user.channels != None %}
         <li class="dropdown-item">
-          <a class="dropdown-item--link" href="/edit_channel">Edit Channel</a>
+          <a class="dropdown-item--link" href="/edit_profile_creator">Edit Channel</a>
         </li>
         {% endif %}
         <li class="dropdown-item">
@@ -38,7 +43,8 @@
       </ul>
     </div>
     <label for="profile" class="navbar__profile">
-      <i class="fas fa-circle-user"></i>
+      <img src="{{ url_for('user_avatar', user_id=current_user.id) }}" alt="Profile Image"
+        class="navbar__profile--image">
     </label>
   </div>
   <a class="navbar__profile" href="/dashboard">

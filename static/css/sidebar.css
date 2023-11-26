@@ -1,10 +1,7 @@
 .sidebar {
-  grid-row: 1 / -1;
-  grid-column: 1 / 2;
-  min-height: 100vh;
-  position: fixed;
   overflow-y: auto;
-  width: 25rem;
+  overflow-x: hidden;
+  width: 30rem;
   padding: 2rem;
   display: flex;
   flex-direction: column;
@@ -58,4 +55,5 @@
   grid-template-columns: 5rem 1fr;
   color: var(--text-color);
   width: 100%;
+  align-items: center;
 }

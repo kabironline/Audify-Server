@@ -1,0 +1,78 @@
+{% extends "base.html"%}
+{%block title%}Track Edit{%endblock%}
+{%block m_content%}
+<section class="section section-upload">
+  <h2 class="heading-2">Edit Track</h2>
+  <form class="form__container form__container--track" action="/tracks/{{track.id}}/edit" method="post"
+    enctype="multipart/form-data">
+
+    <div class="form__group">
+      <input type="text" minlength="1" maxlength="50" name="title" value="{{track.name}}" id="title"
+        placeholder="Track Name" class="form__input" required>
+      <label for="title" class="form__label">Track Name</label>
+    </div>
+    <div class="form__group">
+      <select aria-required="true" name="genre" id="genre" class="form__input" required>
+        {% for genre in genres %}
+        {% if genre.id == track.genre_id %}
+        <option value="{{genre}}" selected>{{genre.name}}</option>
+        {% else %}
+        <option value="{{genre}}">{{genre.name}}</option>
+        {% endif %}
+        {% endfor %}
+      </select>
+      <label for="genre" aria-autocomplete="list" class="form__label">Genre</label>
+    </div>
+    <div class="form__group">
+      <input type="datetime-local" name="release_date" id="release_date"
+        value="{{track.release_date|format_datetime_for_html_default}}" placeholder="Release Date" class="form__input"
+        required>
+      <label for="release_date" class="form__label">Release Date</label>
+    </div>
+    <div class="form__group">
+      <textarea name="lyrics" id="lyrics" class="form__input form__input--textarea"
+        placeholder="Lyrics">{{track.lyrics}}</textarea>
+      <label for="lyrics" class="form__label">Lyrics (Optional)</label>
+    </div>
+    <div class="form__group form__group--reverse">
+      <label class="form__label" for="track">Track</label>
+      <input class="form__input form__input--file " type="file" accept=".mp3" name="track_media" id="track">
+      <img src="" alt="" class="form__input--img">
+    </div>
+    <div class="form__group form__group--reverse">
+      <label class="form__label" for="cover">Cover Large</label>
+      <div class="form__input--img-container">
+        <input class="form__input form__input--file cover-large" type="file" accept=".png" name="track_art" id="cover">
+        <img src="{{url_for('track_cover', track_id=track.id)}}" alt="" class="form__input--img"
+          style="display: block;">
+      </div>
+    </div>
+    <input class="form__button form__button--track" type="submit" value="Upload" class="btn btn-primary" />
+  </form>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // If image file has been uploaded then display it in the adjacent image tag
+
+  const coverLarge = document.querySelector('.cover-large');
+  const track = document.querySelector('.track');
+
+  coverLarge.addEventListener('change', function () {
+    const file = this.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.addEventListener('load', function () {
+        coverLarge.nextElementSibling.style.display = 'block';
+        coverLarge.nextElementSibling.src = this.result;
+      });
+      reader.readAsDataURL(file);
+    }
+  });
+
+
+
+
+</script>
+{% endblock %}

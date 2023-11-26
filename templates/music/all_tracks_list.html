@@ -1,0 +1,44 @@
+{% extends 'base.html' %} {% block title %} Latest Tracks {% endblock %}
+{% block m_head %}
+{% endblock %} {% block m_content %}
+<section class="section section-new-tracks">
+  <h2 class="heading-2 mb-medium">
+    {{ title }}'s Videos
+  </h2>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Track Name</th>
+        <th>Track ID</th>
+        <th>Published On</th>
+        <th>Duration</th>
+        <th>Views</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for track in all_tracks %}
+      <tr>
+        <td><a href="/player/{{track.id}}">{{ track.name }}</a></td>
+        <td>{{ track.id }}</td>
+        <td>{{ track.created_at }}</td>
+        <td>{{ track.duration | format_duration_words}}</td>
+        <td>{{ track.views }}</td>
+        <td>
+          <!-- Delete Button -->
+          <a href="?id={{track.id}}#delete-track-modal" class="btn btn--secondary">
+            <i class="fas fa-trash"></i>
+          </a>
+          <!-- Edit Button -->
+          <a href="/tracks/{{track.id}}/edit" class="btn btn--primary">
+            <i class="fas fa-pen-to-square"></i>
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+    {% if all_tracks | length == 0 %}
+    <p class="no-tracks">No tracks found</p>
+    {% endif %}
+</section>
+{% endblock %}

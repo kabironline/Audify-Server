@@ -2,26 +2,19 @@
 {% block m_head %}
 {% endblock %} {% block m_content %}
 <section class="section section-new-albums">
+
   <h2 class="heading-2">
     Latest Albums
   </h2>
-  <div class="track-carousel">
-    {% for n in range(0,25) %}
-    <div class="track-carousel__item">
-      <div class="track-carousel__item--cover">
-        <a href="/" class="">
-          <div>
-            <img src="https://picsum.photos/200?random={{n}}" alt="track Image" class="track-carousel__item--img">
-            <i class="fas fa-play track-carousel__item--play"></i>
-          </div>
-        </a>
-      </div>
-      <div class="track-carousel__item--text">
-        <a href="" class="track-carousel__item--title">track Title</a>
-        <a href="" class="track-carousel__item--artist">Artist</a>
-      </div>
-    </div>
-    {% endfor %}
+  {% if latest_albums|length == 0 %}
+  <div class="section__empty">
+    <p class="section__empty--text">No albums found.</p>
+  </div>
+  {% else %}
+  {% with albums=latest_albums %}
+  {% include 'widget/album_carousel.html' %}
+  {% endwith %}
+  {% endif %}
   </div>
 </section>
 {% endblock %}

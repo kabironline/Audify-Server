@@ -32,6 +32,15 @@ def get_whitelist_by_channel_id(channel_id):
     return whitelist if whitelist else None
 
 
+def get_whitelist():
+    session = get_session()
+    whitelist = (
+        session.query(Channel).join(Whitelist, Channel.id == Whitelist.channel_id).all()
+    )
+    session.close()
+    return whitelist
+
+
 def delete_whitelist_by_channel_id(channel_id):
     session = get_session()
     whitelist = session.query(Whitelist).filter_by(channel_id=channel_id).first()
@@ -62,7 +71,7 @@ def get_blacklist():
     session = get_session()
     channels = session.query(Channel).filter_by(blacklisted=True).all()
     session.close()
-    return channels if channels else None
+    return channels
 
 
 def delete_blacklist(channel_id, user_id):

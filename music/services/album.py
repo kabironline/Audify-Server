@@ -76,7 +76,15 @@ def get_album_by_name(album_name):
 def get_album_by_user(channel_id, count=5):
     session = get_session()
 
-    album = session.query(Album).filter_by(created_by=channel_id).limit(count).all()
+    album = (
+        session.query(Album)
+        .join(Channel, Album.created_by == Channel.id)
+        .options(joinedload(Album.channel))
+        .filter(Album.created_by == channel_id)
+        .order_by(Album.created_at.desc())
+        .limit(count)
+        .all()
+    )
 
     session.close()
 

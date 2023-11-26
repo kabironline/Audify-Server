@@ -45,13 +45,12 @@
   </ul>
 
   <hr class="sidebar__hr">
-  <h3 class="heading-3 mb-medium">Your Playlists</h3>
+  <a href="#playlist-modal" class="btn mb-small">
+    &plus; Create Playlist
+  </a>
   <ul class="side-nav">
     {% with playlists = current_user.playlists %}
     {% include 'widgets/playlist_tile.html' %}
     {% endwith %}
   </ul>
-  <a href="#playlist-modal" class="btn">
-    &plus; Create Playlist
-  </a>
 </div>
