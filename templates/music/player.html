@@ -22,9 +22,9 @@
           </a> &VeryThinSpace; &middot; {{track.release_date.strftime('%Y-%m-%d')}} &VeryThinSpace; &middot;
           {{track.views}} Views
           <div class="rating-container">
-            <button class="player__rating--btn player__like--btn"> <i
+            <button title="Like" class="player__rating--btn player__like--btn"> <i
                 class="{% if track.user_rating == 1%}fas {% else %}far {%endif%}fa-thumbs-up"></i></button>
-            <button class="player__rating--btn player__dislike--btn"><i
+            <button title="dislike" class="player__rating--btn player__dislike--btn"><i
                 class="{% if track.user_rating == 0%}fas {% else %}far {%endif%}fa-thumbs-down"></i></button>
             <div class="rating">
               <div class="rating__bar" style="width: {{track.average_rating}}%"></div>
@@ -41,10 +41,10 @@
         <input type="range" min="0" max="100" value="0" class="player__progress-bar">
         <div class="player__controls">
           <button class="player__controls--btn play-pause">
-            <i class="fas fa-circle-play" id="player__controls--btn-ico" aria-hidden="true"></i>
+            <i class="fas fa-circle-play" title="Play/Pause" id="player__controls--btn-ico" aria-hidden="true"></i>
           </button>
           <button id="loop" onclick="toggleLoop()" class="player__controls--btn player__controls--btn-side loop-btn">
-            <i class="fas fa-redo-alt" id="player__controls--btn-ico" aria-hidden="true"></i>
+            <i class="fas fa-repeat" title="Toggle Loop" id="player__controls--btn-ico" aria-hidden="true"></i>
         </div>
       </div>
     </div>
@@ -112,6 +112,11 @@
       activateLyrics();
     }
     updateCommentSection();
+
+    // Checking if the user has looped the track before
+    if (sessionStorage.getItem('loop') == 'true') {
+      toggleLoop();
+    }
   }
 
   function activateLyrics() {
@@ -196,7 +201,7 @@
     const commentDate = new Date(comment.created_at);
     const formattedDate = `${commentDate.getFullYear()}-${commentDate.getMonth() + 1}-${commentDate.getDate()}`;
     const currentUserId = {{ current_user.id }};
-    const commentHTMLPt1 = `
+  const commentHTMLPt1 = `
     <div class="comment">
       <div class="comment__header">
         <a class="comment__header--user" href="/user/${comment.user_id}">${comment.user.nickname}</a>
@@ -205,11 +210,11 @@
             ${formattedDate}
           </span>
           `;
-    let button = `
+  let button = `
           <button onclick="deleteComment(${comment.id}, {{current_user.id}})"
             class="comment__header--delete"><i class="fas fa-trash-alt"></i>
           </button>`;
-    const  commentHTMLPt2 = `
+  const commentHTMLPt2 = `
         </div>
       </div>
       <div class="comment__body">
@@ -218,8 +223,8 @@
     </div>
     `;
 
-    const commentHTML = commentHTMLPt1 + (currentUserId == comment.user_id ? button : '') + commentHTMLPt2;
-    commentSection.innerHTML = commentHTML + commentSection.innerHTML;
+  const commentHTML = commentHTMLPt1 + (currentUserId == comment.user_id ? button : '') + commentHTMLPt2;
+  commentSection.innerHTML = commentHTML + commentSection.innerHTML;
   }
 
   function updateCommentSection() {
@@ -347,9 +352,9 @@
   });
 
   audio.addEventListener('ended', function () {
-    if (audio.loop) {
-      audio.currentTime = 0;
-      playTrack();
+    if (isLooping) {
+      // reload the page to reset the audio
+      location.reload();
       return;
     }
     pauseTrack();
@@ -411,15 +416,16 @@
   });
 
   function toggleLoop() {
-
     if (isLooping) {
-      audio.loop = false;
+      // audio.loop = false;
       loopIcon.classList.remove('player__controls--btn-check--active');
       isLooping = false;
+      sessionStorage.setItem('loop', false);
     } else {
-      audio.loop = true;
+      // audio.loop = true;
       loopIcon.classList.add('player__controls--btn-check--active');
       isLooping = true;
+      sessionStorage.setItem('loop', true);
     }
   }
 </script>

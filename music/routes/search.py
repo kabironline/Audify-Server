@@ -13,15 +13,21 @@ def search():
 
     q = request.args.get("q")
     if q == "" or q is None:
-        return redirect((request.referrer.split(":")[2][4:]))
+        return render_template(
+            "music/search.html",
+            search_results_tracks=[],
+            search_results_channels=[],
+            search_results_playlists=[],
+            search_results_albums=[],
+            q=q,
+        )
 
     track_search = music.services.track.search_tracks(q)
     track_results = []
     for track in track_search:
         track_temp = music.services.track.get_track_by_id(track.rowid)
-        track_temp.channel = membership.services.channel.get_channel_by_id(
-            track_temp.channel_id
-        )
+        if track_temp.flagged or track_temp.channel.blacklisted:
+            continue
         track_results.append(track_temp)
 
     channel_search = membership.services.channel.search_channels(q)
@@ -30,18 +36,14 @@ def search():
     playlist_search = music.services.playlist.search_playlists(q)
     for playlist in playlist_search:
         playlist_temp = music.services.playlist.get_playlist_by_id(playlist.rowid)
-        playlist_temp.channel = membership.services.user.get_user_by_id(
-            playlist_temp.created_by
-        )
         playlist_results.append(playlist_temp)
 
     album_results = []
     album_search = music.services.album.search_albums(q)
     for album in album_search:
         album_temp = music.services.album.get_album_by_id(album.rowid)
-        album_temp.channel = membership.services.channel.get_channel_by_id(
-            album_temp.created_by
-        )
+        if album_temp.channel.blacklisted:
+            continue
         album_results.append(album_temp)
 
     if len(channel_search) > 0:

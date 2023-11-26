@@ -87,7 +87,9 @@ def update_channel(
         raise Exception("Channel not found")
 
     channel.name = name if name is not None else channel.name
-    channel.description = description if description is not None else channel.description
+    channel.description = (
+        description if description is not None else channel.description
+    )
     channel.last_modified_at = datetime.datetime.now()
     session.commit()
 
@@ -136,6 +138,9 @@ def search_channels(q):
 
     result = []
     for channel in search:
-        result.append(get_channel_by_id(channel.rowid))
+        channel = get_channel_by_id(channel.rowid)
+        if channel.blacklisted:
+            continue
+        result.append(channel)
 
     return result

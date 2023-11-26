@@ -38,7 +38,7 @@
 </section>
 <section class="section section-playlist-songs">
   <ul class="track-list">
-    {% with tracks=album.items,playlist_id = 0 %}
+    {% with tracks=album.items,playlist_id = 0, self = False %}
     {% include "widgets/track_list.html" %}
     {% endwith %}
     {% if album.items|length == 0 %}

@@ -1,7 +1,8 @@
 <nav class="navbar">
   <form action="/search" method="get" class="search-container">
     <div class="search">
-      <input type="text" name="q" placeholder="Enter Search Terms" value="{{ q }}" class="search--bar">
+      <input type="text" name="q" placeholder="Enter Search Terms" value="{{ q }}" class="search--bar"
+        autocomplete="off">
       <button type="submit" value="Search" class="search--button">
         <i class="fas fa-search"></i>
       </button>
@@ -16,7 +17,8 @@
         </li>
         {% if current_user.channels != None %}
         <li class="dropdown-item">
-          <a class="dropdown-item--link" href="/dashboard/channel/{{current_user.channels[0]['id']}}">Channel Dashboard</a>
+          <a class="dropdown-item--link" href="/dashboard/channel/{{current_user.channels[0]['id']}}">Channel
+            Dashboard</a>
         </li>
         {% endif %}
         {% if current_user.is_admin %}

@@ -15,22 +15,6 @@
         <a href="/album/{{album.id}}" class="track-carousel__item--title">
           <p>{{album.name}}</p>
         </a>
-        <div class="track-menu-container">
-          <input type="checkbox" id="track-carousel-{{album.id}}" name="track-menu-{{album.id}}" id=""
-            class="checkbox-disable track-menu__checkbox">
-          <div class="track-dropdown-container album-dropdown-container">
-            <ul class="dropdown-list">
-              <li class="dropdown-item">
-                <a href="?id={{album.id}}#report-modal" class="dropdown-item--link">
-                  Report
-                </a>
-              </li>
-            </ul>
-          </div>
-          <label for="track-carousel-{{album.id}}" class="track-menu-label">
-            <i class="fas fa-ellipsis-v"></i>
-          </label>
-        </div>
       </div>
       <a href="/dashboard/channel/{{album.channel.id}}" class="track-carousel__item--artist">{{album.channel.name}}</a>
     </div>

@@ -45,7 +45,7 @@
   <h2 class="heading-2 mb-medium">
     Recently Played
   </h2>
-  {% with tracks=recent_tracks,playlist_id = 0%}
+  {% with tracks=recent_tracks,playlist_id = 0, self = 0 %}
   {% include "widgets/track_list.html" %}
   {% endwith %}
 </section>

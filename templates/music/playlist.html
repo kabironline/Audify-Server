@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="{{url_for('static', filename='css/playlist.css')}}">
 {%endblock%}
 {%block m_content%}
-
 <section class="section">
   <div class="playlist-header">
     <h2 class="heading-2">
@@ -20,6 +19,7 @@
     </p>
 
     <div class="playlist-header__buttons">
+
       {% if playlist.items|length > 1 %}
       <a href="/player/playlist/{{playlist.id}}" class="btn btn--white"><i class="fas fa-play"></i>Play</a>
       {% endif %}
@@ -33,7 +33,7 @@
 </section>
 <section class="section section-playlist-songs">
   <ul class="track-list">
-    {% with tracks=playlist.items,playlist_id = playlist.id %}
+    {% with tracks=playlist.items,playlist_id = playlist.id, author_id = playlist.author.id %}
     {% include "widgets/track_list.html" %}
     {% endwith %}
     {% if playlist.items|length == 0 %}

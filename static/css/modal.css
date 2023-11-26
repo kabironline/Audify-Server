@@ -45,6 +45,7 @@
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
+  z-index: 10;
 }
 
 .modal__backdrop {

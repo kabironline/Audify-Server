@@ -81,6 +81,7 @@ def get_album_by_user(channel_id, count=5):
         .join(Channel, Album.created_by == Channel.id)
         .options(joinedload(Album.channel))
         .filter(Album.created_by == channel_id)
+        .filter(Channel.blacklisted.is_(None))
         .order_by(Album.created_at.desc())
         .limit(count)
         .all()

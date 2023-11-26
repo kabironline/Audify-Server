@@ -21,7 +21,7 @@
         class="track-item__cta-link track-item__cta--like {%if track.rating == 0 %} track-item__cta-link--active {% endif %}">
         <i class="{%if track.rating == 0 %}fas {% else %} far {% endif %} fa-thumbs-down"></i>
       </a>
-      {% if playlist_id != 0 %}
+      {% if playlist_id != 0 and author_id == current_user.id %}
       <a href="{{ url_for('playlist_track_delete', playlist_id=playlist_id, track_id=track.id) }}"
         class="track-item__cta-link track-item__cta--remove">
         <i class="fas fa-minus"></i>
@@ -29,10 +29,6 @@
       {% endif %}
       <a href="?id={{ track.id }}#playlist-add-modal" class="track-item__cta-link track-item__cta--remove">
         <i class="fas fa-plus"></i>
-      </a>
-      <!-- Report Button -->
-      <a href="?id={{track.id}}#report-modal" class="track-item__cta-link track-item__cta--report">
-        <i class="fas fa-exclamation-triangle"></i>
       </a>
     </div>
     <p class="track-item__timer"> {{ track.duration | format_duration }}</p>

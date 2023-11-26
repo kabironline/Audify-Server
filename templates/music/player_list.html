@@ -249,24 +249,28 @@
   }
 
   function addComment(comment) {
-    // Get the DOM element for the comments section and update it with the new comment
-    const commentSection = document.querySelector('.comments');
-    if (commentSection.children.length == 1 && commentSection.children[0].classList.contains('no-comment')) {
-      commentSection.innerHTML = '';
-    }
-    const commentDate = new Date(comment.created_at);
-    const formattedDate = `${commentDate.getFullYear()}-${commentDate.getMonth() + 1}-${commentDate.getDate()}`;
-    const commentHTML = `
+      // Get the DOM element for the comments section and update it with the new comment
+      const commentSection = document.querySelector('.comments');
+      if (commentSection.children.length == 1 && commentSection.children[0].classList.contains('no-comment')) {
+        commentSection.innerHTML = '';
+      }
+      const commentDate = new Date(comment.created_at);
+      const formattedDate = `${commentDate.getFullYear()}-${commentDate.getMonth() + 1}-${commentDate.getDate()}`;
+      const currentUserId = {{ current_user.id }};
+    const commentHTMLPt1 = `
     <div class="comment">
       <div class="comment__header">
-        <a class="comment__header--user" href="/user/${comment.user_id}"> {{ current_user.nickname }}</a>
+        <a class="comment__header--user" href="/user/${comment.user_id}">${comment.user.nickname}</a>
         <div>
           <span class="comment__header--date">
             ${formattedDate}
           </span>
+          `;
+    let button = `
           <button onclick="deleteComment(${comment.id}, {{current_user.id}})"
             class="comment__header--delete"><i class="fas fa-trash-alt"></i>
-          </button>
+          </button>`;
+    const commentHTMLPt2 = `
         </div>
       </div>
       <div class="comment__body">
@@ -275,80 +279,76 @@
     </div>
     `;
 
+    const commentHTML = commentHTMLPt1 + (currentUserId == comment.user_id ? button : '') + commentHTMLPt2;
     commentSection.innerHTML = commentHTML + commentSection.innerHTML;
   }
 
-  function updateCommentSection() {
-    // This function will fetch the comments from the server and update the DOM
+    function updateCommentSection() {
+      // This function will fetch the comments from the server and update the DOM
 
-    const commentSection = document.querySelector('.comments');
+      const commentSection = document.querySelector('.comments');
 
-    let comments = null;
+      let comments = null;
 
-    const request = fetch(`/api/v1/comment/{{track.id}}`, {
-      method: 'GET',
-    }).then(response => response.json())
-      .then(data => {
-        comments = data.comments;
+      const request = fetch(`/api/v1/comment/{{track.id}}`, {
+        method: 'GET',
+      }).then(response => response.json())
+        .then(data => {
+          comments = data.comments;
 
 
-        // Clearing the comment section
-        commentSection.innerHTML = '';
+          // Clearing the comment section
+          commentSection.innerHTML = '';
 
-        if (comments.length == 0) {
-          commentSection.innerHTML = `
+          if (comments.length == 0) {
+            commentSection.innerHTML = `
           <div class="no-comment">
             No comments yet, Be the first to comment!
           </div>
           `;
-          return;
-        }
+            return;
+          }
 
-        comments.forEach(comment => {
-
-          let user = null;
-          const userRequest = fetch(`/api/v1/user/${comment.user_id}`, {
-            method: 'GET',
-          }).then(response => response.json())
-            .then(data => {
-              comment.user = data;
-
-              addComment(comment);
-            });
+          comments.forEach(comment => {
+            addComment(comment);
+          });
         });
-
-      });
-  }
-
-  async function sendComment() {
-    event.preventDefault();
-    // Get the data from the form and send it to the server
-    comment = document.querySelector('.comment-box--bar').value;
-    comment = comment.trim();
-    if (comment.length == 0) {
-      return;
     }
 
-    document.querySelector('.comment-box--bar').value = '';
+    async function sendComment() {
+      event.preventDefault();
+      // Get the data from the form and send it to the server
+      comment = document.querySelector('.comment-box--bar').value;
+      comment = comment.trim();
+      if (comment.length == 0) {
+        return;
+      }
 
-    const requests = await fetch(`/api/v1/comment/{{track.id}}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        comment: comment,
-        user_id: {{ current_user.id }},
+      document.querySelector('.comment-box--bar').value = '';
+
+      const requests = await fetch(`/api/v1/comment/{{track.id}}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          comment: comment,
+          user_id: {{ current_user.id }},
       }),
     });
 
-  if (!requests.ok) {
-    console.error('Failed to send comment');
-    return;
-  }
+    if (!requests.ok) {
+      console.error('Failed to send comment');
+      return;
+    }
 
-  const responseData = await requests.json();
-  if (responseData.action == 'created') {
+    const responseData = await requests.json();
+    if (responseData.action == 'created') {
+      let comment = responseData.comment;
+      comment.user = {
+        id: {{ current_user.id }},
+    nickname: '{{ current_user.nickname }}',
+    };
     addComment(responseData.comment);
   }
   }
