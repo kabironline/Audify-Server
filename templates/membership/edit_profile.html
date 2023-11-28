@@ -12,10 +12,13 @@
       <img src="{{url_for('user_avatar', user_id = current_user.id)}}" alt="Avatar" class="avatar-img">
     </div>
     <h3 class="heading-3 avatar--title">{{current_user.nickname}}</h3>
-    <h4 class="heading-4 avatar--subtitle">@{{current_user.username}}</h4>
+    <h4 class="heading-4 avatar--subtitle">{{current_user.username}}</h4>
     <p class="avatar-desc">
       {{current_user.bio}}
     </p>
+    <a href="#delete-account-modal" class="btn btn--secondary">
+      <i class="fas fa-trash-alt"></i> Delete Account
+    </a>
   </div>
   <div class="form__container">
     <h2 class="heading-2 form__heading">Edit Profile</h2>
@@ -84,4 +87,29 @@
   }
 
 </script>
+{% endblock %}
+
+{% block extra_modals %}
+<section id="delete-account-modal" class="modal">
+  <div class="modal__backdrop">
+  </div>
+
+  <div class="modal__container">
+    <div class="modal__header">
+      <h2 class="heading-2">Delete Account</h2>
+    </div>
+    <div class="modal__content">
+      <p class="modal__text">Are you sure you want to delete this user account? This action is
+        irreversible.
+      </p>
+    </div>
+    <div class="modal__footer">
+      <form action="/track/delete" method="POST" class="modal__footer">
+        <input type="text" name="route" value="{{ request.full_path }}" style="display: none;">
+        <button type="submit" class="btn btn--secondary">Delete</button>
+        <a href="#main" class="btn btn--primary">Close</a>
+      </form>
+    </div>
+  </div>
+</section>
 {% endblock %}

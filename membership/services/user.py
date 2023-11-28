@@ -189,6 +189,13 @@ def delete_user_by_id(user_id, test=False):
     if user.is_admin:
         raise Exception("Cannot delete a superuser")
 
+    # Delete all the channels created by the user
+    members = membership_services.get_user_channels(user.id)
+
+    for member in members:
+        membership_services.delete_channel_members(member.channel_id)
+        membership_services.delete_channel_by_id(member.channel_id)
+
     # Deleting the avatar if it exists
     try:
         os.remove(f"media/users/{user.id}/avatar.png")

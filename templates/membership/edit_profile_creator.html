@@ -15,6 +15,9 @@
     <p class="avatar-desc">
       {{channel.description|default('No description available.')}}
     </p>
+    <a href="#delete-account-modal" class="btn btn--secondary">
+      <i class="fas fa-trash-alt"></i> Delete Account
+    </a>
   </div>
   <div class="form__container">
     <h2 class="heading-2 form__heading">Edit Profile</h2>
@@ -75,4 +78,28 @@
   }
 
 </script>
+{% endblock %}
+{% block extra_modals %}
+<section id="delete-channel-modal" class="modal">
+  <div class="modal__backdrop">
+  </div>
+
+  <div class="modal__container">
+    <div class="modal__header">
+      <h2 class="heading-2">Delete Channel</h2>
+    </div>
+    <div class="modal__content">
+      <p class="modal__text">Are you sure you want to delete this channel and all of its content? This action is
+        irreversible.
+      </p>
+    </div>
+    <div class="modal__footer">
+      <form action="/channels" method="POST" class="modal__footer">
+        <input type="text" name="route" value="{{ request.full_path }}" style="display: none;">
+        <button type="submit" class="btn btn--secondary">Delete</button>
+        <a href="#main" class="btn btn--primary">Close</a>
+      </form>
+    </div>
+  </div>
+</section>
 {% endblock %}

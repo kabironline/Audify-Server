@@ -7,7 +7,10 @@ from membership.services import (
     create_member,
     get_channel_dict,
     update_channel,
+    get_user_channels,
+    get_channel_by_id,
 )
+from music.services import get_playlist_by_user, get_playlist_dict
 import core
 
 
@@ -55,11 +58,22 @@ def register_creator():
         request_data = request.files
         avatar = request_data.get("avatar")
 
-
         if avatar is not None:
             update_channel(channel.id, channel_name, channel_description, avatar)
 
-        core.set_current_user(user, get_channel_dict(channel))
+        members = get_user_channels(user.id)
+        channel = None
+        if len(members) != 0:
+            channel = []
+            for member in members:
+                channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))
+
+        playlist = []
+        playlist_search = get_playlist_by_user(user.id)
+        for playlist_item in playlist_search:
+            playlist.append(get_playlist_dict(playlist_item))
+
+        core.set_current_user(user, channel, playlist)
 
         return redirect(url_for("home"))
 

@@ -9,6 +9,26 @@
   border-right: 1px solid var(--color-border-light);
 }
 
+.sidebar__top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  font-size: 2.5rem;
+}
+
+.sidebar-logo {
+  width: 15rem;
+  height: 11rem;
+  mask-image: url(../images/logo.svg);
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  -webkit-mask-image: url(../images/logo.svg);
+  -webkit-mask-repeat: no-repeat;
+  background-color: var(--color-primary);
+}
+
 .sidebar__hr {
   margin: 2rem 0;
   width: 100%;

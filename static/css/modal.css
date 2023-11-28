@@ -31,6 +31,12 @@
 #delete-playlist-modal:target {
   display: block;
 }
+#delete-account-modal:target {
+  display: block;
+}
+#delete-channel-modal:target {
+  display: block;
+}
 
 .modal__container {
   position: absolute;
