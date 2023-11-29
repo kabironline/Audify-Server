@@ -78,3 +78,11 @@ def delete_genre(genre_id):
     session.commit()
 
     return True
+
+
+def search_genres(q):
+    session = get_session()
+
+    genres = session.query(Genre).filter(Genre.name.like(f"{q}")).all()
+
+    return genres

@@ -42,12 +42,12 @@ def create_track(
 
     In case of any validation failure, it raises an exception.
 
-    The media will be uploaded to a "media/tracks/{track.id}/audio" folder and the
+    The media will be uploaded to a "../media/tracks/{track.id}/audio" folder and the
     media should be renamed into a uuid string.
 
     The database will store the uuid string of the media file.
 
-    The track-art will be uploaded to a "media/tracks/{track-id}/track-art" folder and the
+    The track-art will be uploaded to a "../media/tracks/{track-id}/track-art" folder and the
     track-art should be renamed into a uuid string.
 
     The database will store the uuid string of the track-art file.
@@ -82,13 +82,13 @@ def create_track(
 
     try:
         # Create a folder for the track
-        os.mkdir(f"media/tracks/{track_id}")
+        os.mkdir(f"../media/tracks/{track_id}")
 
-        media.save(f"media/tracks/{track_id}/audio.mp3")
-        track_art.save(f"media/tracks/{track_id}/track-art.png")
+        media.save(f"../media/tracks/{track_id}/audio.mp3")
+        track_art.save(f"../media/tracks/{track_id}/track-art.png")
     except Exception as e:
         session.rollback()
-        os.rmdir(f"media/tracks/{track_id}")
+        os.rmdir(f"../media/tracks/{track_id}")
         raise e
     session.close()
 
@@ -118,7 +118,10 @@ def get_all_tracks(channel=True):
     session = get_session()
     if channel:
         tracks = (
-            session.query(Track, Channel.name.label("channel_name"))
+            session.query(Track)
+            .options(joinedload(Track.channel))
+            .order_by(Track.flagged.is_(True).desc())
+            # .order_by(Track.id.asc())
             .join(Channel, Track.channel_id == Channel.id)
             .all()
         )
@@ -141,6 +144,7 @@ def get_tracks_by_channel(channel_id, user_id=None, rating=False, count=5):
                 Track.channel_id == channel_id,
                 Track.flagged.is_(None),
                 Channel.blacklisted.is_(None),
+                Channel.is_active.is_(None),
             )
             .order_by(Track.last_modified_at.desc())
             .limit(count)
@@ -157,6 +161,7 @@ def get_tracks_by_channel(channel_id, user_id=None, rating=False, count=5):
                 Track.channel_id == channel_id,
                 Track.flagged.is_(None),
                 Channel.blacklisted.is_(None),
+                Channel.is_active.is_(None),
             )
             .order_by(Track.last_modified_at.desc())
             .limit(count)
@@ -196,7 +201,11 @@ def get_top_rated_tracks(count=5):
         .join(Rating, Track.id == Rating.track_id)
         .join(Channel, Track.channel_id == Channel.id)
         .options(joinedload(Track.channel))
-        .filter(Channel.blacklisted.is_(None), Track.flagged.is_(None))
+        .filter(
+            Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
+            Track.flagged.is_(None),
+        )
         .group_by(Track.id)
         .having(db.func.avg(Rating.rating) > 0, db.func.count(Rating.rating) > 0)
         .order_by(db.func.avg(Rating.rating).desc())
@@ -216,7 +225,11 @@ def get_top_rated_channels(count=5):
         db.session.query(Channel)
         .join(Track, Channel.id == Track.channel_id)
         .join(Rating, Track.id == Rating.track_id)
-        .filter(Channel.blacklisted.is_(None), Track.flagged.is_(None))
+        .filter(
+            Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
+            Track.flagged.is_(None),
+        )
         .group_by(Channel.id)
         .having(db.func.avg(Rating.rating) > 0, db.func.count(Rating.rating) > 0)
         .order_by(db.func.avg(Rating.rating).desc())
@@ -233,7 +246,11 @@ def get_latest_tracks(count=5):
         session.query(Track)
         .join(Channel, Track.channel_id == Channel.id)
         .options(joinedload(Track.channel))
-        .filter(Channel.blacklisted.is_(None), Track.flagged.is_(None))
+        .filter(
+            Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
+            Track.flagged.is_(None),
+        )
         .order_by(Track.created_at.desc())
         .limit(count)
         .all()
@@ -270,11 +287,43 @@ def update_track(
     try:
         if media.filename != "":
             track.duration = int(mutagen.mp3.MP3(media).info.length)
-            media.save(f"media/tracks/{track_id}/audio.mp3")
+            media.save(f"../media/tracks/{track_id}/audio.mp3")
         if track_art.filename != "":
-            track_art.save(f"media/tracks/{track_id}/track-art.png")
+            track_art.save(f"../media/tracks/{track_id}/track-art.png")
     except Exception as e:
         pass
+
+    session.commit()
+    session.close()
+
+    return track
+
+
+def flag_track(track_id):
+    session = get_session()
+
+    track = session.query(Track).filter(Track.id == track_id).first()
+
+    if track is None:
+        return None
+
+    track.flagged = True
+
+    session.commit()
+    session.close()
+
+    return track
+
+
+def unflag_track(track_id):
+    session = get_session()
+
+    track = session.query(Track).filter(Track.id == track_id).first()
+
+    if track is None:
+        return None
+
+    track.flagged = None
 
     session.commit()
     session.close()
@@ -292,12 +341,12 @@ def delete_track(track_id):
 
     try:
         # Get all the files in the directory
-        files = os.listdir(f"media/tracks/{track_id}")
+        files = os.listdir(f"../media/tracks/{track_id}")
         # Delete all the files
         for file in files:
-            os.remove(f"media/tracks/{track_id}/{file}")
+            os.remove(f"../media/tracks/{track_id}/{file}")
         # Delete the directory
-        os.rmdir(f"media/tracks/{track_id}")
+        os.rmdir(f"../media/tracks/{track_id}")
     except Exception as e:
         pass
 

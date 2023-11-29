@@ -3,7 +3,7 @@
 {% endblock %} {% block m_content %}
 <section class="section section-new-tracks">
   <h2 class="heading-2 mb-medium">
-    {{ title }}'s Videos
+    {{ title }}
   </h2>
   <table class="table">
     <thead>
@@ -11,8 +11,11 @@
         <th>Track Name</th>
         <th>Track ID</th>
         <th>Published On</th>
+        <th>Channel Name, Channel ID</th>
         <th>Duration</th>
+        {% if edit == True %}
         <th>Views</th>
+        {% endif %}
         <th>Actions</th>
       </tr>
     </thead>
@@ -22,17 +25,34 @@
         <td><a href="/player/{{track.id}}">{{ track.name }}</a></td>
         <td>{{ track.id }}</td>
         <td>{{ track.created_at }}</td>
+        <td><a href="/dashboard/channel/{{track.channel.id}}">{{ track.channel.name }}</a>, {{ track.channel.id }}</td>
         <td>{{ track.duration | format_duration_words}}</td>
+        {% if edit == True %}
         <td>{{ track.views }}</td>
+        {% endif %}
         <td>
-          <!-- Delete Button -->
-          <a href="?id={{track.id}}#delete-track-modal" class="btn btn--secondary">
-            <i class="fas fa-trash"></i>
-          </a>
+          {% if edit == True %}
           <!-- Edit Button -->
           <a href="/tracks/{{track.id}}/edit" class="btn btn--primary">
             <i class="fas fa-pen-to-square"></i>
           </a>
+          {% endif %}
+          <!-- Delete Button -->
+          <a href="?id={{track.id}}#delete-track-modal" class="btn btn--secondary">
+            <i class="fas fa-trash"></i>
+          </a>
+          <!-- Flag Button -->
+          {% if current_user.is_admin == True %}
+          {% if track.flagged == None %}
+          <a href="?id={{track.id}}#flag-track-modal" class="btn btn--secondary">
+            <i class="far fa-flag"></i>
+          </a>
+          {% else %}
+          <a href="/track/unflag/{{track.id}}" class="btn btn--primary">
+            <i class="fas fa-flag"></i>
+          </a>
+          {% endif %}
+          {% endif %}
         </td>
       </tr>
       {% endfor %}

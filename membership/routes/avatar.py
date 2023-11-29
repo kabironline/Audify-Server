@@ -1,6 +1,7 @@
 from flask import send_file
 from membership.services import get_user_by_id, get_channel_by_id
 import core
+import os
 
 
 def user_avatar(user_id):
@@ -18,15 +19,13 @@ def user_avatar(user_id):
     if user is None:
         return None
 
-    avatar_path = "media/users/" + str(user_id) + "/avatar.png"
+    avatar_path = "../media/users/" + str(user_id) + "/avatar.png"
 
     # try to read the file
     try:
         import os
 
-        path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "..", "..", avatar_path
-        )
+        path =  "../media/users/" + str(user_id) + "/avatar.png"
         with open(path, "rb") as avatar_file:
             avatar_file.read()
 
@@ -47,7 +46,7 @@ def channel_avatar(channel_id):
 
     - return: The file of the channel avatar
     """
-    avatar_path = "media/channels/" + str(channel_id) + "/avatar.png"
+    avatar_path = "../media/channels/" + str(channel_id) + "/avatar.png"
 
     # try to read the file
     try:

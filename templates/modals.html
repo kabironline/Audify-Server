@@ -102,3 +102,24 @@
     </div>
   </div>
 </section>
+<section id="flag-track-modal" class="modal">
+  <div class="modal__backdrop">
+  </div>
+
+  <div class="modal__container">
+    <div class="modal__header">
+      <h2 class="heading-2">Delete Track</h2>
+    </div>
+    <div class="modal__content">
+      <p class="modal__text">Are you sure you want to flag this track?
+      </p>
+    </div>
+    <div class="modal__footer">
+      <form action="/track/flag" method="POST" class="modal__footer">
+        <input type="text" name="route" value="{{ request.full_path }}" style="display: none;">
+        <button type="submit" class="btn btn--secondary">Flag</button>
+        <a href="#main" class="btn btn--primary">Close</a>
+      </form>
+    </div>
+  </div>
+</section>

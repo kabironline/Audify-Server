@@ -119,10 +119,10 @@ def update_user(user: user_model.User):
         import os
 
         try:
-            os.mkdir(f"media/users/{user.id}")
+            os.mkdir(f"../media/users/{user.id}")
         except FileExistsError:
             pass
-        user.avatar.save(f"media/users/{user.id}/avatar.png")
+        user.avatar.save(f"../media/users/{user.id}/avatar.png")
 
     import core
 
@@ -175,13 +175,13 @@ def get_user_by_id(user_id):
     return session.query(user_model.User).filter_by(id=user_id).first()
 
 
-def delete_user_by_id(user_id, test=False):
+def delete_user_by_id(user_id):
     """
     Deletes the user with the given id.
 
     If there is no user with the given id, it raises an exception.
     """
-    session = get_session() if not test else get_test_session()
+    session = get_session()
     user = session.query(user_model.User).filter_by(id=user_id).first()
     if user is None:
         raise Exception("User not found")
@@ -198,12 +198,35 @@ def delete_user_by_id(user_id, test=False):
 
     # Deleting the avatar if it exists
     try:
-        os.remove(f"media/users/{user.id}/avatar.png")
-        os.removedirs(f"media/users/{user.id}")
+        os.remove(f"../media/users/{user.id}/avatar.png")
+        os.removedirs(f"../media/users/{user.id}")
     except Exception:
         pass
 
     session.delete(user)
+    session.commit()
+
+
+def deactivate_user(user_id):
+    """
+    Deactivates the user with the given id. If there is no user with the given
+    id, it raises an exception. It also deactivates all the channels created by the user.
+    """
+
+    user = get_user_by_id(user_id)
+
+    if user is None:
+        raise Exception("User not found")
+
+    user.is_active = False
+
+    members = membership_services.get_user_channels(user.id)
+
+    # TODO: Use single query to indentify and deactivate all channels
+    for member in members:
+        membership_services.deactivate_channel(member.channel_id)
+
+    session = get_session()
     session.commit()
 
 

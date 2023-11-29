@@ -2,6 +2,7 @@ from flask import render_template, redirect, url_for, send_file, request
 from music.services import *
 from membership.services import get_user_by_id, get_channel_by_id
 import core
+import os
 
 
 def player(track_id):
@@ -9,6 +10,13 @@ def player(track_id):
         return redirect(url_for("login"))
 
     track = get_track_by_id(track_id)
+
+    if track is None:
+        return redirect(url_for("page_not_found"))
+
+    if track.channel.blacklisted or track.channel.is_active is False:
+        return redirect(url_for("home"))
+
     comments = get_comments_by_track_id(track_id)
 
     user = core.get_current_user()
@@ -54,8 +62,9 @@ def track_cover(track_id):
     if track is None:
         # TODO: Test this
         return "Track not found", 404
-
-    track_cover_path = "media/tracks/" + str(track_id) + "/track-art.png"
+    track_cover_path = os.path.join(
+        "..", "media", "tracks", str(track_id), "track-art.png"
+    )
     return send_file(track_cover_path, mimetype="image/png")
 
 
@@ -66,7 +75,7 @@ def track_media(track_id):
         # TODO: Test this
         return "Track not found", 404
 
-    track_media_path = "media/tracks/" + str(track_id) + "/audio.mp3"
+    track_media_path = os.path.join("..", "media", "tracks", str(track_id), "audio.mp3")
     return send_file(track_media_path, mimetype="audio/mpeg")
 
 
@@ -83,7 +92,7 @@ def track_delete():
         return redirect(url_for("login"))
 
     route = request.form.get("route")
-    id = int(route.split("=")[1])
+    id = int(route.split("id=")[1])
 
     track = get_track_by_id(id)
 
@@ -94,17 +103,49 @@ def track_delete():
     return render_template("music/track_delete.html")
 
 
+def track_flag():
+    user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
+    elif user.is_admin is False:
+        return redirect(url_for("home"))
+
+    route = request.form.get("route")
+    id = int(route.split("id=")[1])
+
+    track = get_track_by_id(id)
+
+    if track.flagged is None:
+        flag_track(track.id)
+
+    return redirect(route)
+
+
+def track_unflag(track_id):
+    user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
+    elif user.is_admin is False:
+        return redirect(url_for("home"))
+
+    track = get_track_by_id(track_id)
+
+    unflag_track(track.id)
+
+    return redirect(f'/{"/".join(request.referrer.split("/")[3:])}')
+
+
 def player_list(album_id=None, playlist_id=None, position=0):
     user = core.get_current_user()
     if user is None:
         return redirect(url_for("login"))
 
     if album_id is None and playlist_id is None:
-        return redirect(url_for("home"))
+        return redirect(url_for("page_not_found"))
 
     list = []
     if album_id is not None:
-        list = get_album_items_by_album_id(album_id)
+        list = get_album_tracks_by_album_id(album_id)
         for item in list:
             item.views = get_views_by_track_id(item.id)
 
@@ -112,12 +153,15 @@ def player_list(album_id=None, playlist_id=None, position=0):
             return redirect(url_for("album_page", album_id=album_id))
 
     elif playlist_id is not None:
-        list = get_playlist_items_by_playlist_id(playlist_id)
+        list = get_tracks_by_playlist_id(playlist_id)
         for item in list:
             item.views = get_views_by_track_id(item.id)
 
         if list == []:
             return redirect(url_for("playlist_page", playlist_id=playlist_id))
+
+    if position >= len(list):
+        position = 0
 
     create_recent(user.id, list[position].id)
 
@@ -137,6 +181,10 @@ def track_edit(track_id):
         return redirect(url_for("login"))
 
     track = get_track_by_id(track_id)
+
+    if track is None:
+        return redirect(url_for("page_not_found"))
+
     is_creator = False
     for channel in user.channels:
         if channel["id"] == track.channel_id:

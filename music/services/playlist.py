@@ -199,7 +199,7 @@ def create_playlist_item(playlist_id, track_id, user_id=0, api=False):
     return playlist_item
 
 
-def get_playlist_items_by_playlist_id(playlist_id):
+def get_tracks_by_playlist_id(playlist_id):
     session = get_session()
     user = get_current_user()
 
@@ -209,7 +209,25 @@ def get_playlist_items_by_playlist_id(playlist_id):
         .join(Channel, Track.channel_id == Channel.id)
         .join(Rating, Track.id == Rating.track_id)
         .options(joinedload(Track.channel))
-        .filter(Track.flagged.is_(None), Channel.blacklisted.is_(None))
+        .filter(
+            Track.flagged.is_(None),
+            Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
+        )
+        .filter(PlaylistItem.playlist_id == playlist_id)
+        .all()
+    )
+
+    session.close()
+
+    return playlist_items
+
+
+def get_playlist_items_by_playlist_id(playlist_id):
+    session = get_session()
+
+    playlist_items = (
+        session.query(PlaylistItem)
         .filter(PlaylistItem.playlist_id == playlist_id)
         .all()
     )

@@ -85,3 +85,19 @@ def admin_dashboard_whitelist():
         user=user,
         whitelisted_channels=whitelisted_channels,
     )
+
+
+def admin_dashboard_tracks():
+    user = core.get_current_user()
+    if user is None:
+        return redirect(url_for("login"))
+    elif not user.is_admin:
+        return redirect(url_for("home"))
+
+    tracks = get_all_tracks()
+
+    return render_template(
+        "music/all_tracks_list.html",
+        all_tracks=tracks,
+        edit=False,
+    )

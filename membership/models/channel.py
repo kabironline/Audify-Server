@@ -12,6 +12,7 @@ class Channel(db.Model):
     last_modified_by = db.Column(db.Integer, ForeignKey("User.id"), nullable=True)
     created_at = db.Column(db.DateTime, nullable=False)
     last_modified_at = db.Column(db.DateTime, nullable=False)
+    is_active = db.Column(db.Boolean, nullable=True, index=True)
 
 
 class ChannelSearch(db.Model):

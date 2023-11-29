@@ -233,7 +233,14 @@
 }
 
 .table td {
+  justify-content: center;
   border-bottom: 1px solid #333;
   padding: 1rem;
   text-align: center;
+}
+
+.table td:last-child {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
 }

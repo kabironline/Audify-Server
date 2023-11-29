@@ -23,26 +23,30 @@ def playlist_page(playlist_id=None):
         # Checking if user is a part of any channel
         members = get_user_channels(user.id)
         channel = None
+        channels = []
         if len(members) != 0:
-            channel = []
             for member in members:
-                channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))
-
+                channel = get_channel_by_id(member.channel_id)
+                if channel.is_active is False or channel.blacklisted:
+                    continue
+                channels.append(get_channel_dict(get_channel_by_id(member.channel_id)))
+        if len(channels) == 0:
+            channels = None
         playlist = []
         playlist_search = get_playlist_by_user(user.id)
         for playlist_item in playlist_search:
             playlist.append(get_playlist_dict(playlist_item))
 
-        core.set_current_user(user, channel, playlist)
+        core.set_current_user(user, channels, playlist)
 
         return redirect(route)
 
     timer = datetime.datetime.now()
     playlist = get_playlist_by_id(playlist_id)
-    
+
     if playlist is None:
         return redirect(url_for("home"))
-    playlist.items = get_playlist_items_by_playlist_id(playlist_id)
+    playlist.items = get_tracks_by_playlist_id(playlist_id)
 
     ratings = get_track_rating_for_user(user.id, *[item.id for item in playlist.items])
     for item in playlist.items:
@@ -69,8 +73,8 @@ def playlist_update(playlist_id):
     # Checking if user is a part of any channel
     members = get_user_channels(user.id)
     channel = None
+    channels = []
     if len(members) != 0:
-        channel = []
         for member in members:
             channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))
 
@@ -79,7 +83,7 @@ def playlist_update(playlist_id):
     for playlist_item in playlist_search:
         playlist.append(get_playlist_dict(playlist_item))
 
-    core.set_current_user(user, channel, playlist)
+    core.set_current_user(user, channels, playlist)
 
     return redirect(url_for("playlist_page", playlist_id=playlist_id))
 
@@ -92,17 +96,20 @@ def playlist_delete(playlist_id):
     # Checking if user is a part of any channel
     members = get_user_channels(user.id)
     channel = None
+    channels = []
     if len(members) != 0:
-        channel = []
         for member in members:
-            channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))
+            channels.append(get_channel_dict(get_channel_by_id(member.channel_id)))
+
+    if len(channels) == 0:
+        channels = None
 
     playlist = []
     playlist_search = get_playlist_by_user(user.id)
     for playlist_item in playlist_search:
         playlist.append(get_playlist_dict(playlist_item))
 
-    core.set_current_user(user, channel, playlist)
+    core.set_current_user(user, channels, playlist)
     return redirect(url_for("home"))
 
 

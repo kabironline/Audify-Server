@@ -22,15 +22,25 @@ def search():
             q=q,
         )
 
-    track_search = music.services.track.search_tracks(q)
+    search_q = q.strip().lower()  # sanitize query
+
+    genre = music.services.genre.search_genres(search_q)
+    if len(genre) > 0:
+        return redirect(f"/genre/{genre[0].id}/tracks?q={q}")
+
+    track_search = music.services.track.search_tracks(search_q)
     track_results = []
     for track in track_search:
         track_temp = music.services.track.get_track_by_id(track.rowid)
-        if track_temp.flagged or track_temp.channel.blacklisted:
+        if (
+            track_temp.flagged
+            or track_temp.channel.blacklisted
+            or track_temp.channel.is_active is False
+        ):
             continue
         track_results.append(track_temp)
 
-    channel_search = membership.services.channel.search_channels(q)
+    channel_search = membership.services.channel.search_channels(search_q)
 
     playlist_results = []
     playlist_search = music.services.playlist.search_playlists(q)
@@ -39,7 +49,7 @@ def search():
         playlist_results.append(playlist_temp)
 
     album_results = []
-    album_search = music.services.album.search_albums(q)
+    album_search = music.services.album.search_albums(search_q)
     for album in album_search:
         album_temp = music.services.album.get_album_by_id(album.rowid)
         if album_temp.channel.blacklisted:

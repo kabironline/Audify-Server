@@ -79,7 +79,11 @@ def get_top_tracks(count=5):
         .join(Channel, Track.channel_id == Channel.id)
         .options(joinedload(Track.channel))
         .group_by(Track.id)
-        .filter(Channel.blacklisted.is_(None), Track.flagged.is_(None))
+        .filter(
+            Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
+            Track.flagged.is_(None),
+        )
         .order_by(db.func.count(View.id).desc())
         .limit(count)
         .all()

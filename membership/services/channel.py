@@ -94,12 +94,12 @@ def update_channel(
     session.commit()
 
     try:
-        os.mkdir(f"media/channels/{channel_id}")
+        os.mkdir(f"../media/channels/{channel_id}")
     except FileExistsError:
         pass
 
     if channel_art:
-        channel_art.save(f"media/channels/{channel_id}/avatar.png")
+        channel_art.save(f"../media/channels/{channel_id}/avatar.png")
 
     return channel
 
@@ -116,6 +116,21 @@ def delete_channel_by_id(channel_id):
         raise Exception("Channel not found")
 
     session.delete(channel)
+    session.commit()
+
+
+def deactivate_channel(channel_id):
+    """
+    Deactivates the channel with the given id.
+
+    If there is no channel with the given id, it raises an exception.
+    """
+    session = get_session()
+    channel = session.query(channel_model.Channel).filter_by(id=channel_id).first()
+    if channel is None:
+        raise Exception("Channel not found")
+
+    channel.is_active = False
     session.commit()
 
 
@@ -139,7 +154,7 @@ def search_channels(q):
     result = []
     for channel in search:
         channel = get_channel_by_id(channel.rowid)
-        if channel.blacklisted:
+        if channel.blacklisted or channel.is_active is False:
             continue
         result.append(channel)
 

@@ -104,7 +104,7 @@
       </p>
     </div>
     <div class="modal__footer">
-      <form action="/track/delete" method="POST" class="modal__footer">
+      <form action="/user/{{current_user.id}}/delete" method="POST" class="modal__footer">
         <input type="text" name="route" value="{{ request.full_path }}" style="display: none;">
         <button type="submit" class="btn btn--secondary">Delete</button>
         <a href="#main" class="btn btn--primary">Close</a>

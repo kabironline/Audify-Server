@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, send_file, request
 from music.services import *
 from membership.services import get_user_by_id, get_channel_by_id
 import core
-import music.services
+import os
 
 
 def album_page(album_id):
@@ -13,7 +13,7 @@ def album_page(album_id):
     album = get_album_by_id(album_id)
     if album is None:
         return redirect(url_for("home"))
-    album.items = get_album_items_by_album_id(album_id)
+    album.items = get_album_tracks_by_album_id(album_id)
 
     ratings = get_track_rating_for_user(user.id, *[item.id for item in album.items])
 
@@ -54,7 +54,7 @@ def create_album_route():
 
         return redirect(url_for("home"))
 
-    tracks = get_tracks_by_channel(user.channels[0]["id"])
+    tracks = get_tracks_by_channel(user.channels[0]["id"], count=10000)
     for track in tracks:
         track.channel = user.channels[0]
 
@@ -107,14 +107,14 @@ def album_update_route(album_id):
 
         return redirect(url_for("album_page", album_id=album_id))
 
-    tracks = get_tracks_by_channel(user.channels[0]["id"])
+    tracks = get_tracks_by_channel(user.channels[0]["id"], count=10000)
     for track in tracks:
         track.channel = user.channels[0]
 
-    items = get_album_items_by_album_id(album_id)
+    items = get_album_tracks_by_album_id(album_id)
     item_list = []
     for item in items:
-        item_list.append(item.track_id)
+        item_list.append(item.id)
 
     album.items = item_list
 
@@ -159,5 +159,7 @@ def album_cover(album_id):
         # TODO: Test this
         return "Album not found", 404
 
-    album_cover_path = "media/albums/" + str(album_id) + "/album_art.png"
+    album_cover_path = os.path.join(
+        "..", "media", "albums", str(album_id), "album_art.png"
+    )
     return send_file(album_cover_path, mimetype="image/png")

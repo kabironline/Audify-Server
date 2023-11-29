@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, Response, session
+from flask import Flask, redirect, url_for, request, Response, render_template
 from flask_migrate import Migrate
 from flask_restful import Api
 from flask_cors import CORS
@@ -106,6 +106,20 @@ app.add_url_rule(
     methods=["GET", "POST"],
 )
 
+app.add_url_rule(
+    "/user/<int:user_id>/delete",
+    "user_delete",
+    membership.routes.delete_user,
+    methods=["POST"],
+)
+
+app.add_url_rule(
+    "/channel/<int:channel_id>/delete",
+    "channel_delete",
+    membership.routes.delete_channel,
+    methods=["POST"],
+)
+
 app.add_url_rule("/search", "search", music.routes.search)
 
 app.add_url_rule("/upload", "upload", music.routes.upload, methods=["GET", "POST"])
@@ -201,6 +215,13 @@ app.add_url_rule(
 )
 app.add_url_rule(
     "/track/delete", "track_delete", music.routes.track_delete, methods=["POST"]
+)
+
+app.add_url_rule("/track/flag", "track_flag", music.routes.track_flag, methods=["POST"])
+app.add_url_rule(
+    "/track/unflag/<int:track_id>",
+    "track_unflag",
+    music.routes.track_unflag,
 )
 
 app.add_url_rule(
@@ -327,6 +348,24 @@ app.add_url_rule(
     "/admin/dashboard/whitelist",
     "admin_dashboard_whitelist",
     admin.routes.admin_dashboard_whitelist,
+)
+
+app.add_url_rule(
+    "/admin/dashboard/tracks",
+    "admin_dashboard_tracks",
+    admin.routes.admin_dashboard_tracks,
+)
+
+
+@app.errorhandler(404)
+def page_not_found(e=None):
+    return render_template("404.html"), 404
+
+
+app.add_url_rule(
+    "/404",
+    "page_not_found",
+    page_not_found,
 )
 
 

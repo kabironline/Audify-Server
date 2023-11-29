@@ -140,15 +140,9 @@
   if (!initalized) {
     updateLikePercentage();
     playTrack();
-    if (lyricsRadio != null) {
-      toggleLyrics(true);
-      toggleComments(false);
-      togglePlaylist(false);
-    } else {
       toggleComments(false);
       toggleLyrics(false);
       togglePlaylist(true);
-    }
     updateCommentSection();
   }
 

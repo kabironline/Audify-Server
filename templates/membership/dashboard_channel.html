@@ -43,10 +43,10 @@
     {% else %}
     {% if current_user.is_admin %}
     <a href="/channels/{{channel.id}}/whitelist" class="btn btn--white">
-      <i class="fas fa-user-shield"></i> Add Whitelist
+      <i class="fas fa-user-shield"></i> Whitelist Channel
     </a>
     <a href="/channels/{{channel.id}}/blacklist" class="btn btn--secondary">
-      <i class="fas fa-user-slash"></i> Blacklist User
+      <i class="fas fa-user-slash"></i> Blacklist Channel
     </a>
     {% endif %}
     {% endif %}

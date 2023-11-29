@@ -38,6 +38,7 @@ def get_recent_by_user_and_track_id(user_id, track_id):
             Recent.user_id == user_id,
             Recent.track_id == track_id,
             Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
             Track.flagged.is_(None),
         )
         .first()
@@ -56,6 +57,7 @@ def get_recent_by_user_id(user_id, count=10):
         .filter(
             Recent.user_id == user_id,
             Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
             Track.flagged.is_(None),
         )
         .limit(count)

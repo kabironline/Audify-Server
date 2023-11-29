@@ -19,12 +19,6 @@ def create_album(
 ):
     session = get_session()
 
-    user = None
-    if api:
-        user = get_user_by_username("api_superuser")
-    else:
-        user = get_current_user()
-
     album = Album(
         name=name,
         description=description,
@@ -42,11 +36,11 @@ def create_album(
 
     if album_art is not None:
         try:
-            os.mkdir(f"media/albums/{album.id}")
-            album_art.save(f"media/albums/{album.id}/album_art.png")
+            os.mkdir(f"../media/albums/{album.id}")
+            album_art.save(f"../media/albums/{album.id}/album_art.png")
         except Exception as e:
             session.rollback()
-            os.rmdir(f"media/albums/{album.id}")
+            os.rmdir(f"../media/albums/{album.id}")
 
     session.close()
 
@@ -70,7 +64,11 @@ def get_album_by_id(album_id):
 
 
 def get_album_by_name(album_name):
-    pass
+    album = search_albums(album_name)
+    if len(album) == 0:
+        return None
+
+    return get_album_by_id(album[0].rowid)
 
 
 def get_album_by_user(channel_id, count=5):
@@ -81,7 +79,7 @@ def get_album_by_user(channel_id, count=5):
         .join(Channel, Album.created_by == Channel.id)
         .options(joinedload(Album.channel))
         .filter(Album.created_by == channel_id)
-        .filter(Channel.blacklisted.is_(None))
+        .filter(Channel.blacklisted.is_(None), Channel.is_active.is_(None))
         .order_by(Album.created_at.desc())
         .limit(count)
         .all()
@@ -151,10 +149,10 @@ def update_album(
             session.close()
             return album
         try:
-            os.mkdir(f"media/albums/{album_id}")
+            os.mkdir(f"../media/albums/{album_id}")
         except FileExistsError:
             pass
-        album_art.save(f"media/albums/{album_id}/album_art.png")
+        album_art.save(f"../media/albums/{album_id}/album_art.png")
 
     session.close()
     return album
@@ -175,10 +173,10 @@ def delete_album(album_id, channel_id=0, api=False):
     for album_track in album_tracks:
         delete_album_item(album_track.id)
     try:
-        files = os.listdir(f"media/albums/{album_id}")
+        files = os.listdir(f"../media/albums/{album_id}")
         for file in files:
-            os.remove(f"media/albums/{album_id}/{file}")
-        os.rmdir(f"media/albums/{album_id}")
+            os.remove(f"../media/albums/{album_id}/{file}")
+        os.rmdir(f"../media/albums/{album_id}")
     except FileNotFoundError:
         pass
 
@@ -248,7 +246,7 @@ def create_album_item(album_id, track_id, user_id=0, api=False):
     return album_item
 
 
-def get_album_items_by_album_id(album_id):
+def get_album_tracks_by_album_id(album_id):
     session = get_session()
 
     album_items = (
@@ -256,10 +254,24 @@ def get_album_items_by_album_id(album_id):
         .join(AlbumItem, Track.id == AlbumItem.track_id)
         .join(Channel, Track.channel_id == Channel.id)
         .options(joinedload(Track.channel))
-        .filter(Track.flagged.is_(None), Channel.blacklisted.is_(None))
+        .filter(
+            Track.flagged.is_(None),
+            Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
+        )
         .filter(AlbumItem.album_id == album_id)
         .all()
     )
+
+    session.close()
+
+    return album_items
+
+
+def get_album_items_by_album_id(album_id):
+    session = get_session()
+
+    album_items = session.query(AlbumItem).filter_by(album_id=album_id).all()
 
     session.close()
 
@@ -274,7 +286,11 @@ def get_track_albums(track_id):
         .join(AlbumItem, Track.id == AlbumItem.track_id)
         .join(Channel, Track.channel_id == Channel.id)
         .options(joinedload(Track.channel))
-        .filter(Track.flagged.is_(None), Channel.blacklisted.is_(None))
+        .filter(
+            Track.flagged.is_(None),
+            Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
+        )
         .filter(AlbumItem.track_id == track_id)
         .all()
     )

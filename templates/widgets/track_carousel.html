@@ -33,11 +33,46 @@
               {% endif %}
               {% if current_user.channels != None %}
               {% if track.channel_id == current_user.channels[0].id %}
+              {% if q != "" or q != None %}
+              <li class="dropdown-item">
+                <a href="?q={{q}}&id={{track.id}}#delete-track-modal" class="dropdown-item--link">
+                  Delete Track
+                </a>
+              </li>
+              {% else %}
               <li class="dropdown-item">
                 <a href="?id={{track.id}}#delete-track-modal" class="dropdown-item--link">
                   Delete Track
                 </a>
               </li>
+              {% endif %}
+              {% endif %}
+              {% endif %}
+              {% if current_user.is_admin == True %}
+              {% if track.flagged == None %}
+              {% if q != "" or q != None %}
+              <li class="dropdown-item">
+                <a href="?q={{q}}&id={{track.id}}#flag-track-modal" class="dropdown-item--link">
+                  Flag Track
+                </a>
+              </li>
+              <li class="dropdown-item">
+                <a href="?q={{q}}&id={{track.id}}#delete-track-modal" class="dropdown-item--link">
+                  Delete Track
+                </a>
+              </li>
+              {% else %}
+              <li class="dropdown-item">
+                <a href="?id={{track.id}}#delete-track-modal" class="dropdown-item--link">
+                  Delete Track
+                </a>
+              </li>
+              <li class="dropdown-item">
+                <a href="?id={{track.id}}#flag-track-modal" class="dropdown-item--link">
+                  Flag Track
+                </a>
+              </li>
+              {% endif %}
               {% endif %}
               {% endif %}
             </ul>

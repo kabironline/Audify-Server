@@ -40,17 +40,21 @@ def edit_profile():
         # Checking if user is a part of any channel
         members = get_user_channels(user.id)
         channel = None
+        channels = []
         if len(members) != 0:
-            channel = []
             for member in members:
-                channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))
-
+                channel = get_channel_by_id(member.channel_id)
+                if channel.is_active is False or channel.blacklisted:
+                    continue
+                channels.append(get_channel_dict(get_channel_by_id(member.channel_id)))
+        if len(channels) == 0:
+            channels = None
         playlist = []
         playlist_search = get_playlist_by_user(user.id)
         for playlist_item in playlist_search:
             playlist.append(get_playlist_dict(playlist_item))
 
-        core.set_current_user(user, channel, playlist)
+        core.set_current_user(user, channels, playlist)
         return redirect(url_for("edit_profile"))
 
     return render_template("membership/edit_profile.html", current_user=user)
@@ -80,16 +84,19 @@ def edit_profile_creator():
         # Checking if user is a part of any channel
         members = get_user_channels(user.id)
         channel = None
+        channels = []
         if len(members) != 0:
-            channel = []
             for member in members:
-                channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))
-
+                channel = get_channel_by_id(member.channel_id)
+                if channel.is_active is False or channel.blacklisted:
+                    continue
+                channels.append(get_channel_dict(get_channel_by_id(member.channel_id)))
+        if len(channels) == 0:
+            channels = None
         playlist = []
         playlist_search = get_playlist_by_user(user.id)
         for playlist_item in playlist_search:
             playlist.append(get_playlist_dict(playlist_item))
-
         channel = channel[0]
 
         return render_template("membership/edit_profile_creator.html", channel=channel)

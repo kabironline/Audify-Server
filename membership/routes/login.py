@@ -10,6 +10,9 @@ import core
 
 
 def login():
+    if request.method in ["POST", "GET"] is False:  # return 405 method not allowed
+        return
+
     if request.method == "POST":
         username = request.form.get("username")
         password = request.form.get("password")
@@ -28,21 +31,29 @@ def login():
             return render_template(
                 "membership/login.html", error="Password entered is incorrect"
             )
+        elif user.is_active is False:
+            return render_template(
+                "membership/login.html", error="User account deactivated"
+            )
 
         # Checking if user is a part of any channel
         members = get_user_channels(user.id)
         channel = None
+        channels = []
         if len(members) != 0:
-            channel = []
             for member in members:
-                channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))
-
+                channel = get_channel_by_id(member.channel_id)
+                if channel.is_active is False or channel.blacklisted:
+                    continue
+                channels.append(get_channel_dict(get_channel_by_id(member.channel_id)))
+        if len(channels) == 0:
+            channels = None
         playlist = []
         playlist_search = get_playlist_by_user(user.id)
         for playlist_item in playlist_search:
             playlist.append(get_playlist_dict(playlist_item))
 
-        core.set_current_user(user, channel, playlist)
+        core.set_current_user(user, channels, playlist)
         return redirect(url_for("home"))
     return render_template("membership/login.html")
 
