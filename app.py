@@ -22,7 +22,7 @@ app.secret_key = "secret_key"
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(current_dir, "core/db/db.sqlite3")
+db_path = os.path.join(current_dir, "core/db/submit-db.sqlite3")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_path
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["SQLALCHEMY_ECHO"] = False
@@ -90,7 +90,6 @@ app.cli.add_command(get_track_list)
 app.cli.add_command(generate_random_likes)
 app.cli.add_command(generate_random_views)
 app.cli.add_command(update_track_duration)
-
 
 
 @app.route("/")
