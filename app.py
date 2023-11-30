@@ -72,17 +72,25 @@ def handle_preflight():
         return res
 
 
-app.cli.add_command(create_tables)
-app.cli.add_command(drop_table)
-app.cli.add_command(drop_all_tables)
+# Devop commands
+# app.cli.add_command(create_tables)
+# app.cli.add_command(drop_table)
+# app.cli.add_command(drop_all_tables)
+# app.cli.add_command(create_superuser)
+# app.cli.add_command(get_track_list)
+# app.cli.add_command(update_track_from_list)
+# app.cli.add_command(update_genre_list)
+# app.cli.add_command(generate_random_likes)
+# app.cli.add_command(generate_random_views)
+# app.cli.add_command(update_channelname)
+# app.cli.add_command(update_track_duration)
+
 app.cli.add_command(create_superuser)
 app.cli.add_command(get_track_list)
-app.cli.add_command(update_track_from_list)
-app.cli.add_command(update_genre_list)
 app.cli.add_command(generate_random_likes)
 app.cli.add_command(generate_random_views)
-app.cli.add_command(update_channelname)
 app.cli.add_command(update_track_duration)
+
 
 
 @app.route("/")

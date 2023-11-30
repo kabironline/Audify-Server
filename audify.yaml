@@ -1,0 +1,1197 @@
+openapi: 3.0.0
+info:
+  title: Audify
+  description: >
+    <div>In this project I have created RESTful API, database models using Flask-RESTful and flask-SQLAlchemy.
+    </div>
+    <h3> Track Table Schema </h3>
+    <table>
+      <thead>
+        <th>Column Name</th>
+        <th>Column Type</th>
+        <th>Constraints</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>id</td>
+          <td>Integer</td>
+          <td>Primary Key, Auto Increment</td>
+        </tr>
+        <tr>
+          <td>name</td>
+          <td>String</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>lyrics</td>
+          <td>String</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>release_date</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>duration</td>
+          <td>Integer</td>
+          <td>Default: 0</td>
+        </tr>
+        <tr>
+          <td>flagged</td>
+          <td>Boolean</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>created_by</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Not Null</td>
+        </tr>
+        <tr>
+          <td>last_modified_by</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Not Null</td>
+        </tr>
+        <tr>
+          <td>created_at</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>last_modified_at</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+      </tbody>
+    </table>
+
+
+    <h3> Comment Table Schema </h3>
+    <table>
+      <thead>
+        <th>Column Name</th>
+        <th>Column Type</th>
+        <th>Constraints</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>id</td>
+          <td>Integer</td>
+          <td>Primary Key, Auto Increment</td>
+        </tr>
+        <tr>
+          <td>comment</td>
+          <td>String</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>track_id</td>
+          <td>Integer</td>
+          <td>Foreign Key (Track.id), Not Null</td>
+        </tr>
+        <tr>
+          <td>user_id</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Not Null</td>
+        </tr>
+        <tr>
+          <td>created_at</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>last_modified_at</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>created_by</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Not Null</td>
+        </tr>
+        <tr>
+          <td>last_modified_by</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Not Null</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3> Rating Table Schema </h3>
+    <table>
+      <thead>
+        <th>Column Name</th>
+        <th>Column Type</th>
+        <th>Constraints</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>id</td>
+          <td>Integer</td>
+          <td>Primary Key, Auto Increment</td>
+        </tr>
+        <tr>
+          <td>rating</td>
+          <td>Integer</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>user_id</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Not Null</td>
+        </tr>
+        <tr>
+          <td>track_id</td>
+          <td>Integer</td>
+          <td>Foreign Key (Track.id), Not Null</td>
+        </tr>
+        <tr>
+          <td>created_at</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>last_modified_at</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>created_by</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Not Null</td>
+        </tr>
+        <tr>
+          <td>last_modified_by</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Not Null</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3> Channel Table Schema </h3>
+    <table>
+      <thead>
+        <th>Column Name</th>
+        <th>Column Type</th>
+        <th>Constraints</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>id</td>
+          <td>Integer</td>
+          <td>Primary Key, Auto Increment</td>
+        </tr>
+        <tr>
+          <td>name</td>
+          <td>String(50)</td>
+          <td>Not Null, Unique, Index</td>
+        </tr>
+        <tr>
+          <td>description</td>
+          <td>String(200)</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>blacklisted</td>
+          <td>Boolean</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>created_by</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Nullable</td>
+        </tr>
+        <tr>
+          <td>last_modified_by</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Nullable</td>
+        </tr>
+        <tr>
+          <td>created_at</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>last_modified_at</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>is_active</td>
+          <td>Boolean</td>
+          <td>Index</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3> User Table Schema </h3>
+    <table>
+      <thead>
+        <th>Column Name</th>
+        <th>Column Type</th>
+        <th>Constraints</th>
+      </thead>
+      <tbody>
+        <tr>
+          <td>id</td>
+          <td>Integer</td>
+          <td>Primary Key, Auto Increment</td>
+        </tr>
+        <tr>
+          <td>username</td>
+          <td>String(50)</td>
+          <td>Not Null, Unique, Index</td>
+        </tr>
+        <tr>
+          <td>nickname</td>
+          <td>String(50)</td>
+          <td>Not Null, Unique, Index</td>
+        </tr>
+        <tr>
+          <td>bio</td>
+          <td>String(200)</td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>password</td>
+          <td>String(50)</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>is_admin</td>
+          <td>Boolean</td>
+          <td>Not Null, Default: False</td>
+        </tr>
+        <tr>
+          <td>created_by</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Nullable</td>
+        </tr>
+        <tr>
+          <td>last_modified_by</td>
+          <td>Integer</td>
+          <td>Foreign Key (User.id), Nullable</td>
+        </tr>
+        <tr>
+          <td>created_at</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>last_modified_at</td>
+          <td>DateTime</td>
+          <td>Not Null</td>
+        </tr>
+        <tr>
+          <td>is_active</td>
+          <td>Boolean</td>
+          <td>Index</td>
+        </tr>
+        <!-- Add other columns here based on your model -->
+      </tbody>
+    </table>
+
+
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:5000/
+paths:
+  /api/v1/comment/{track_id}:
+    get:
+      summary: Get comments by track ID
+      parameters:
+        - in: path
+          name: track_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the track to retrieve comments for
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  track_id:
+                    type: integer
+                    description: ID of the track
+                  comments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+                  action:
+                    type: string
+                    description: Action performed
+    post:
+      summary: Create a new comment for a track
+      parameters:
+        - in: path
+          name: track_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the track to create a comment for
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+                  description: The comment content
+                user_id:
+                  type: integer
+                  description: ID of the user posting the comment
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment:
+                    $ref: '#/components/schemas/Comment'
+                  action:
+                    type: string
+                    description: Action performed
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+  /api/v1/comment/{track_id}/{comment_id}:
+    delete:
+      summary: Delete a comment by ID
+      parameters:
+        - in: path
+          name: track_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the track containing the comment
+        - in: path
+          name: comment_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the comment to delete
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  track_id:
+                    type: integer
+                    description: ID of the track
+                  comment_id:
+                    type: integer
+                    description: ID of the deleted comment
+                  action:
+                    type: string
+                    description: Action performed
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+  /api/v1/rating/{track_id}:
+    get:
+      summary: Get rating by track ID
+      parameters:
+        - in: path
+          name: track_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the track to retrieve rating for
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  track_id:
+                    type: integer
+                    description: ID of the track
+                  rating:
+                    type: integer
+                    description: Rating value
+                  action:
+                    type: string
+                    description: Action performed
+    post:
+      summary: Create or update a rating for a track
+      parameters:
+        - in: path
+          name: track_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the track to create or update rating for
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  description: The rating value
+                user_id:
+                  type: integer
+                  description: ID of the user giving the rating
+      responses:
+        '201':
+          description: Successfully created or updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  track_id:
+                    type: integer
+                    description: ID of the track
+                  user_id:
+                    type: integer
+                    description: ID of the user
+                  rating:
+                    type: integer
+                    description: Rating value
+                  action:
+                    type: string
+                    description: Action performed
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+    delete:
+      summary: Delete a user's rating for a track
+      parameters:
+        - in: path
+          name: track_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the track containing the rating
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  track_id:
+                    type: integer
+                    description: ID of the track
+                  user_id:
+                    type: integer
+                    description: ID of the user
+                  action:
+                    type: string
+                    description: Action performed
+    put:
+      summary: Update a user's rating for a track
+      parameters:
+        - in: path
+          name: track_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the track to update rating for
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: integer
+                  description: The updated rating value
+      responses:
+        '201':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  track_id:
+                    type: integer
+                    description: ID of the track
+                  user_id:
+                    type: integer
+                    description: ID of the user
+                  rating:
+                    type: integer
+                    description: Updated rating value
+                  action:
+                    type: string
+                    description: Action performed
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+    options:
+      summary: Handle preflight requests for CORS
+      responses:
+        '200':
+          description: Preflight successful
+          content:
+            application/json: {}
+  /api/v1/track:
+    post:
+      summary: Create a new track
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                creator_name:
+                  type: string
+                  description: Name of the track creator
+                track_name:
+                  type: string
+                  description: Name of the track
+                track_lyrics:
+                  type: string
+                  description: Lyrics of the track
+                track_media:
+                  type: string
+                  description: Path to the track media file
+                track_art:
+                  type: string
+                  description: Path to the track artwork file
+                release_date:
+                  type: string
+                  format: date
+                  description: Release date of the track (YYYY-MM-DD)
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  action:
+                    type: string
+                    description: Action performed
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+  /api/v1/track/{track_id}:
+    get:
+      summary: Get track by ID
+      parameters:
+        - in: path
+          name: track_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the track to retrieve
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  track:
+                    $ref: '#/components/schemas/Track'
+                  track_cover:
+                    type: string
+                    format: binary
+                    description: Track cover image
+                  action:
+                    type: string
+                    description: Action performed
+        '404':
+          description: Track not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+    put:
+      summary: Update a track by ID
+      parameters:
+        - in: path
+          name: track_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the track to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                track_name:
+                  type: string
+                  description: Updated track name
+                track_lyrics:
+                  type: string
+                  description: Updated track lyrics
+                track_media:
+                  type: string
+                  description: Updated path to the track media file
+                track_art:
+                  type: string
+                  description: Updated path to the track artwork file
+                release_date:
+                  type: string
+                  format: date
+                  description: Updated release date of the track (YYYY-MM-DD)
+      responses:
+        '200':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  action:
+                    type: string
+                    description: Action performed
+        '404':
+          description: Track not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+    delete:
+      summary: Delete a track by ID
+      parameters:
+        - in: path
+          name: track_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the track to delete
+      responses:
+        '200':
+          description: Successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  action:
+                    type: string
+                    description: Action performed
+        '404':
+          description: Track not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+  /api/v1/user:
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Username of the user
+                nickname:
+                  type: string
+                  description: Nickname of the user
+                bio:
+                  type: string
+                  description: User's bio
+                password:
+                  type: string
+                  description: User's password
+                avatar:
+                  type: string
+                  description: Path to the user's avatar image
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Action performed
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+  /api/v1/user/{user_id}:
+    get:
+      summary: Get user by ID
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to retrieve
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
+                  action:
+                    type: string
+                    description: Action performed
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+    put:
+      summary: Update user by ID
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Updated username of the user
+                bio:
+                  type: string
+                  description: Updated user's bio
+                password:
+                  type: string
+                  description: Updated user's password
+                avatar:
+                  type: string
+                  description: Updated path to the user's avatar image
+      responses:
+        '200':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Action performed
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+    delete:
+      summary: Delete user by ID
+      parameters:
+        - in: path
+          name: user_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the user to delete
+      responses:
+        '200':
+          description: Successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Action performed
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+  /api/v1/channel:
+    post:
+      summary: Create a new channel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the channel
+                bio:
+                  type: string
+                  description: Description of the channel
+                password:
+                  type: string
+                  description: Password for the channel
+                avatar:
+                  type: string
+                  description: Path to the channel's avatar image
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Action performed
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+  /api/v1/channel/{channel_id}:
+    get:
+      summary: Get channel by ID or name
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the channel to retrieve
+        - in: path
+          required: true
+          name: channel_name
+          schema:
+            type: string
+          description: Name of the channel to retrieve
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  channel:
+                    $ref: '#/components/schemas/Channel'
+                  members:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Member'
+                  action:
+                    type: string
+                    description: Action performed
+        '404':
+          description: Channel not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+    put:
+      summary: Update channel by ID
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the channel to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Updated name of the channel
+                desc:
+                  type: string
+                  description: Updated description of the channel
+                avatar:
+                  type: string
+                  description: Updated path to the channel's avatar image
+      responses:
+        '200':
+          description: Successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Action performed
+        '404':
+          description: Channel not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+    delete:
+      summary: Delete channel by ID
+      parameters:
+        - in: path
+          name: channel_id
+          required: true
+          schema:
+            type: integer
+          description: ID of the channel to delete
+      responses:
+        '200':
+          description: Successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Action performed
+        '404':
+          description: Channel not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+components:
+  schemas:
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        comment:
+          type: string
+        track_id:
+          type: integer
+        user_id:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        last_modified_at:
+          type: string
+          format: date-time
+        created_by:
+          type: integer
+        last_modified_by:
+          type: integer
+        user:
+          type: object
+    Track:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        lyrics:
+          type: string
+        release_date:
+          type: string
+          format: date-time
+        duration:
+          type: integer
+        flag_id:
+          type: integer
+        flagged:
+          type: boolean
+        genre_id:
+          type: integer
+        channel_id:
+          type: integer
+        created_by:
+          type: integer
+        last_modified_by:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        last_modified_at:
+          type: string
+          format: date-time
+        channel:
+          type: object
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        nickname:
+          type: string
+        bio:
+          type: string
+        password:
+          type: string
+        is_admin:
+          type: boolean
+        created_by:
+          type: integer
+        last_modified_by:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        last_modified_at:
+          type: string
+          format: date-time
+        is_active:
+          type: boolean
+
+    Channel:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        blacklisted:
+          type: boolean
+        created_by:
+          type: integer
+        last_modified_by:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        last_modified_at:
+          type: string
+          format: date-time
+        is_active:
+          type: boolean
+    Member:
+      type: object
+      properties:
+        id:
+          type: integer
+        is_admin:
+          type: boolean
+        channel_id:
+          type: integer
+        user_id:
+          type: integer
+        created_by:
+          type: integer
+        last_modified_by:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        last_modified_at:
+          type: string
+          format: date-time

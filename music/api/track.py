@@ -15,13 +15,8 @@ class TrackAPI(Resource):
         if track is None:
             return {"error": "Track not found"}, 404
 
-        track_cover = send_file(
-            f"media/tracks/{track_id}/track-art.png", mimetype="image/png"
-        )
-
         return {
-            "track": dict(track),
-            track_cover: track_cover,
+            "track": services.get_track_dict(track),
             "action": "retrieved",
         }, 200
 
@@ -66,3 +61,49 @@ class TrackAPI(Resource):
         track_media_file.close()
 
         return {"action": "Created"}, 201
+
+    def put(self, track_id):
+        # Reading the request body
+        request_data = request.get_json()
+        track_name = request_data.get("track_name")
+        track_lyrics = request_data.get("track_lyrics")
+        track_media = request_data.get("track_media")
+        track_art = request_data.get("track_art")
+        release_date = request_data.get("release_date")
+
+        track = services.get_track_by_id(track_id)
+        if track is None:
+            return {"error": "Track not found"}, 404
+
+        # Convert the release_date string into a datetime object
+        release_date = datetime.strptime(release_date, "%Y-%m-%d")
+
+        # Converting the path of the track_media and track_art into FileStorage objects
+        track_media_file = open(track_media, "rb")
+        track_media = FileStorage(track_media_file)
+
+        track_art_file = open(track_art, "rb")
+        track_art = FileStorage(track_art_file)
+
+        services.update_track(
+            track_id=track_id,
+            name=track_name,
+            release_date=release_date,
+            lyrics="" if track_lyrics is None else track_lyrics,
+            media=track_media,
+            track_art=track_art,
+        )
+
+        track_art_file.close()
+        track_media_file.close()
+
+        return {"action": "Updated"}, 200
+
+    def delete(self, track_id):
+        track = services.get_track_by_id(track_id)
+        if track is None:
+            return {"error": "Track not found"}, 404
+
+        services.delete_track(track_id)
+
+        return {"action": "Deleted"}, 200

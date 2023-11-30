@@ -35,10 +35,6 @@ class UserAPI(Resource):
         if username is None or password is None:
             return {"error": "username and password are required"}, 400
 
-        # if services.validate_username(username=username):
-        #     return {"error": "username is invalid"}, 400
-        # elif services.validate_password(password=password):
-        #     return {"error": "password is invalid"}, 400
 
         # Checking if the user exists
         user = services.get_user_by_username(username=username)
