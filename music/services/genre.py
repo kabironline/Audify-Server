@@ -1,4 +1,6 @@
 from music.models import Genre, Track
+from membership.models import Channel
+from sqlalchemy.orm import joinedload
 from core.db import get_session
 
 
@@ -35,7 +37,18 @@ def get_genre_by_id(genre_id):
 def get_genre_tracks(genre_id):
     session = get_session()
 
-    tracks = session.query(Track).filter(Track.genre_id == genre_id).all()
+    tracks = (
+        session.query(Track)
+        .join(Channel, Track.channel_id == Channel.id)
+        .options(joinedload(Track.channel))
+        .filter(
+            Track.flagged.is_(None),
+            Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
+        )
+        .filter(Track.genre_id == genre_id)
+        .all()
+    )
 
     return tracks
 

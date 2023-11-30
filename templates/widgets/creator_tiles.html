@@ -1,21 +1,20 @@
 <div class="creator-tiles">
   {% for n in range(creators|length) %}
-  <div class="creator-tile">
-    <div class="creator-tile__position">
-      <p class="creator-tile__position--text">{{ n+1 }}</p>
+    <div class="creator-tile">
+      <div class="creator-tile__position">
+        <p class="creator-tile__position--text">{{ n+1 }}</p>
+      </div>
+      <div class="creator-tile__cover">
+        <a href="/dashboard/channel/{{creators[n].id}}" class="">
+          <div>
+            <img src="{{url_for('channel_avatar', channel_id = creators[n].id)}}" alt="creator Image"
+              class="creator-tile__cover--img">
+          </div>
+        </a>
+      </div>
+      <div class="creator-tile__text">
+        <a href="/dashboard/channel/{{creators[n].id}}" class="creator-tile__text--title">{{ creators[n].name}}</a>
+      </div>
     </div>
-    <div class="creator-tile__cover">
-      <a href="/" class="">
-        <div>
-          <img src="{{url_for('channel_avatar', channel_id = creators[n].id)}}" alt="creator Image"
-            class="creator-tile__cover--img">
-        </div>
-      </a>
-    </div>
-    <div class="creator-tile__text">
-      <a href="/dashboard/channel/{{creators[n].id}}" class="creator-tile__text--title">{{ creators[n].name}}</a>
-      <!-- <a href="" class="creator-tile__text--artist">Artist</a> -->
-    </div>
-  </div>
   {% endfor %}
 </div>

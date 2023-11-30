@@ -7,4 +7,4 @@ FROM "Track"
 WHERE
     Channel.blacklisted is NULL
     AND Track.flagged is NULL
-    AND PlaylistItem.playlist_id = 4
+    AND PlaylistItem.playlist_id = 12

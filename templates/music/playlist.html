@@ -20,7 +20,7 @@
 
     <div class="playlist-header__buttons">
 
-      {% if playlist.items|length > 1 %}
+      {% if playlist.items|length > 0 %}
       <a href="/player/playlist/{{playlist.id}}" class="btn btn--white"><i class="fas fa-play"></i>Play</a>
       {% endif %}
       {% if playlist.author.id == current_user.id %}
@@ -70,7 +70,7 @@
         <input type="text" name="route" id="" value="{{ request.path }}" style="display: none;">
         <div class="modal__footer">
           <a href="#main" class="btn">Close</a>
-          <button type="submit" class="btn btn--primary">Create Playlist</button>
+          <button type="submit" class="btn btn--primary">Update Playlist</button>
         </div>
       </form>
     </div>
