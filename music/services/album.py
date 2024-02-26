@@ -98,6 +98,7 @@ def get_latest_albums(limit=5):
         .join(Channel, Album.created_by == Channel.id)
         .options(joinedload(Album.channel))
         .order_by(Album.created_at.desc())
+        .filter(Channel.blacklisted.is_(None), Channel.is_active.is_(None))
         .limit(limit)
         .all()
     )
@@ -113,6 +114,8 @@ def get_all_albums():
     albums = (
         session.query(Album, Channel.name.label("channel_name"))
         .join(Channel, Channel.id == Album.created_by)
+        .options(joinedload(Album.channel))
+        .filter(Channel.blacklisted.is_(None), Channel.is_active.is_(None))
         .all()
     )
 
@@ -294,6 +297,16 @@ def get_track_albums(track_id):
         .filter(AlbumItem.track_id == track_id)
         .all()
     )
+
+    session.close()
+
+    return album_items
+
+
+def get_item_albums(track_id):
+    session = get_session()
+
+    album_items = session.query(AlbumItem).filter(AlbumItem.track_id == track_id).all()
 
     session.close()
 

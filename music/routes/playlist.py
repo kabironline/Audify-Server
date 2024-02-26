@@ -73,7 +73,7 @@ def playlist_update(playlist_id):
     # Checking if user is a part of any channel
     members = get_user_channels(user.id)
     channel = None
-    channels = []
+    channels = None
     if len(members) != 0:
         for member in members:
             channel.append(get_channel_dict(get_channel_by_id(member.channel_id)))

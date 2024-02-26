@@ -207,7 +207,6 @@ def get_tracks_by_playlist_id(playlist_id):
         session.query(Track)
         .join(PlaylistItem, Track.id == PlaylistItem.track_id)
         .join(Channel, Track.channel_id == Channel.id)
-        .join(Rating, Track.id == Rating.track_id)
         .options(joinedload(Track.channel))
         .filter(
             Track.flagged.is_(None),
@@ -262,14 +261,11 @@ def delete_playlist_item(playlist_item_id):
 def delete_playlist_item_by_playlist_track_id(playlist_id, track_id):
     session = get_session()
 
-    try:
-        playlist_item = (
-            session.query(PlaylistItem)
-            .filter_by(playlist_id=playlist_id, track_id=track_id)
-            .first()
-        )
-    except Exception as e:
-        pass
+    playlist_item = (
+        session.query(PlaylistItem)
+        .filter_by(playlist_id=playlist_id, track_id=track_id)
+        .first()
+    )
 
     session.delete(playlist_item)
     session.commit()

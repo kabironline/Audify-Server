@@ -26,9 +26,6 @@ class ChannelAPI(Resource):
         if channel is None:
             return {"error": "Channel not found"}, 404
         member = services.get_channel_members(channel.id)
-        # if member is None:
-
-        #     return {"error": "No members in channel not found"}, 404
 
         member_dict = [services.get_member_dict(m) for m in member]
 

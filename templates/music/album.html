@@ -25,12 +25,14 @@
     </p>
 
     <div class="playlist-header__buttons">
-      {% if album.items|length > 1 %}
+      {% if album.items|length > 0 %}
       <a href="/player/album/{{album.id}}" class="btn btn--white"><i class="fas fa-play"></i>Play</a>
       {% endif %}
+      {% if current_user.channels != None %}
       {% if album.channel.id == current_user.channels[0]['id'] %}
       <a href="/album/{{album.id}}/edit" class="btn "><i class="fas fa-pencil"></i>Edit Album</a>
       <a href="#delete-album-modal" class="btn ">Delete Album</a>
+      {% endif %}
       {% endif %}
     </div>
   </div>
@@ -48,6 +50,7 @@
 </section>
 {% endblock %}
 {%block extra_modals%}
+{% if current_user.channels != None %}
 {% if album.channel.id == current_user.channels[0]['id'] %}
 <section id="delete-album-modal" class="modal">
   <div class="modal__backdrop">
@@ -71,5 +74,6 @@
     </div>
   </div>
 </section>
+{% endif %}
 {% endif %}
 {%endblock%}

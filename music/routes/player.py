@@ -1,6 +1,7 @@
 from flask import render_template, redirect, url_for, send_file, request
 from music.services import *
 from membership.services import get_user_by_id, get_channel_by_id
+from admin.services import get_whitelist_by_channel_id
 import core
 import os
 
@@ -115,6 +116,9 @@ def track_flag():
 
     track = get_track_by_id(id)
 
+    if get_whitelist_by_channel_id(track.channel_id) is not None:
+        return redirect(route)
+
     if track.flagged is None:
         flag_track(track.id)
 
@@ -163,12 +167,16 @@ def player_list(album_id=None, playlist_id=None, position=0):
     if position >= len(list):
         position = 0
 
-    create_recent(user.id, list[position].id)
+    track = list[position]
+    user_rating = get_rating_by_user_and_track_id(user.id, track.id)
+    track.user_rating = user_rating.rating if user_rating is not None else None
+
+    create_recent(user.id, track.id)
 
     return render_template(
         "music/player_list.html",
         list=list,
-        track=list[position],
+        track=track,
         position=position,
         album_id=album_id,
         playlist_id=playlist_id,

@@ -15,10 +15,9 @@ def dashboard(user_id=None):
 
     if user is None:
         return redirect(url_for("page_not_found"))
-    
+
     if user.is_active is False:
         return redirect(url_for("home"))
-
 
     recent_tracks = music.services.get_recent_by_user_id(user_id)
     ratings = music.services.get_track_rating_for_user(
@@ -61,7 +60,7 @@ def dashboard_channel(channel_id=None):
         # TODO: Redirect to 404 page
         return redirect(url_for("home"))
 
-    channel_tracks = music.services.get_tracks_by_channel(channel_id)
+    channel_tracks = music.services.get_tracks_by_channel(channel_id, count=1000)
 
     albums = music.services.get_album_by_user(channel_id)
 
@@ -75,6 +74,7 @@ def dashboard_channel(channel_id=None):
         own_profile=is_member,
         channel_tracks=channel_tracks,
         views=channel_views,
+        channel_albums=albums,
     )
 
 
@@ -89,10 +89,9 @@ def dashboard_channel_tracks(channel_id=None):
         return redirect(url_for("page_not_found"))
 
     if channel is None:
-        # TODO: Redirect to 404 page
-        return redirect(url_for("home"))
+        return redirect(url_for("page_not_found"))
 
-    channel_tracks = music.services.get_tracks_by_channel(channel_id)
+    channel_tracks = music.services.get_tracks_by_channel(channel_id, count=10000000)
 
     return render_template(
         "music/all_tracks.html",
@@ -114,7 +113,7 @@ def dashboard_channel_track_list(channel_id=None):
     if channel is None:
         return redirect(url_for("home"))
 
-    tracks = music.services.get_tracks_by_channel(channel_id)
+    tracks = music.services.get_tracks_by_channel(channel_id, count=1000000)
     for track in tracks:
         track.views = music.services.get_views_by_track_id(track.id)
 

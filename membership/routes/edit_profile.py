@@ -97,7 +97,7 @@ def edit_profile_creator():
         playlist_search = get_playlist_by_user(user.id)
         for playlist_item in playlist_search:
             playlist.append(get_playlist_dict(playlist_item))
-        channel = channel[0]
+        channel = channels[0]
 
         return render_template("membership/edit_profile_creator.html", channel=channel)
 
