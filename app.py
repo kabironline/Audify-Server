@@ -22,7 +22,7 @@ app.secret_key = "secret_key"
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(current_dir, "core/db/submit-db.sqlite3")
+db_path = os.path.join(current_dir, "core/db/db.sqlite3")
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + db_path
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 app.config["SQLALCHEMY_ECHO"] = False
@@ -49,16 +49,16 @@ api.add_resource(
 
 api.add_resource(
     membership.api.UserAPI,
-    "/api/v1/user",
-    "/api/v1/user/<int:user_id>",
-    "/api/v1/user/<string:username>",
+    "/api-old/v1/user",
+    "/api-old/v1/user/<int:user_id>",
+    "/api-old/v1/user/<string:username>",
 )
 
 api.add_resource(
     membership.api.ChannelAPI,
-    "/api/v1/channel",
-    "/api/v1/channel/<int:channel_id>",
-    "/api/v1/channel/<string:channel_name>",
+    "/api-old/v1/channel",
+    "/api-old/v1/channel/<int:channel_id>",
+    "/api-old/v1/channel/<string:channel_name>",
 )
 
 core.set_api(api)
