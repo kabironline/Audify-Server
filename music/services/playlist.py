@@ -7,22 +7,19 @@ from datetime import datetime
 from sqlalchemy.orm import joinedload
 
 
-def create_playlist(name, description="", api=False):
+def create_playlist(name, description="", api=False, user_id=0):
     session = get_session()
 
-    user = None
-    if api:
-        user = get_user_by_username("api_superuser")
-    else:
-        user = get_current_user()
+    if not api:
+        user_id = get_current_user().id
 
     playlist = Playlist(
         name=name,
         description=description,
         created_at=datetime.now(),
         last_modified_at=datetime.now(),
-        created_by=user.id,
-        last_modified_by=user.id,
+        created_by=user_id,
+        last_modified_by=user_id,
     )
 
     session.add(playlist)
