@@ -1,6 +1,6 @@
 from flask_restful import Resource, request
 import music.services as music_services
-import core
+import membership.services as membership_services
 
 class PlaylistAPI(Resource):
   def get(self, playlist_id):
@@ -22,7 +22,7 @@ class PlaylistAPI(Resource):
     if user_id is None:
       return {"error": "User ID is required"}, 400
     
-    user = core.get_user_by_id(user_id)
+    user = membership_services.get_user_by_id(user_id)
     if user is None:
       return {"error": "User not found"}, 404
     
@@ -55,7 +55,7 @@ class PlaylistAPI(Resource):
     if user_id is None:
       return {"error": "User ID is required"}, 400
     
-    user = core.get_user_by_id(user_id)
+    user = membership_services.get_user_by_id(user_id)
     if user is None:
       return {"error": "User not found"}, 404
     
