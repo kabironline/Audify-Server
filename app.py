@@ -2,6 +2,7 @@ from flask import Flask, redirect, url_for, request, Response, render_template
 from flask_migrate import Migrate
 from flask_restful import Api
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 import os
 import core
 
@@ -11,8 +12,10 @@ from commands.track import *
 from core.db import db
 from core import api
 import membership.routes
+import membership.api_old
 import membership.api
 import music.routes
+import music.api_old
 import music.api
 import music.models
 import admin.routes
@@ -30,36 +33,47 @@ app.config["SQLALCHEMY_ECHO"] = False
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
 
+jwt = JWTManager(app)
+
 api = Api(app)
+
 api.add_resource(
-    music.api.RatingAPI,
+    music.api_old.RatingAPI,
     "/api/v1/rating/<int:track_id>",
 )
 api.add_resource(
-    music.api.CommentAPI,
+    music.api_old.CommentAPI,
     "/api/v1/comment/<int:track_id>",
     "/api/v1/comment/<int:track_id>/<int:comment_id>",
 )
 
 api.add_resource(
-    music.api.TrackAPI,
+    music.api_old.TrackAPI,
     "/api/v1/track",
     "/api/v1/track/<int:track_id>",
 )
 
 api.add_resource(
-    membership.api.UserAPI,
+    membership.api_old.UserAPI,
     "/api-old/v1/user",
     "/api-old/v1/user/<int:user_id>",
     "/api-old/v1/user/<string:username>",
 )
 
 api.add_resource(
-    membership.api.ChannelAPI,
+    membership.api_old.ChannelAPI,
     "/api-old/v1/channel",
     "/api-old/v1/channel/<int:channel_id>",
     "/api-old/v1/channel/<string:channel_name>",
 )
+
+# V2 API
+
+api.add_resource(
+    membership.api.LoginAPI,
+    "/api/v2/login",
+)
+    
 
 core.set_api(api)
 
