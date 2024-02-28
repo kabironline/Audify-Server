@@ -4,7 +4,7 @@ import membership.services as services
 from werkzeug.datastructures import FileStorage
 import os
 
-class UserAPI(Resource):
+class UserAPIV2(Resource):
   def get(self, user_id: int = None, username: str = None):
     if user_id is None and username is None:
       return {"error": "user_id or username is required"}, 400

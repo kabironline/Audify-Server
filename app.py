@@ -73,7 +73,13 @@ api.add_resource(
     membership.api.LoginAPI,
     "/api/v2/login",
 )
-    
+
+api.add_resource(
+    membership.api.UserAPIV2,
+    "/api/v2/user",
+    "/api/v2/user/<int:user_id>",
+    "/api/v2/user/<string:username>",
+)
 
 core.set_api(api)
 
