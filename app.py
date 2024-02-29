@@ -90,6 +90,11 @@ api.add_resource(
     "/api/v2/tracks/recents"
 )
 
+api.add_resource(
+    music.api.LatestAPI,
+    "/api/v2/tracks/latest"
+)   
+
 core.set_api(api)
 
 
