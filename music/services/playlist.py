@@ -137,12 +137,14 @@ def delete_playlist(playlist_id, user_id=0, api=False):
 def get_playlist_dict(playlist):
     user = get_user_dict(get_user_by_id(playlist.created_by))
 
+    toString = lambda x: x.strftime("%Y-%m-%d %H:%M:%S") if x else None
+
     playlist_dict = {
         "id": playlist.id,
         "name": playlist.name,
         "description": playlist.description,
-        "created_at": playlist.created_at,
-        "last_modified_at": playlist.last_modified_at,
+        "created_at": toString(playlist.created_at),
+        "last_modified_at": toString(playlist.last_modified_at),
         "created_by": playlist.created_by,
         "last_modified_by": playlist.last_modified_by,
         "user": user,

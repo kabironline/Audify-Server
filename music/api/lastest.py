@@ -1,5 +1,5 @@
 from flask_restful import Resource, request
-from music.services import get_latest_tracks, get_track_dict, get_latest_albums, get_album_dict
+from music.services import get_latest_tracks, get_track_dict, get_latest_albums, get_album_dict, get_latest_playlist,get_playlist_dict
 
 class LatestAPI(Resource):
   def get(self):
@@ -17,6 +17,13 @@ class LatestAPI(Resource):
       latest = get_latest_tracks()
       latest_json = [(get_track_dict(track)) for track in latest]
       
+      return {
+        "latest": latest_json,
+      }, 200
+    
+    elif route == "playlists":
+      latest = get_latest_playlist()
+      latest_json = [(get_playlist_dict(playlist)) for playlist in latest]
       return {
         "latest": latest_json,
       }, 200
