@@ -1,8 +1,7 @@
 from music.models import Album, AlbumItem, Track, AlbumSearch
 from membership.models import Channel
-from membership.services import get_user_by_username, get_user_by_id, get_user_dict
+from membership.services import  get_user_dict, get_channel_by_id, get_channel_dict
 from core.db import get_session
-from core import get_current_user
 from werkzeug.datastructures import FileStorage
 import os.path
 from datetime import datetime
@@ -191,16 +190,18 @@ def delete_album(album_id, channel_id=0, api=False):
 
 
 def get_album_dict(album):
-    user = get_user_dict(get_user_by_id(album.created_by))
+    user = get_channel_dict(get_channel_by_id(album.created_by))
+
+    toString = lambda x: x.strftime("%Y-%m-%d %H:%M:%S")
 
     album_dict = {
         "id": album.id,
         "name": album.name,
         "description": album.description,
-        "created_at": album.created_at,
-        "last_modified_at": album.last_modified_at,
-        "created_by": user,
+        "created_at": toString(album.created_at),
+        "last_modified_at": toString(album.last_modified_at),
         "last_modified_by": album.last_modified_by,
+        "created_by": user,
     }
 
     return album_dict

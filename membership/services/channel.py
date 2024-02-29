@@ -135,14 +135,17 @@ def deactivate_channel(channel_id):
 
 
 def get_channel_dict(channel: channel_model.Channel):
+
+    toString  = lambda x: x.strftime("%Y-%m-%d %H:%M:%S") if x is not None else None
+
     return {
         "id": channel.id,
         "name": channel.name,
         "description": channel.description,
         "created_by": channel.created_by,
         "last_modified_by": channel.last_modified_by,
-        "created_at": channel.created_at,
-        "last_modified_at": channel.last_modified_at,
+        "created_at": toString(channel.created_at),
+        "last_modified_at": toString(channel.last_modified_at),
     }
 
 

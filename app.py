@@ -92,7 +92,9 @@ api.add_resource(
 
 api.add_resource(
     music.api.LatestAPI,
-    "/api/v2/tracks/latest"
+    "/api/v2/tracks/latest",
+    "/api/v2/albums/latest",
+    
 )   
 
 core.set_api(api)
@@ -381,6 +383,11 @@ app.add_url_rule(
     music.routes.album_cover,
 )
 
+app.add_url_rule(
+    "/album/<int:album_id>/cover",
+    "album_cover_new",
+    music.routes.album_cover,
+)
 app.add_url_rule(
     "/admin/dashboard",
     "admin_dashboard",

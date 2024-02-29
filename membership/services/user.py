@@ -297,6 +297,10 @@ def validate_password(password):
 
 
 def get_user_dict(user: user_model.User, avatar=None):
+
+
+    toString = lambda x: x.strftime("%Y-%m-%d %H:%M:%S") if x else None
+
     return {
         "id": user.id,
         "username": user.username,
@@ -305,7 +309,7 @@ def get_user_dict(user: user_model.User, avatar=None):
         "is_admin": user.is_admin,
         "created_by": user.created_by,
         "last_modified_by": user.last_modified_by,
-        "created_at": user.created_at,
-        "last_modified_at": user.last_modified_at,
+        "created_at": toString(user.created_at),
+        "last_modified_at": toString(user.last_modified_at),
         "avatar": avatar or "",
     }
