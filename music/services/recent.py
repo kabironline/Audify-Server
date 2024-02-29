@@ -49,7 +49,7 @@ def get_recent_by_user_id(user_id, count=10):
     session = get_session()
     # sort them in descending order by last_modified_at
     query = (
-        session.query(Track, Recent.last_modified_at)
+        session.query(Track)
         .join(Recent, Track.id == Recent.track_id)
         .join(Channel, Track.channel_id == Channel.id)
         .options(joinedload(Track.channel))
@@ -63,11 +63,8 @@ def get_recent_by_user_id(user_id, count=10):
         .limit(count)
         .all()
     )
-    tracks = []
-    for item in query:
-        tracks.append(item[0])
 
-    return tracks
+    return query
 
 
 def delete_recent_by_user_id(user_id):

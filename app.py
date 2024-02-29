@@ -11,6 +11,7 @@ from commands.db import *
 from commands.track import *
 from core.db import db
 from core import api
+from membership.models import User
 import membership.routes
 import membership.api_old
 import membership.api
@@ -34,6 +35,9 @@ db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
 
 jwt = JWTManager(app)
+app.config["JWT_SECRET_KEY"] = "6d7f095ee80911f504e7bafaef6ad6169a15870146c604dbb11b7fa7f98809ac"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = False
+app.config["JWT_TOKEN_LOCATION"] = ["headers"]
 
 api = Api(app)
 
@@ -81,6 +85,11 @@ api.add_resource(
     "/api/v2/user/<string:username>",
 )
 
+api.add_resource(
+    music.api.RecentsAPI,
+    "/api/v2/tracks/recents"
+)
+
 core.set_api(api)
 
 
@@ -111,6 +120,14 @@ app.cli.add_command(generate_random_likes)
 app.cli.add_command(generate_random_views)
 app.cli.add_command(update_track_duration)
 
+# @jwt.user_identity_loader
+def user_identity_lookup(user):
+    return user.id
+
+@jwt.user_lookup_loader
+def user_lookup_callback(_jwt_header, jwt_data):
+    identity = jwt_data["sub"]
+    return User.query.filter_by(id=identity).one_or_none()
 
 @app.route("/")
 def entry():

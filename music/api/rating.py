@@ -2,6 +2,8 @@ from flask_restful import Resource, request
 import music.services as services
 import core
 
+
+# TODO: Convert this to use JWT for authentication and identification
 class RatingAPI(Resource):
   def get(self, track_id):
     rating = services.get_track_rating(track_id)

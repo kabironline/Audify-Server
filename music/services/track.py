@@ -375,18 +375,21 @@ def delete_track(track_id):
 
 
 def get_track_dict(track):
+
+    toString = lambda x: x.strftime("%Y-%m-%d %H:%M:%S") if x else None
+
     return {
         "id": track.id,
         "name": track.name,
         "lyrics": track.lyrics,
-        "release_date": track.release_date,
+        "release_date": toString(track.release_date),
         "duration": track.duration,
         "channel_id": track.channel_id,
         "genre_id": track.genre_id,
         "created_by": track.created_by,
         "last_modified_by": track.last_modified_by,
-        "created_at": track.created_at,
-        "last_modified_at": track.last_modified_at,
+        "created_at": toString(track.created_at),
+        "last_modified_at": toString(track.last_modified_at),
         "flagged": track.flagged,
         "channel": {
             "id": track.channel.id,
@@ -395,8 +398,8 @@ def get_track_dict(track):
             "blacklisted": track.channel.blacklisted,
             "created_by": track.channel.created_by,
             "last_modified_by": track.channel.last_modified_by,
-            "created_at": track.channel.created_at,
-            "last_modified_at": track.channel.last_modified_at,
+            "created_at": toString(track.channel.created_at),
+            "last_modified_at": toString(track.channel.last_modified_at),
             "is_active": track.channel.is_active,
         },
     }
