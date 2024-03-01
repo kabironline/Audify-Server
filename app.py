@@ -97,6 +97,12 @@ api.add_resource(
     "/api/v2/playlists/latest",
 )
 
+api.add_resource(
+    music.api.AlbumAPI,
+    "/api/v2/album",
+    "/api/v2/album/<int:album_id>",
+)
+
 core.set_api(api)
 
 
