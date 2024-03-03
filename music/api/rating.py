@@ -1,10 +1,10 @@
 from flask_restful import Resource, request
+from flask_jwt_extended import jwt_required, current_user
 import music.services as services
 import core
 
 
-# TODO: Convert this to use JWT for authentication and identification
-class RatingAPI(Resource):
+class RatingAPIV2(Resource):
   def get(self, track_id):
     rating = services.get_track_rating(track_id)
     return {
@@ -12,30 +12,23 @@ class RatingAPI(Resource):
       "rating": rating,
     }, 200
   
-  def post(self, track_id):
+  @jwt_required()
+  def post(self, track_id, rating):
     request_data = request.get_json()
-    rating = request_data.get("rating")
-    user_id = request_data.get("user_id")
-
+    user = current_user
     if rating is None:
       return {"error": "Rating is required"}, 400
     
-    if user_id is None:
-      return {"error": "User ID is required"}, 400
-    
-    rating_object = services.create_or_update_rating(track_id, user_id, rating)
+    rating_object = services.create_or_update_rating(track_id, user.id, rating)
 
     if rating_object is None:
       return {
-        "track_id": track_id,
-        "user_id": user_id,
+        "average_rating": services.get_track_rating(track_id),
         "action": "deleted",
       }, 200
     
     return {
-      "track_id": rating_object.track_id,
-      "user_id": rating_object.user_id,
-      "rating": rating_object.rating,
+      "average_rating": services.get_track_rating(track_id),
       "action": "created",
     }, 201
   

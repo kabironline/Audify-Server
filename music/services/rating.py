@@ -1,7 +1,7 @@
 from music.models import Rating
 from core.db import get_session
 from datetime import datetime
-from sqlalchemy import tuple_
+from sqlalchemy import tuple_, func
 
 
 def like_track(track_id, user_id):
@@ -64,14 +64,10 @@ def get_track_rating(track_id):
 
     ratings = session.query(Rating).filter(Rating.track_id == track_id).all()
 
-    if len(ratings) == 0:
-        return 0
-
-    # summing up all the ratings
-    total_rating = sum([rating.rating for rating in ratings])
-
-    # calculating the average rating
-    average_rating = total_rating / len(ratings)
+    if not ratings:
+        average_rating = None
+    else:
+        average_rating = session.query(func.avg(Rating.rating)).filter(Rating.track_id == track_id).scalar()
 
     return average_rating
 

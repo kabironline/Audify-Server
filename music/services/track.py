@@ -391,6 +391,8 @@ def get_track_dict(track):
         "created_at": toString(track.created_at),
         "last_modified_at": toString(track.last_modified_at),
         "flagged": track.flagged,
+        "rating": track.rating if hasattr(track, "rating") else None,
+        "average_rating": track.average_rating if hasattr(track, "average_rating") else None,
         "channel": {
             "id": track.channel.id,
             "name": track.channel.name,

@@ -91,6 +91,12 @@ api.add_resource(
 )
 
 api.add_resource(
+    music.api.RatingAPIV2,
+    "/api/v2/track/<int:track_id>/rating",
+    "/api/v2/track/<int:track_id>/rating/<int:rating>",
+)
+
+api.add_resource(
     music.api.LatestAPI,
     "/api/v2/tracks/latest",
     "/api/v2/albums/latest",
