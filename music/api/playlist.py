@@ -1,17 +1,28 @@
 from flask_restful import Resource, request
 import music.services as music_services
 import membership.services as membership_services
+from flask_jwt_extended import jwt_required, current_user
 
 class PlaylistAPI(Resource):
+  @jwt_required(optional=True)
   def get(self, playlist_id):
     playlist = music_services.get_playlist_by_id(playlist_id)
+    playlist_items = music_services.get_tracks_by_playlist_id(playlist_id)
     if playlist is None:
       return {"error": "Playlist not found"}, 404
     
+    auth = request.headers.get("Authorization")
+    if auth:
+      user_id = current_user.id
+      ratings = music_services.get_track_rating_for_user(user_id, *[playlist_item.id for playlist_item in playlist_items])
+      for track in playlist_items:
+        track.rating = ratings.get(track.id, None)
+    
+    playlist_dict = music_services.get_playlist_dict(playlist)
+    playlist_dict["tracks"] = [music_services.get_track_dict(track) for track in playlist_items]
     return {
-      "playlist": music_services.get_playlist_dict(playlist),
+      "playlist": playlist_dict,
     }, 200
-  
   def post(self):
     request_data = request.get_json()
     user_id = request_data.get("user_id")
