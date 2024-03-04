@@ -86,14 +86,20 @@ api.add_resource(
 )
 
 api.add_resource(
-    music.api.RecentsAPI,
-    "/api/v2/tracks/recents"
-)
-
-api.add_resource(
     music.api.RatingAPIV2,
     "/api/v2/track/<int:track_id>/rating",
     "/api/v2/track/<int:track_id>/rating/<int:rating>",
+)
+
+api.add_resource(
+    music.api.CommentAPIV2,
+    "/api/v2/track/<int:track_id>/comments",
+    "/api/v2/track/<int:track_id>/comment/<int:comment_id>",
+)
+
+api.add_resource(
+    music.api.RecentsAPI,
+    "/api/v2/tracks/recents"
 )
 
 api.add_resource(

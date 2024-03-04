@@ -88,21 +88,24 @@ def delete_all_comments_by_track_id(track_id):
 
 
 def get_comment_dict(comment: Comment) -> dict:
+
+    toString = lambda x: x.strftime("%Y-%m-%d %H:%M:%S") if x else None
+
     return {
         "id": comment.id,
         "comment": comment.comment,
         "track_id": comment.track_id,
         "user_id": comment.user_id,
-        "created_at": comment.created_at,
+        "created_at": toString(comment.created_at),
         "created_by": comment.created_by,
-        "last_modified_at": comment.last_modified_at,
+        "last_modified_at": toString(comment.last_modified_at),
         "last_modified_by": comment.last_modified_by,
         "user": {
             "id": comment.user.id,
             "username": comment.user.username,
             "nickname": comment.user.nickname,
-            "created_at": comment.user.created_at,
-            "last_modified_at": comment.user.last_modified_at,
+            "created_at": toString(comment.user.created_at),
+            "last_modified_at": toString(comment.user.last_modified_at),
             "created_by": comment.user.created_by,
             "last_modified_by": comment.user.last_modified_by,
         },
