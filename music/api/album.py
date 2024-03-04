@@ -13,15 +13,14 @@ class AlbumAPI(Resource):
       return {"error": "Album not found"}, 404
     
     album_items = music_services.get_album_tracks_by_album_id(album_id)
-
     ratings = {}    
+    
     auth_header = request.headers.get("Authorization")
     if auth_header != '':
       user_id = get_jwt_identity()
       user = membership_services.get_user_by_id(user_id)
       ratings = music_services.get_track_rating_for_user(user.id, *[album_item.id for album_item in album_items])
     for track in album_items:
-      track.average_rating = music_services.get_track_rating(track.id)
       track.rating = ratings.get(track.id, None)
     tracks = [music_services.get_track_dict(album_item) for album_item in album_items]
     album_dict = music_services.get_album_dict(album)

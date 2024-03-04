@@ -11,7 +11,7 @@ from music.services.album import (
 )
 from music.services.comment import delete_all_comments_by_track_id
 from music.services.recent import delete_recent_by_track_id
-from music.services.view import delete_views_by_track_id
+from music.services.view import delete_views_by_track_id, get_views_by_track_id
 from core.db import get_session, get_db
 from datetime import datetime
 from werkzeug.datastructures import FileStorage
@@ -378,6 +378,11 @@ def get_track_dict(track):
 
     toString = lambda x: x.strftime("%Y-%m-%d %H:%M:%S") if x else None
 
+    if not hasattr(track, "views"):
+        track.views = get_views_by_track_id(track.id)
+    if not hasattr(track, "average_rating"):
+        track.average_rating = get_track_rating(track.id)
+
     return {
         "id": track.id,
         "name": track.name,
@@ -392,7 +397,8 @@ def get_track_dict(track):
         "last_modified_at": toString(track.last_modified_at),
         "flagged": track.flagged,
         "rating": track.rating if hasattr(track, "rating") else None,
-        "average_rating": track.average_rating if hasattr(track, "average_rating") else None,
+        "average_rating": track.average_rating,
+        "views": track.views,
         "channel": {
             "id": track.channel.id,
             "name": track.channel.name,
