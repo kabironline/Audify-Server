@@ -110,6 +110,12 @@ api.add_resource(
 )
 
 api.add_resource(
+    music.api.TopAPI,
+    "/api/v2/tracks/top",
+    "/api/v2/channels/top",
+)
+
+api.add_resource(
     music.api.AlbumAPI,
     "/api/v2/album",
     "/api/v2/album/<int:album_id>",
