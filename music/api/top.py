@@ -20,7 +20,7 @@ class TopAPI(Resource):
         "top": top_json,
       }, 200
     elif route == "channels":
-      top = get_top_rated_channels()
+      top = get_top_rated_channels(count)
       top_json = [(get_channel_dict(channel)) for channel in top]
       return {
         "top": top_json,

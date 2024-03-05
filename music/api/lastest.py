@@ -4,16 +4,16 @@ from flask_jwt_extended import jwt_required, current_user
 class LatestAPI(Resource):
   @jwt_required(optional=True)
   def get(self):
-    # Check the route if it has "tracks" or "albums"
+    count = request.args.get("n", 5)
     route = request.path.split("/")[3]
     if route == "albums":
-      latest = get_latest_albums()
+      latest = get_latest_albums(count)
       latest_json = [(get_album_dict(album)) for album in latest]
       return {
         "latest": latest_json,
       }, 200
     elif route == "tracks":
-      latest = get_latest_tracks()
+      latest = get_latest_tracks(count)
       
       if request.headers.get("Authorization"):
         ratings = get_track_rating_for_user(current_user.id, *[latest_track.id for latest_track in latest])
@@ -25,7 +25,7 @@ class LatestAPI(Resource):
       }, 200
     
     elif route == "playlists":
-      latest = get_latest_playlist()
+      latest = get_latest_playlist(count)
       latest_json = [(get_playlist_dict(playlist)) for playlist in latest]
       return {
         "latest": latest_json,

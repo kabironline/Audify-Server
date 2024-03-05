@@ -99,3 +99,10 @@ def search_genres(q):
     genres = session.query(Genre).filter(Genre.name.like(f"{q}")).all()
 
     return genres
+
+def get_genre_dict(genre):
+    return {
+        "id": genre.id,
+        "name": genre.name,
+        "color": genre.color,
+    }

@@ -120,10 +120,17 @@ api.add_resource(
     "/api/v2/album",
     "/api/v2/album/<int:album_id>",
 )
+
 api.add_resource(
     music.api.PlaylistAPI,
     "/api/v2/playlist",
     "/api/v2/playlist/<int:playlist_id>",
+)
+
+api.add_resource(
+    music.api.GenreAPI,
+    "/api/v2/genres",
+    "/api/v2/genre/<int:genre_id>/tracks",
 )
 
 core.set_api(api)
