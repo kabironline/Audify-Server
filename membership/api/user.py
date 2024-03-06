@@ -1,10 +1,11 @@
 from flask_restful import Resource, request
-from flask import jsonify, url_for
+from flask_jwt_extended import jwt_required, current_user
 import membership.services as services
 from werkzeug.datastructures import FileStorage
 import os
 
 class UserAPIV2(Resource):
+  @jwt_required(optional=True)
   def get(self, user_id: int = None, username: str = None):
     if user_id is None and username is None:
       return {"error": "user_id or username is required"}, 400
@@ -17,10 +18,9 @@ class UserAPIV2(Resource):
       return {"error": "User not found"}, 404
 
     user_dict = services.get_user_dict(
-      user, avatar=url_for("user_avatar", user_id=user_id)
+      user
     )
 
-    # popping the password for security reasons
     user_dict.pop("password")
 
     return user_dict, 200

@@ -99,7 +99,8 @@ api.add_resource(
 
 api.add_resource(
     music.api.RecentsAPI,
-    "/api/v2/tracks/recents"
+    "/api/v2/user/<int:user_id>/tracks/recents",
+    "/api/v2/tracks/recents",
 )
 
 api.add_resource(
