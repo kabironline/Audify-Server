@@ -14,14 +14,13 @@ class UserAPIV2(Resource):
     elif username is not None:
       user = services.get_user_by_username(username=username)
 
+    print(user_id)
     if user is None:
       return {"error": "User not found"}, 404
 
     user_dict = services.get_user_dict(
       user
     )
-
-    user_dict.pop("password")
 
     return user_dict, 200
   

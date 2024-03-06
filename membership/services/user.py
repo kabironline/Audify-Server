@@ -311,5 +311,4 @@ def get_user_dict(user: user_model.User, avatar=None):
         "last_modified_by": user.last_modified_by,
         "created_at": toString(user.created_at),
         "last_modified_at": toString(user.last_modified_at),
-        "avatar": avatar or "",
     }

@@ -5,24 +5,32 @@ from flask_jwt_extended import jwt_required, current_user
 
 class PlaylistAPI(Resource):
   @jwt_required(optional=True)
-  def get(self, playlist_id):
-    playlist = music_services.get_playlist_by_id(playlist_id)
-    playlist_items = music_services.get_tracks_by_playlist_id(playlist_id)
-    if playlist is None:
-      return {"error": "Playlist not found"}, 404
+  def get(self, playlist_id=None, user_id=None):
+    if playlist_id is not None:
+      playlist = music_services.get_playlist_by_id(playlist_id)
+      playlist_items = music_services.get_tracks_by_playlist_id(playlist_id)
+      if playlist is None:
+        return {"error": "Playlist not found"}, 404
     
-    auth = request.headers.get("Authorization")
-    if auth:
-      user_id = current_user.id
-      ratings = music_services.get_track_rating_for_user(user_id, *[playlist_item.id for playlist_item in playlist_items])
-      for track in playlist_items:
-        track.rating = ratings.get(track.id, None)
+      auth = request.headers.get("Authorization")
+      if auth:
+        user_id = current_user.id
+        ratings = music_services.get_track_rating_for_user(user_id, *[playlist_item.id for playlist_item in playlist_items])
+        for track in playlist_items:
+          track.rating = ratings.get(track.id, None)
+      playlist_dict = music_services.get_playlist_dict(playlist)
+      playlist_dict["tracks"] = [music_services.get_track_dict(track) for track in playlist_items]
+      return {
+        "playlist": playlist_dict,
+      }, 200
     
-    playlist_dict = music_services.get_playlist_dict(playlist)
-    playlist_dict["tracks"] = [music_services.get_track_dict(track) for track in playlist_items]
-    return {
-      "playlist": playlist_dict,
-    }, 200
+    elif user_id is not None:
+      # Get all playlists for a user
+      playlists = music_services.get_playlist_by_user(user_id)
+      return {
+        "playlists": [music_services.get_playlist_dict(playlist) for playlist in playlists],
+      }, 200
+
   def post(self):
     request_data = request.get_json()
     user_id = request_data.get("user_id")

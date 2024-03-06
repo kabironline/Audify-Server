@@ -126,6 +126,7 @@ api.add_resource(
     music.api.PlaylistAPI,
     "/api/v2/playlist",
     "/api/v2/playlist/<int:playlist_id>",
+    "/api/v2/user/<int:user_id>/playlists",
 )
 
 api.add_resource(
@@ -137,12 +138,12 @@ api.add_resource(
 core.set_api(api)
 
 
-@app.before_request
-def handle_preflight():
-    if request.method == "OPTIONS":
-        res = Response()
-        res.headers["X-Content-Type-Options"] = "*"
-        return res
+# @app.before_request
+# def handle_preflight():
+#     if request.method == "OPTIONS":
+#         res = Response()
+#         res.headers["X-Content-Type-Options"] = "*"
+#         return res
 
 
 # Devop commands
