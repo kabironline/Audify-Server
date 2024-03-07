@@ -14,7 +14,6 @@ class RatingAPIV2(Resource):
   
   @jwt_required()
   def post(self, track_id, rating):
-    request_data = request.get_json()
     user = current_user
     if rating is None:
       return {"error": "Rating is required"}, 400

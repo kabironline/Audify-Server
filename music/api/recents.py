@@ -1,5 +1,5 @@
 from flask_restful import Resource, request
-from music.services import get_recent_by_user_id, get_track_dict, create_recent, create_new_view, get_track_by_id
+from music.services import get_recent_by_user_id, get_track_dict, create_recent, create_new_view, get_track_by_id, get_track_rating_for_user
 from membership.services import get_user_by_id
 from flask_jwt_extended import jwt_required, current_user
 
@@ -17,6 +17,11 @@ class RecentsAPI(Resource):
     
     n = request.args.get("n", 10)
     recents = get_recent_by_user_id(user_id, n)
+
+    ratings = get_track_rating_for_user(user_id, *[recent.id for recent in recents])
+    for recent in recents:
+      recent.rating = ratings.get(recent.id, None)
+
     recents_json = [(get_track_dict(recent)) for recent in recents]
     return {
       "recents": recents_json,
