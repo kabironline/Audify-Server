@@ -112,7 +112,8 @@ api.add_resource(
 
 api.add_resource(
     music.api.TopAPI,
-    "/api/v2/tracks/top",
+    "/api/v2/tracks/top/views",
+    "/api/v2/tracks/top/ratings",
     "/api/v2/channels/top",
 )
 
