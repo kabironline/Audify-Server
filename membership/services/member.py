@@ -93,14 +93,17 @@ def is_creator(user_id):
 
 
 def get_member_dict(member):
+
+    toString = lambda x: x.strftime("%Y-%m-%d %H:%M:%S")
+
     return {
         "id": member.id,
         "user_id": member.user_id,
         "channel_id": member.channel_id,
         "created_by": member.created_by,
         "last_modified_by": member.last_modified_by,
-        "created_at": member.created_at,
-        "last_modified_at": member.last_modified_at,
+        "created_at": toString(member.created_at),
+        "last_modified_at": toString(member.last_modified_at),
     }
 
 

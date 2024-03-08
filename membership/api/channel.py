@@ -1,25 +1,63 @@
 import os
 from flask_restful import Resource, request
 import membership.services as services
+from music.services import get_album_dict, get_track_dict, get_tracks_by_channel, get_album_by_user, get_track_rating_for_user
 from werkzeug.datastructures import FileStorage
-
-class ChannelAPI(Resource):
-  def get(self, channel_id=None, channel=None):
-    if channel_id is None and channel is None:
-      return {"error": "channel_id or channel is required"}, 400
+from flask_jwt_extended import jwt_required, get_jwt_identity
+class ChannelAPIV2(Resource):
+  @jwt_required(optional=True)
+  def get(self, channel_id=None):
+    
+    if channel_id is None:
+      return {"error": "channel_id is required"}, 400
     if channel_id is not None:
       channel = services.get_channel_by_id(channel_id)
-    elif channel is not None:
-      channel = services.get_channel_by_name(channel)
     if channel is None:
       return {"error": "Channel not found"}, 404
+    
     member = services.get_channel_members(channel.id)
     member_dict = [services.get_member_dict(m) for m in member]
-    return {
-      "channel": services.get_channel_dict(channel),
-      "members": member_dict,
-      "action": "retrieved",
-    }, 200
+    user_id = None
+    if request.headers.get("Authorization"):
+      user_id = get_jwt_identity()
+    
+    detail_level = request.args.get("detail")
+    if detail_level == "full":
+      # get all the tracks and albums of the channel
+      albums = get_album_by_user(channel.id, count=6)
+      album_dict = [get_album_dict(a) for a in albums]
+      return {
+        "channel": services.get_channel_dict(channel),
+        "members": member_dict,
+        "tracks": get_channel_tracks(channel.id, 6, user_id),
+        "albums": album_dict,
+        "action": "retrieved",
+      }, 200
+    
+    elif detail_level == "tracks":
+      return {
+        "channel": services.get_channel_dict(channel),
+        "members": member_dict,
+        "tracks": get_channel_tracks(channel.id, 30, user_id),
+        "action": "retrieved",
+      }, 200
+    
+    elif detail_level == "albums":
+      albums = get_album_by_user(channel.id, count=6)
+      album_dict = [get_album_dict(a) for a in albums]
+      return {
+        "channel": services.get_channel_dict(channel),
+        "members": member_dict,
+        "albums": album_dict,
+        "action": "retrieved",
+      }, 200
+    
+    else:
+      return {
+        "channel": services.get_channel_dict(channel),
+        "members": member_dict,
+        "action": "retrieved",
+      }, 200
   
   def post(self):
     request_data = request.get_json()
@@ -113,3 +151,11 @@ class ChannelAPI(Resource):
     
     services.delete_channel_by_id(channel_id)
     return {"message": "Channel deleted successfully"}, 200
+  
+def get_channel_tracks(channel_id, count=30, user_id=None):
+  tracks = get_tracks_by_channel(channel_id, count=count)
+  if user_id is not None:
+    ratings = get_track_rating_for_user(user_id, *[t.id for t in tracks])
+    for track in tracks:
+      track.rating = ratings.get(track.id, None)
+  return [get_track_dict(t) for t in tracks]

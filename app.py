@@ -59,16 +59,16 @@ api.add_resource(
 
 api.add_resource(
     membership.api_old.UserAPI,
-    "/api-old/v1/user",
-    "/api-old/v1/user/<int:user_id>",
-    "/api-old/v1/user/<string:username>",
+    "/api/v1/user",
+    "/api/v1/user/<int:user_id>",
+    "/api/v1/user/<string:username>",
 )
 
 api.add_resource(
     membership.api_old.ChannelAPI,
-    "/api-old/v1/channel",
-    "/api-old/v1/channel/<int:channel_id>",
-    "/api-old/v1/channel/<string:channel_name>",
+    "/api/v1/channel",
+    "/api/v1/channel/<int:channel_id>",
+    "/api/v1/channel/<string:channel_name>",
 )
 
 # V2 API
@@ -83,6 +83,12 @@ api.add_resource(
     "/api/v2/user",
     "/api/v2/user/<int:user_id>",
     "/api/v2/user/<string:username>",
+)
+
+api.add_resource(
+    membership.api.ChannelAPIV2,
+    "/api/v2/channel",
+    "/api/v2/channel/<int:channel_id>",
 )
 
 api.add_resource(
