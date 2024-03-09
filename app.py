@@ -81,6 +81,7 @@ api.add_resource(
 api.add_resource(
     membership.api.UserAPIV2,
     "/api/v2/user",
+    "/api/v2/user/me",
     "/api/v2/user/<int:user_id>",
     "/api/v2/user/<string:username>",
 )

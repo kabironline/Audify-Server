@@ -22,12 +22,14 @@ def create_playlist(name, description="", api=False, user_id=0):
         last_modified_by=user_id,
     )
 
+    
+
     session.add(playlist)
     session.commit()
+    playlist_copy = get_playlist_by_id(playlist.id)
     session.close()
 
-    return playlist
-
+    return playlist_copy
 
 def get_playlist_by_id(playlist_id):
     session = get_session()
@@ -39,14 +41,25 @@ def get_playlist_by_id(playlist_id):
         .filter(Playlist.id == playlist_id)
         .first()
     )
-
     session.close()
 
     return playlist
 
+def get_latest_user_playlist_by_name(user_id, name,limit=5):
+    session = get_session()
 
-def get_playlist_by_name(playlist_name):
-    pass
+    playlist = (
+        session.query(Playlist)
+        .join(User, Playlist.created_by == User.id)
+        .options(joinedload(Playlist.user))
+        .filter(Playlist.created_by == user_id)
+        .filter(Playlist.name == name)
+        .order_by(Playlist.created_at.desc())
+        .limit(limit)
+        .all()
+    )
+
+    return playlist
 
 
 def get_latest_playlist(limit=5):

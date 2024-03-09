@@ -16,6 +16,7 @@ class GenreAPI(Resource):
       tracks_json = [services.get_track_dict(track) for track in tracks]
       return {
         "tracks": tracks_json,
+        "genre": services.get_genre_dict(services.get_genre_by_id(genre_id)),
       }, 200
     else:
       # returning the all genres list

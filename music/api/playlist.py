@@ -30,37 +30,24 @@ class PlaylistAPI(Resource):
       return {
         "playlists": [music_services.get_playlist_dict(playlist) for playlist in playlists],
       }, 200
-
+    
+  @jwt_required()
   def post(self):
     request_data = request.get_json()
-    user_id = request_data.get("user_id")
     playlist_name = request_data.get("playlist_name")
     playlist_description = request_data.get("playlist_description")
-    playlist_tracks = request_data.get("playlist_tracks")
-
-    if user_id is None:
-      return {"error": "User ID is required"}, 400
+    user = current_user
     
-    user = membership_services.get_user_by_id(user_id)
-    if user is None:
-      return {"error": "User not found"}, 404
-    
-    playlist =  music_services.create_playlist(
+    playlist = music_services.create_playlist(
       name=playlist_name,
       description=playlist_description,
       user_id=user.id,
       api=True,
     )
 
-    for track_id in playlist_tracks:
-      music_services.create_playlist_item(
-        playlist_id=playlist.id,
-        track_id=track_id,
-        user_id=user.id,
-      )
-
     return {
       "action": "created",
+      "playlist": music_services.get_playlist_dict(playlist),
     }, 201
 
 

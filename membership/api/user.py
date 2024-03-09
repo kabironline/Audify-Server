@@ -1,26 +1,35 @@
 from flask_restful import Resource, request
 from flask_jwt_extended import jwt_required, current_user
 import membership.services as services
+from music.services import get_playlist_by_user, get_playlist_dict
 from werkzeug.datastructures import FileStorage
 import os
 
 class UserAPIV2(Resource):
   @jwt_required(optional=True)
   def get(self, user_id: int = None, username: str = None):
-    if user_id is None and username is None:
-      return {"error": "user_id or username is required"}, 400
+    self_info = False
     if user_id is not None:
       user = services.get_user_by_id(user_id)
     elif username is not None:
       user = services.get_user_by_username(username=username)
-
-    print(user_id)
+    elif request.headers.get("Authorization") is not None:
+      user = current_user
+      self_info = True
+    else:
+      return {"error": "user_id or username is required"}, 400
+    
     if user is None:
       return {"error": "User not found"}, 404
+    
+    user_dict = services.get_user_dict(user)
+    
+    if self_info:
+      playlists = get_playlist_by_user(user.id)
+      user_dict["playlists"] = [get_playlist_dict(playlist) for playlist in playlists]
 
-    user_dict = services.get_user_dict(
-      user
-    )
+      channels = services.get_user_channels(user.id)
+      user_dict["channels"] = [services.get_channel_dict(services.get_channel_by_id(channel.id)) for channel in channels]
 
     return user_dict, 200
   
