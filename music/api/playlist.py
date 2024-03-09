@@ -88,7 +88,7 @@ class PlaylistAPI(Resource):
     return {
       "action": "updated",
     }, 201
-  
+  @jwt_required()
   def delete(self, playlist_id):
     
     playlist = music_services.get_playlist_by_id(playlist_id)
@@ -96,12 +96,11 @@ class PlaylistAPI(Resource):
     if playlist is None:
       return {"error": "Playlist not found"}, 404
     
-    playlist_items = music_services.get_playlist_items_by_playlist_id(playlist_id)
-
-    for playlist_item in playlist_items:
-      music_services.delete_playlist_item(playlist_item.id)
+    if playlist.user.id != current_user.id:
+      return {"error": "Unauthorized"}, 401
     
-    music_services.delete_playlist(playlist_id)
+    music_services.delete_playlist(playlist_id, user_id=current_user.id)
+    
     return {
       "action": "deleted",
     }, 200
