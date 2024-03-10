@@ -112,18 +112,19 @@ def update_user(user: user_model.User):
     old_user.nickname = user.nickname if user.nickname else old_user.nickname
     old_user.bio = user.bio if user.bio else old_user.bio
     old_user.last_modified_at = datetime.datetime.now()
-    old_user.last_modified_by = get_current_user().id
+    old_user.last_modified_by = user.id if user.id else old_user.id
     session = get_session()
+    try:
+        if user.avatar:
+            import os
 
-    if user.avatar:
-        import os
-
-        try:
-            os.mkdir(f"../media/users/{user.id}")
-        except FileExistsError:
-            pass
-        user.avatar.save(f"../media/users/{user.id}/avatar.png")
-
+            try:
+                os.mkdir(f"../media/users/{user.id}")
+            except FileExistsError:
+                pass
+            user.avatar.save(f"../media/users/{user.id}/avatar.png")
+    except:
+        pass
     import core
 
     # Check if current user is a member of the channel

@@ -66,38 +66,32 @@ class UserAPIV2(Resource):
     
     return {"message": "User created successfully"}, 201
   
+  @jwt_required()
   def put(self):
-    request_data = request.get_json()
-    user_id = request_data.get("user_id")
+    request_data = request.form
     nickname = request_data.get("nickname")
     bio = request_data.get("bio")
     password = request_data.get("password")
-
-    if user_id is None:
-      return {"error": "user_id is required"}, 400
+    new_password = request_data.get("new_password")
     
-    user = services.get_user_by_id(user_id)
+    user = current_user
+
     if user is None:
       return {"error": "User not found"}, 404
     
-    # Updating user if the password is provided
-
     if password != user.password:
       return {"error": "Incorrect password"}, 400
     
+
     user.nickname = nickname or user.nickname
     user.bio = bio or user.bio
-    user.password = password or user.password
+    user.password = new_password or user.password
+    
+    if "avatar" in request.files:
+      user.avatar = request.files["avatar"]
 
     services.update_user(user)
 
-    if "avatar" in request.files:
-      avatar = request.files["avatar"]
-      try:
-        avatar.save(os.path.join("media", "avatars", f"{user.id}.png"))
-      except:
-        return {"error": "Error saving the avatar, user data updated"}, 500
-    
     return {"message": "User updated successfully"}, 200
   
   def delete(self):
