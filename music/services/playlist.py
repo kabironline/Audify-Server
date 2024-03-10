@@ -109,20 +109,20 @@ def get_all_playlists():
     return playlists
 
 
-def update_playlist(playlist_id, name="", description=""):
+def update_playlist(playlist_id, name="", description="", user_id = None):
     session = get_session()
 
     playlist = session.query(Playlist).filter_by(id=playlist_id).first()
 
     playlist.name = name if name != "" else playlist.name
-    playlist.description = description if description != "" else playlist.description
+    playlist.description = description
     playlist.last_modified_at = datetime.now()
-    playlist.last_modified_by = get_current_user().id
+    playlist.last_modified_by = user_id if user_id is not None else get_current_user().id
 
     session.commit()
     session.close()
 
-    return playlist
+    return get_playlist_by_id(playlist_id)
 
 
 def delete_playlist(playlist_id, user_id=0, api=False):
