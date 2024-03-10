@@ -1,5 +1,5 @@
 from flask_restful import Resource, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import get_jwt_identity, jwt_required, current_user
 import music.services as music_services
 import membership.services as membership_services
 from werkzeug.datastructures import FileStorage
@@ -29,39 +29,42 @@ class AlbumAPI(Resource):
       "album": album_dict
     }, 200
   
+  @jwt_required()
   def post(self):
-    request_data = request.get_json()
-    creator_name = request_data.get("creator_name")
+    request_data = request.form
     album_name = request_data.get("album_name")
-    album_tracks = request_data.get("album_tracks")
-    album_art = request_data.get("album_art")
+    album_description = request_data.get("album_description")
+    album_art = request.files.get("album_art")
     release_date = request_data.get("release_date")
-    
-    if creator_name is None:
-      return {"error": "creator_name is required"}, 400
-    
-    creator = membership_services.get_channel_by_name(creator_name)
-    if creator is None:
-      return {"error": "creator not found"}, 404
+    creator = current_user
     
     release_date = datetime.strptime(release_date, "%Y-%m-%d")
+
+    # getting the channel for the user
+    members = membership_services.get_user_channels(creator.id)
+    if len(members) == 0:
+      return {"error": "User has no channel"}, 400
     
-    album_art_file = open(album_art, "rb")
-    album_art = FileStorage(album_art_file)
-    album_art_file.close()
+    creator = membership_services.get_channel_by_id(members[0].channel_id)
 
     album = music_services.create_album(
       name=album_name,
+      description=album_description,
       release_date=release_date,
       album_art=album_art,
       channel_id=creator.id,
     )
-
-    for track_id in album_tracks:
-      music_services.create_album_item(
-        album_id=album.id,
-        track_id=track_id,
-      )
+    if "album_tracks" in request_data:
+      album_tracks = request_data.get("album_tracks")
+      if type(album_tracks) == str: album_tracks = [album_tracks]
+      for track_id in album_tracks:
+        track_id = int(track_id)
+        import pdb; pdb.set_trace()
+        music_services.create_album_item(
+          album_id=album.id,
+          track_id=track_id,
+          user_id=creator.id,
+        )
 
     return {"action": "created"}, 201
   

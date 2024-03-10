@@ -49,7 +49,10 @@ def get_channel_by_id(channel_id) -> channel_model.Channel:
     If there is no channel with the given id, it returns None.
     """
     session = get_session()
-    return session.query(channel_model.Channel).filter_by(id=channel_id).first()
+    channel = session.query(channel_model.Channel).filter_by(id=channel_id).first()
+    session.close()
+    
+    return channel
 
 
 def get_channel_by_name(name) -> channel_model.Channel:

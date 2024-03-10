@@ -31,7 +31,7 @@ def create_album(
     session.add(album)
     session.commit()
 
-    album = session.query(Album).filter_by(name=name).first()
+    album = session.query(Album).filter_by(name=name).filter_by(created_by=channel_id).order_by(Album.created_at.desc()).first()
 
     if album_art is not None:
         try:
@@ -224,6 +224,8 @@ def create_album_item(album_id, track_id, user_id=0, api=False):
     track = session.query(Track).filter_by(id=track_id).first()
     if track is None:
         return None
+
+    import pdb; pdb.set_trace()
 
     if user_id == 0 and not api:
         return None
