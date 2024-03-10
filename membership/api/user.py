@@ -86,7 +86,7 @@ class UserAPIV2(Resource):
     user.nickname = nickname or user.nickname
     user.bio = bio or user.bio
     user.password = new_password or user.password
-    
+
     if "avatar" in request.files:
       user.avatar = request.files["avatar"]
 
@@ -94,17 +94,14 @@ class UserAPIV2(Resource):
 
     return {"message": "User updated successfully"}, 200
   
+  @jwt_required()
   def delete(self):
-    request_data = request.get_json()
-    user_id = request_data.get("user_id")
-
-    if user_id is None:
-      return {"error": "user_id is required"}, 400
+    user = current_user
     
-    user = services.get_user_by_id(user_id)
+    user = services.get_user_by_id(user.id)
     if user is None:
       return {"error": "User not found"}, 404
     
-    services.deactivate_user(user)
+    services.deactivate_user(user.id)
 
     return {"message": "User deleted successfully"}, 200
