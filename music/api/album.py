@@ -60,40 +60,46 @@ class AlbumAPI(Resource):
 
     return {"action": "created"}, 201
   
+  @jwt_required()
   def put(self, album_id):
-    request_data = request.get_json()
+    request_data = request.form
     album_name = request_data.get("album_name")
     album_tracks = request_data.get("album_tracks")
-    album_art = request_data.get("album_art")
     release_date = request_data.get("release_date")
-    creator_name = request_data.get("creator_name")
-
-    if creator_name is None:
-      return {"error": "creator_name is required"}, 400
-    
-    creator = membership_services.get_channel_by_name(creator_name)
-    if creator is None:
-      return {"error": "creator not found"}, 404
     
     release_date = datetime.strptime(release_date, "%Y-%m-%d")
     
-    album_art_file = open(album_art, "rb")
-    album_art = FileStorage(album_art_file)
-    album_art_file.close()
+    album_art = request.files.get("album_art") if "album_art" in request.files else None
+
+    album = music_services.get_album_by_id(album_id)
+    if album is None:
+      return {"error": "Album not found"}, 404
+    
+    if album.channel.id != current_user.channel.id:
+      return {"error": "Unauthorized"}, 401
 
     album = music_services.update_album(
       album_id=album_id,
       name=album_name,
       release_date=release_date,
       album_art=album_art,
-      channel_id=creator.id,
     )
 
-    for track_id in album_tracks:
-      music_services.create_album_item(
-        album_id=album.id,
-        track_id=track_id,
-      )
+    # deleting all album items and adding new ones
+    album_items = music_services.get_album_items_by_album_id(album_id)
+    for album_item in album_items:
+      music_services.delete_album_item(album_item.id)
+
+
+    if album_tracks is not None:
+      if type(album_tracks) == str: album_tracks = [album_tracks]
+      for track_id in album_tracks:
+        track_id = int(track_id)
+        music_services.create_album_item(
+          album_id=album.id,
+          track_id=track_id,
+          user_id=current_user.channel.id,
+        )
 
     return {"action": "updated"}, 200
   

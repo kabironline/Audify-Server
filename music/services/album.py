@@ -157,7 +157,7 @@ def update_album(
         album_art.save(f"../media/albums/{album_id}/album_art.png")
 
     session.close()
-    return album
+    return get_album_by_id(album_id)
 
 
 def delete_album(album_id, channel_id=0, api=False):
@@ -199,6 +199,7 @@ def get_album_dict(album):
         "name": album.name,
         "description": album.description,
         "created_at": toString(album.created_at),
+        "release_date": toString(album.release_date),
         "last_modified_at": toString(album.last_modified_at),
         "last_modified_by": album.last_modified_by,
         "created_by": user,
