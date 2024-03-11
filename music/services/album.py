@@ -225,8 +225,6 @@ def create_album_item(album_id, track_id, user_id=0, api=False):
     if track is None:
         return None
 
-    import pdb; pdb.set_trace()
-
     if user_id == 0 and not api:
         return None
 

@@ -36,16 +36,9 @@ class AlbumAPI(Resource):
     album_description = request_data.get("album_description")
     album_art = request.files.get("album_art")
     release_date = request_data.get("release_date")
-    creator = current_user
+    creator = current_user.channel
     
     release_date = datetime.strptime(release_date, "%Y-%m-%d")
-
-    # getting the channel for the user
-    members = membership_services.get_user_channels(creator.id)
-    if len(members) == 0:
-      return {"error": "User has no channel"}, 400
-    
-    creator = membership_services.get_channel_by_id(members[0].channel_id)
 
     album = music_services.create_album(
       name=album_name,
@@ -59,7 +52,6 @@ class AlbumAPI(Resource):
       if type(album_tracks) == str: album_tracks = [album_tracks]
       for track_id in album_tracks:
         track_id = int(track_id)
-        import pdb; pdb.set_trace()
         music_services.create_album_item(
           album_id=album.id,
           track_id=track_id,
@@ -105,18 +97,24 @@ class AlbumAPI(Resource):
 
     return {"action": "updated"}, 200
   
+  @jwt_required()
   def delete(self, album_id):
+    import pdb; pdb.set_trace()
     album = music_services.get_album_by_id(album_id)
     
     if album is None:
       return {"error": "Album not found"}, 404
     
+
     album_items = music_services.get_album_items_by_album_id(album_id)
+
+    if album.created_by != current_user.channel.id:
+      return {"error": "Unauthorized"}, 401
 
     for album_item in album_items:
       music_services.delete_album_item(album_item.id)
 
-    music_services.delete_album(album_id)
+    music_services.delete_album(album_id, current_user.channel.id, True)
 
     return {"action": "deleted"}, 200
 

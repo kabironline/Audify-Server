@@ -15,6 +15,7 @@ from membership.models import User
 import membership.routes
 import membership.api_old
 import membership.api
+import membership.services
 import music.routes
 import music.api_old
 import music.api
@@ -180,7 +181,13 @@ def user_identity_lookup(user):
 @jwt.user_lookup_loader
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
-    return User.query.filter_by(id=identity).one_or_none()
+    user = User.query.filter_by(id=identity).one_or_none()
+    if not user:
+        return None
+    members = membership.services.get_user_channels(user.id)
+    if members:
+        user.channel = membership.services.get_channel_by_id(members[0].channel_id)
+    return user
 
 @app.route("/")
 def entry():
