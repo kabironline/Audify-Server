@@ -144,6 +144,12 @@ api.add_resource(
     "/api/v2/genre/<int:genre_id>/tracks",
 )
 
+api.add_resource(
+    music.api.TrackAPIV2,
+    "/api/v2/track",
+    "/api/v2/track/<int:track_id>",
+)
+
 core.set_api(api)
 
 

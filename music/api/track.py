@@ -1,10 +1,11 @@
 import music.services as music_services
 import membership.services as membership_services
+from flask_jwt_extended import jwt_required, current_user
 from flask_restful import Resource, request
 from datetime import datetime
 from werkzeug.datastructures import FileStorage
 
-class TrackAPI(Resource):
+class TrackAPIV2(Resource):
   def get(self, track_id):
     track = music_services.get_track_by_id(track_id)
     if track is None:
@@ -13,32 +14,19 @@ class TrackAPI(Resource):
     return {
       "track": music_services.get_track_dict(track),
     }, 200
-  
+  @jwt_required()
   def post(self):
-    request_data = request.get_json()
-    creator_name = request_data.get("creator_name")
+    request_data = request.form
     track_name = request_data.get("track_name")
     track_lyrics = request_data.get("track_lyrics")
-    track_media = request_data.get("track_media")
-    track_art = request_data.get("track_art")
     release_date = request_data.get("release_date")
+
+    track_media = request.files.get("track_media")
+    track_art = request.files.get("track_cover")
     
-    if creator_name is None:
-      return {"error": "creator_name is required"}, 400
-    
-    creator = membership_services.get_channel_by_name(creator_name)
-    if creator is None:
-      return {"error": "creator not found"}, 404
+    creator = current_user.channel
     
     release_date = datetime.strptime(release_date, "%Y-%m-%d")
-    
-    track_media_file = open(track_media, "rb")
-    track_media = FileStorage(track_media_file)
-    track_media_file.close()
-
-    track_art_file = open(track_art, "rb")
-    track_art = FileStorage(track_art_file)
-    track_art_file.close()
 
     music_services.create_track(
       name=track_name,
@@ -52,26 +40,18 @@ class TrackAPI(Resource):
     return {"action": "created"}, 201
   
   def put(self, track_id):
-    request_data = request.get_json()
+    request_data = request.form
     track_name = request_data.get("track_name")
     track_lyrics = request_data.get("track_lyrics")
     track_media = request_data.get("track_media")
-    track_art = request_data.get("track_art")
-    release_date = request_data.get("release_date")
 
+    track_art = request.form.get("track_art")
+    release_date = request.form.get("release_date")
     track = music_services.get_track_by_id(track_id)
     if track is None:
       return {"error": "Track not found"}, 404
     
     release_date = datetime.strptime(release_date, "%Y-%m-%d")
-
-    track_media_file = open(track_media, "rb")
-    track_media = FileStorage(track_media_file)
-    track_media_file.close()
-
-    track_art_file = open(track_art, "rb")
-    track_art = FileStorage(track_art_file)
-    track_art_file.close()
 
     music_services.update_track(
       track_id,
