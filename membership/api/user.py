@@ -28,8 +28,15 @@ class UserAPIV2(Resource):
       playlists = get_playlist_by_user(user.id)
       user_dict["playlists"] = [get_playlist_dict(playlist) for playlist in playlists]
 
-      channels = services.get_user_channels(user.id)
-      user_dict["channels"] = [services.get_channel_dict(services.get_channel_by_id(channel.id)) for channel in channels]
+      members = services.get_user_channels(user.id)
+      channels = []
+      for member in members:
+        channel = services.get_channel_by_id(member.channel_id)
+        import pdb; pdb.set_trace()
+        if channel.is_active or channel.is_active is None:
+          channels.append(services.get_channel_dict(channel))
+      
+      user_dict["channels"] = channels
 
     return user_dict, 200
   

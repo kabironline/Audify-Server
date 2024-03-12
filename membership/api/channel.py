@@ -129,21 +129,11 @@ class ChannelAPIV2(Resource):
     services.update_channel(channel_id=channel.id, name=name, description=bio, channel_art=avatar)
     return {"message": "Channel updated successfully"}, 200
   
-  def delete(self, channel_id):
-    request_data = request.get_json()
-    password = request_data.get("password")
-
-    if channel_id is None:
-      return {"error": "channel_id is required"}, 400
+  @jwt_required()  
+  def delete(self):
+    channel = current_user.channel
     
-    channel = services.get_channel_by_id(channel_id)
-    if channel is None:
-      return {"error": "Channel not found"}, 404
-    
-    if password != channel.password:
-      return {"error": "Incorrect password"}, 400
-    
-    services.delete_channel_by_id(channel_id)
+    services.deactivate_channel(channel.id)
     return {"message": "Channel deleted successfully"}, 200
   
 def get_channel_tracks(channel_id, count=30, user_id=None):

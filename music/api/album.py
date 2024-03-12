@@ -92,7 +92,7 @@ class AlbumAPI(Resource):
 
 
     if album_tracks is not None:
-      if type(album_tracks) == str: album_tracks = [album_tracks]
+      if type(album_tracks) == str: album_tracks = album_tracks.split(",")
       for track_id in album_tracks:
         track_id = int(track_id)
         music_services.create_album_item(
