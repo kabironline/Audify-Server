@@ -3,7 +3,8 @@ from flask_restful import Resource, request
 import membership.services as services
 from music.services import get_album_dict, get_track_dict, get_tracks_by_channel, get_album_by_user, get_track_rating_for_user
 from werkzeug.datastructures import FileStorage
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, current_user
+
 class ChannelAPIV2(Resource):
   @jwt_required(optional=True)
   def get(self, channel_id=None):
@@ -58,7 +59,7 @@ class ChannelAPIV2(Resource):
         "members": member_dict,
         "action": "retrieved",
       }, 200
-  
+  @jwt_required()  
   def post(self):
     request_data = request.get_json()
     name = request_data.get("name")
@@ -109,30 +110,23 @@ class ChannelAPIV2(Resource):
         return {"error": "Error saving the avatar, Channel created successfully."}, 500
 
     return {"message": "Channel created successfully"}, 201
-
-  def put(self, channel_id):
-    request_data = request.get_json()
+  @jwt_required()
+  def put(self):
+    request_data = request.form
     name = request_data.get("name")
     bio = request_data.get("bio")
     password = request_data.get("password")
+    channel = current_user.channel
 
-    if channel_id is None:
-      return {"error": "channel_id is required"}, 400
-    
-    channel = services.get_channel_by_id(channel_id)
-    if channel is None:
-      return {"error": "Channel not found"}, 404
-    
-    if password != channel.password:
+    if password != current_user.password:
       return {"error": "Incorrect password"}, 400
     
     avatar = None
 
     if "avatar" in request.files:
       avatar = request.files["avatar"]
-      
 
-    services.update_channel(channel_id=channel_id, name=name, bio=bio, channel_art=avatar)
+    services.update_channel(channel_id=channel.id, name=name, description=bio, channel_art=avatar)
     return {"message": "Channel updated successfully"}, 200
   
   def delete(self, channel_id):
