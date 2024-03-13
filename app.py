@@ -139,6 +139,12 @@ api.add_resource(
 )
 
 api.add_resource(
+    music.api.PlaylistItemAPI,
+    "/api/v2/playlist/<int:playlist_id>/add",
+    "/api/v2/playlist/<int:playlist_id>/remove/<int:track_id>",
+)
+
+api.add_resource(
     music.api.GenreAPI,
     "/api/v2/genres",
     "/api/v2/genre/<int:genre_id>/tracks",
