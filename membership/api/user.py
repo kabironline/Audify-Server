@@ -32,7 +32,6 @@ class UserAPIV2(Resource):
       channels = []
       for member in members:
         channel = services.get_channel_by_id(member.channel_id)
-        import pdb; pdb.set_trace()
         if channel.is_active or channel.is_active is None:
           channels.append(services.get_channel_dict(channel))
       

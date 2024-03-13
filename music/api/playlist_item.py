@@ -4,10 +4,7 @@ from flask_jwt_extended import jwt_required, current_user
 
 class PlaylistItemAPI(Resource):
   @jwt_required()
-  def post(self):
-    request_data = request.get_json()
-    track_id = request_data.get("track_id")
-    playlist_id = request_data.get("playlist_id")
+  def post(self, playlist_id, track_id):
     user = current_user
 
     music_services.create_playlist_item(

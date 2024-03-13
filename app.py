@@ -140,7 +140,7 @@ api.add_resource(
 
 api.add_resource(
     music.api.PlaylistItemAPI,
-    "/api/v2/playlist/<int:playlist_id>/add",
+    "/api/v2/playlist/<int:playlist_id>/add/<int:track_id>",
     "/api/v2/playlist/<int:playlist_id>/remove/<int:track_id>",
 )
 
