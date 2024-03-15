@@ -61,14 +61,11 @@ class ChannelAPIV2(Resource):
       }, 200
   @jwt_required()  
   def post(self):
-    request_data = request.get_json()
+    request_data = request.form
     name = request_data.get("name")
     bio = request_data.get("bio")
     password = request_data.get("password")
-    user_id = request_data.get("user_id")
-
-    # Checking if the user already has a channel or not
-    user = services.get_user_by_id(user_id)
+    user = current_user
 
     if password is None:
       return {"error": "Password is required"}, 400
@@ -76,14 +73,15 @@ class ChannelAPIV2(Resource):
     if password != user.password:
       return {"error": "Invalid Password"}, 400
 
+
     if user is None:
       return {"error": "User not found"}, 404
     
     # Checking if the user already a member of a channel
-    member = services.get_user_channels(user.id)
+    # member = services.get_user_channels(user.id)
     
-    if member is not None:
-      return {"error": "User already has a channel"}, 400
+    # if member is not None:
+    #   return {"error": "User already has a channel"}, 400
     
     if name is None:
       return {"error": "Name of the Channel is Required"}, 400
@@ -104,9 +102,10 @@ class ChannelAPIV2(Resource):
     if "avatar" in request.files:
       avatar = request.files["avatar"]
       try:
-        avatar.save(os.path.join("media", "avatars", f"{channel.id}.png"))
-      except:
-        services.delete_channel_by_id(channel.id)
+        os.makedirs(os.path.join("media", "channels", f"{channel.id}"))
+        avatar.save(os.path.join("media", "channels",f"{channel.id}", "avatar.png"))
+      except Exception as e:
+        print(e)
         return {"error": "Error saving the avatar, Channel created successfully."}, 500
 
     return {"message": "Channel created successfully"}, 201
@@ -131,9 +130,14 @@ class ChannelAPIV2(Resource):
   
   @jwt_required()  
   def delete(self):
-    channel = current_user.channel
     
-    services.deactivate_channel(channel.id)
+    members = services.get_user_channels(current_user.id)
+    if members is None:
+      return {"error": "User is not a member of any channel"}, 404
+    
+    for member in members:
+      services.deactivate_channel(member.channel_id)
+
     return {"message": "Channel deleted successfully"}, 200
   
 def get_channel_tracks(channel_id, count=30, user_id=None):
