@@ -14,7 +14,7 @@ import plotly.express as px
 from datetime import datetime, timedelta
 
 
-def generate_genre_distribution_graph():
+def generate_genre_distribution_graph(data_only=False):
     genre = get_all_genres()
 
     genre_names = []
@@ -22,6 +22,15 @@ def generate_genre_distribution_graph():
     for g in genre:
         genre_names.append(g.name)
         genre_counts.append(len(get_genre_tracks(g.id)))
+
+    if data_only:
+        return {
+            "labels": genre_names,
+            "values": genre_counts,
+            "type": "pie",
+            "backgroundColor": "rgba(0,0,0,0)",
+        }
+
 
     fig = px.pie(
         values=genre_counts,
@@ -37,9 +46,17 @@ def generate_genre_distribution_graph():
     return fig.to_html(full_html=False)
 
 
-def generate_user_channel_distribution_graph():
+def generate_user_channel_distribution_graph(data_only=False):
     users = get_all_users()
     channels = get_all_channels()
+
+    if data_only:
+        return {
+            "labels": ["Users", "Channels"],
+            "values": [len(users), len(channels)],
+            "type": "pie",
+            "backgroundColor": "rgba(0,0,0,0)",
+        }
 
     fig = px.pie(
         values=[len(users), len(channels)],
@@ -55,12 +72,8 @@ def generate_user_channel_distribution_graph():
 
     return fig.to_html(full_html=False)
 
-    return send_file(
-        "static/images/user_channel_distribution.png", mimetype="image/png"
-    )
 
-
-def generate_genre_listener_graph():
+def generate_genre_listener_graph(data_only=False):
     genre = get_all_genres()
 
     genre_names = []
@@ -69,6 +82,15 @@ def generate_genre_listener_graph():
         genre_names.append(g.name)
         genre_views = get_views_by_genre_id(g.id)
         genre_counts.append(genre_views)
+
+    if data_only:
+        return {
+            "x": genre_names,
+            "y": genre_counts,
+            "type": "bar",
+            "backgroundColor": "rgba(0,0,0,0)",
+            "sort": "total descending",
+        }
 
     fig = px.bar(
         x=genre_names,
@@ -91,13 +113,21 @@ def generate_genre_listener_graph():
     return fig.to_html(full_html=False)
 
 
-def generate_recent_viewership_graph():
+def generate_recent_viewership_graph(data_only=False):
     # Gets the last 7 days of views
 
     today = datetime.now()
     dates = [today - timedelta(days=i) for i in range(7)]
     dates.reverse()
     views = [get_views_by_date(date) for date in dates]
+
+    if data_only:
+        return {
+            "x": [str(date.date()) for date in dates],
+            "y": views,
+            "type": "line",
+            "backgroundColor": "rgba(0,0,0,0)",
+        }
 
     fig = px.line(
         x=dates,

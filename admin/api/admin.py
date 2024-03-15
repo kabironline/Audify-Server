@@ -1,10 +1,56 @@
-import flask_restful import Resource, requests
+from flask_restful import Resource, request
 import admin.services as services
 import membership.services as membership_services
 import music.services as music_services
 from flask_jwt_extended import jwt_required, current_user
 
 class AdminAPI (Resource):
+
+  @jwt_required()
+  def get(self):
+    # fetching all the data for the admin dashboard
+    admin_user = current_user
+    if not admin_user.is_admin:
+      return {"error": "You are not an admin"}, 403
+
+    # slice the path to get the last part of the path
+    # for example, /admin/dashboard will return "dashboard"
+
+    last = request.path.split("/")[-1]
+    if last == "data":
+      tracks = len(music_services.get_all_tracks())
+      genres = len(music_services.get_all_genres())
+      albums = len(music_services.get_all_albums())
+      playlists = len(music_services.get_all_playlists())
+      users = len(membership_services.get_all_users())
+      channels = len(membership_services.get_all_channels())
+      blacklisted_channels = len(services.get_blacklist())
+      whitelisted_channels = len(services.get_whitelist())
+
+      return {
+        "tracks": tracks,
+        "genres": genres,
+        "albums": albums,
+        "playlists": playlists,
+        "users": users,
+        "channels": channels,
+        "blacklisted_channels": blacklisted_channels,
+        "whitelisted_channels": whitelisted_channels
+      }, 200
+    
+    if last == "graphs":
+      genre_distribution_graph = services.generate_genre_distribution_graph(True)
+      user_channel_distribution_graph = services.generate_user_channel_distribution_graph(True)
+      genre_listener_graph = services.generate_genre_listener_graph(True)
+      viewership_graph = services.generate_recent_viewership_graph(True)
+
+      return {
+        "genre_distribution_graph": genre_distribution_graph,
+        "user_channel_distribution_graph": user_channel_distribution_graph,
+        "genre_listener_graph": genre_listener_graph,
+        "viewership_graph": viewership_graph
+      }, 200
+    
 
   @jwt_required()
   def post(self, action=None, id=None, type=None):
