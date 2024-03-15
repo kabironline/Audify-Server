@@ -21,6 +21,7 @@ import music.api_old
 import music.api
 import music.models
 import admin.routes
+import admin.api
 
 app = Flask(__name__)
 app.secret_key = "secret_key"
@@ -156,6 +157,11 @@ api.add_resource(
     "/api/v2/track/<int:track_id>",
 )
 
+api.add_resource(
+    admin.api.AdminAPI,
+    "/api/v2/admin/<string:type>/<int:id>/<string:action>",
+)
+
 core.set_api(api)
 
 
@@ -168,7 +174,6 @@ core.set_api(api)
 
 
 # Devop commands
-# app.cli.add_command(create_tables)
 # app.cli.add_command(drop_table)
 # app.cli.add_command(drop_all_tables)
 # app.cli.add_command(create_superuser)
@@ -180,6 +185,7 @@ core.set_api(api)
 # app.cli.add_command(update_channelname)
 # app.cli.add_command(update_track_duration)
 
+app.cli.add_command(create_tables)
 app.cli.add_command(create_superuser)
 app.cli.add_command(get_track_list)
 app.cli.add_command(generate_random_likes)
