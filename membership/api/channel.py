@@ -4,6 +4,7 @@ import membership.services as services
 from music.services import get_album_dict, get_track_dict, get_tracks_by_channel, get_album_by_user, get_track_rating_for_user
 from werkzeug.datastructures import FileStorage
 from flask_jwt_extended import jwt_required, get_jwt_identity, current_user
+from admin.services import get_whitelist_by_channel_id
 
 class ChannelAPIV2(Resource):
   @jwt_required(optional=True)
@@ -54,6 +55,14 @@ class ChannelAPIV2(Resource):
       }, 200
     
     else:
+
+      if user_id is not None:
+        user = current_user
+        if user.is_admin:
+          # check if the channel is whitelisted
+          whitelist = get_whitelist_by_channel_id(channel.id)
+          channel.whitelisted = True if whitelist is not None else False
+
       return {
         "channel": services.get_channel_dict(channel),
         "members": member_dict,

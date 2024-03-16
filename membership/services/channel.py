@@ -139,7 +139,7 @@ def deactivate_channel(channel_id):
 
 def get_channel_dict(channel: channel_model.Channel):
 
-    toString  = lambda x: x.strftime("%Y-%m-%d %H:%M:%S") if x is not None else None
+    toString  = lambda x: x.strftime("%Y-%m-%d %H:%M:%S") if x is not None else None    
 
     return {
         "id": channel.id,
@@ -149,6 +149,9 @@ def get_channel_dict(channel: channel_model.Channel):
         "last_modified_by": channel.last_modified_by,
         "created_at": toString(channel.created_at),
         "last_modified_at": toString(channel.last_modified_at),
+        "blacklisted": channel.blacklisted if channel.blacklisted is not None else False,
+        "whitelisted": hasattr(channel, "whitelisted") and channel.whitelisted or False,
+        "is_active": channel.is_active,
     }
 
 

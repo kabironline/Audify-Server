@@ -80,11 +80,11 @@ class AdminAPI (Resource):
       if action == "blacklist":
         if services.get_whitelist_by_channel_id(channel.id):
           return {"error": "Channel is whitelisted"}, 400
-        services.blacklist_channel(channel.id)
+        services.create_blacklist(channel.id, admin_user.id)
       elif action == "whitelist":
         if channel.blacklisted:
           return {"error": "Channel is blacklisted"}, 400
-        services.whitelist_channel(channel.id)
+        services.create_whitelist(channel.id, admin_user.id)
     
     elif type == "track":
       if action not in ["flag", "unflag"]:
