@@ -13,9 +13,6 @@ class AdminAPI (Resource):
     if not admin_user.is_admin:
       return {"error": "You are not an admin"}, 403
 
-    # slice the path to get the last part of the path
-    # for example, /admin/dashboard will return "dashboard"
-
     last = request.path.split("/")[-1]
     if last == "data":
       tracks = len(music_services.get_all_tracks())
@@ -38,7 +35,7 @@ class AdminAPI (Resource):
         "whitelisted_channels": whitelisted_channels
       }, 200
     
-    if last == "graphs":
+    elif last == "graphs":
       genre_distribution_graph = services.generate_genre_distribution_graph(True)
       user_channel_distribution_graph = services.generate_user_channel_distribution_graph(True)
       genre_listener_graph = services.generate_genre_listener_graph(True)
@@ -51,6 +48,10 @@ class AdminAPI (Resource):
         "viewership_graph": viewership_graph
       }, 200
     
+    elif last == "tracks":
+      tracks = music_services.get_all_tracks()      
+      return {"tracks": [music_services.get_track_dict(track) for track in tracks]}, 200
+
 
   @jwt_required()
   def post(self, action=None, id=None, type=None):
@@ -69,6 +70,7 @@ class AdminAPI (Resource):
     if type not in ["track", "channel"]:
       return {"error": "Invalid type"}, 400
     
+
     if type == "channel":
       if action not in ["blacklist", "whitelist"]:
         return {"error": "Invalid action"}, 400
@@ -92,9 +94,9 @@ class AdminAPI (Resource):
         return {"error": "Track not found"}, 404
       
       if action == "flag":
-        services.create_track_flag(track.id)
+        services.create_track_flag(track.id, admin_user.id)
       elif action == "unflag":
-        services.delete_track_flag(track.id)
+        services.delete_track_flag(track.id, admin_user.id)
     
     else:
       return {"error": "Invalid type"}, 400

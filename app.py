@@ -161,6 +161,7 @@ api.add_resource(
     admin.api.AdminAPI,
     "/api/v2/admin/<string:type>/<int:id>/<string:action>",
     "/api/v2/admin/data",
+    "/api/v2/admin/data/tracks",
     "/api/v2/admin/data/graphs",
 )
 
