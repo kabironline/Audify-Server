@@ -62,8 +62,12 @@ class AdminAPI (Resource):
 
     elif last == "whitelist":
       whitelisted_channels = services.get_whitelist()
-      return {"whitelisted_channels": [membership_services.get_channel_dict(channel) for channel in whitelisted_channels]}, 200
-
+      whitelisted_channels_json = []
+      for whitelisted_channel in whitelisted_channels:
+        whitelisted_channel_json = membership_services.get_channel_dict(whitelisted_channel)
+        whitelisted_channel_json["whitelisted_by"] = membership_services.get_user_dict(membership_services.get_user_by_id(whitelisted_channel.last_modified_by)) 
+        whitelisted_channels_json.append(whitelisted_channel_json)
+      return {"whitelisted_channels": whitelisted_channels_json}, 200
 
   @jwt_required()
   def post(self, action=None, id=None, type=None):
