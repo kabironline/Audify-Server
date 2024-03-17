@@ -163,6 +163,8 @@ api.add_resource(
     "/api/v2/admin/data",
     "/api/v2/admin/data/tracks",
     "/api/v2/admin/data/graphs",
+    "/api/v2/admin/data/blacklist",
+    "/api/v2/admin/data/whitelist",
 )
 
 core.set_api(api)

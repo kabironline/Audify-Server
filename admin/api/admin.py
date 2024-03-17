@@ -51,6 +51,18 @@ class AdminAPI (Resource):
     elif last == "tracks":
       tracks = music_services.get_all_tracks()      
       return {"tracks": [music_services.get_track_dict(track) for track in tracks]}, 200
+    elif last == "blacklist":
+      blacklisted_channels = services.get_blacklist()
+      blacklisted_channels_json = []
+      for blacklisted_channel in blacklisted_channels:
+        blacklisted_channel_json = membership_services.get_channel_dict(blacklisted_channel)
+        blacklisted_channel_json["blacklisted_by"] = membership_services.get_user_dict(membership_services.get_user_by_id(blacklisted_channel.last_modified_by)) 
+        blacklisted_channels_json.append(blacklisted_channel_json)
+      return {"blacklisted_channels": blacklisted_channels_json}, 200
+
+    elif last == "whitelist":
+      whitelisted_channels = services.get_whitelist()
+      return {"whitelisted_channels": [membership_services.get_channel_dict(channel) for channel in whitelisted_channels]}, 200
 
 
   @jwt_required()

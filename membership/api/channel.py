@@ -17,11 +17,19 @@ class ChannelAPIV2(Resource):
     if channel is None:
       return {"error": "Channel not found"}, 404
     
-    member = services.get_channel_members(channel.id)
-    member_dict = [services.get_member_dict(m) for m in member]
+    
     user_id = None
     if request.headers.get("Authorization"):
       user_id = get_jwt_identity()
+
+    if user_id is not None:
+      user = current_user
+      if user.is_admin:
+        whitelist = get_whitelist_by_channel_id(channel.id)
+        channel.whitelisted = True if whitelist is not None else False
+
+    member = services.get_channel_members(channel.id)
+    member_dict = [services.get_member_dict(m) for m in member]
     
     detail_level = request.args.get("detail")
     if detail_level == "full":
@@ -55,13 +63,6 @@ class ChannelAPIV2(Resource):
       }, 200
     
     else:
-
-      if user_id is not None:
-        user = current_user
-        if user.is_admin:
-          # check if the channel is whitelisted
-          whitelist = get_whitelist_by_channel_id(channel.id)
-          channel.whitelisted = True if whitelist is not None else False
 
       return {
         "channel": services.get_channel_dict(channel),
