@@ -8,3 +8,4 @@ from .recents import RecentsAPI
 from .lastest import LatestAPI
 from .top import TopAPI
 from .genre import GenreAPI
+from .search import SearchAPI

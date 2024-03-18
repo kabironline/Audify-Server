@@ -167,6 +167,11 @@ api.add_resource(
     "/api/v2/admin/data/whitelist",
 )
 
+api.add_resource(
+    music.api.SearchAPI,
+    "/api/v2/search",
+)
+
 core.set_api(api)
 
 
