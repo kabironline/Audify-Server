@@ -34,7 +34,7 @@ class SearchAPI(Resource):
         track["rating"] = track_ratings.get(track["id"], None)
 
     album_dicts = [music_services.get_album_dict(music_services.get_album_by_id(album.rowid)) for album in albums]
-    channel_dicts = [membership_services.get_channel_dict(membership_services.get_channel_by_id(channel.rowid)) for channel in channels]
+    channel_dicts = [membership_services.get_channel_dict(channel) for channel in channels]
     playlist_dicts = [music_services.get_playlist_dict(music_services.get_playlist_by_id(playlist.rowid)) for playlist in playlists]
 
     return {
