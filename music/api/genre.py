@@ -1,28 +1,29 @@
 from flask_restful import Resource, request
-from flask_jwt_extended import jwt_required, current_user
 import music.services as services
-
+from core.db import get_redis
+import json
 class GenreAPI(Resource):
-  @jwt_required(optional=True)
   def get(self, genre_id=None):
+    r = get_redis()
     tracks = "tracks" in request.path
     if tracks:
+      if r.get(f"genre-{genre_id}-tracks"):
+        return json.loads(r.get(f"genre-{genre_id}-tracks")), 200
       tracks = services.get_genre_tracks(genre_id)
-      if request.headers.get("Authorization"):
-        ratings = services.get_track_rating_for_user(current_user.id, *[track.id for track in tracks])
-        for track in tracks:
-          track.rating = ratings.get(track.id, None)
-
       tracks_json = [services.get_track_dict(track) for track in tracks]
-      return {
+      final_json = {
         "tracks": tracks_json,
         "genre": services.get_genre_dict(services.get_genre_by_id(genre_id)),
-      }, 200
+      }
+      r.set(f"genre-{genre_id}-tracks", json.dumps(final_json), ex=600)
+      return final_json, 200
     else:
-      # returning the all genres list
+      if r.get("genres"):
+        return json.loads(r.get("genres")), 200
       genres = services.get_all_genres()
       genres_json = [services.get_genre_dict(genre) for genre in genres]
-
-      return {
+      final_json = {
         "genres": genres_json,
-      }, 200
+      }
+      r.set("genres", json.dumps(final_json), ex=600)
+      return  final_json, 200

@@ -1,32 +1,43 @@
 from flask_restful import Resource, request
 from music.services import get_latest_tracks, get_track_dict, get_latest_albums, get_album_dict, get_latest_playlist,get_playlist_dict, get_track_rating_for_user
-from flask_jwt_extended import jwt_required, current_user
+from core.db import get_redis
+import json
+
 class LatestAPI(Resource):
-  @jwt_required(optional=True)
   def get(self):
+    latest_json = {}
+    
     count = request.args.get("n", 5)
     route = request.path.split("/")[3]
+    
+    r = get_redis()
+    r_latest = r.get(f'latest-{route}-{count}')
+    r_latest_counter= int(r.get(f'latest-{route}-{count}-counter') or 0) 
+    if r_latest and r_latest_counter:
+      if r_latest_counter == 1:
+        r.expire(f'latest-{route}-{count}-counter', 1)
+        r.expire(f'latest-{route}-{count}', 1)
+      r.set(f'latest-{route}-{count}-counter', r_latest_counter - 1)
+      return json.loads(r_latest), 200
+    
     if route == "albums":
       latest = get_latest_albums(count)
       latest_json = [(get_album_dict(album)) for album in latest]
-      return {
-        "latest": latest_json,
-      }, 200
     elif route == "tracks":
       latest = get_latest_tracks(count)
       
-      if request.headers.get("Authorization"):
-        ratings = get_track_rating_for_user(current_user.id, *[latest_track.id for latest_track in latest])
-        for track in latest:
-          track.rating = ratings.get(track.id, None)
       latest_json = [(get_track_dict(track)) for track in latest]
-      return {
-        "latest": latest_json,
-      }, 200
     
     elif route == "playlists":
       latest = get_latest_playlist(count)
       latest_json = [(get_playlist_dict(playlist)) for playlist in latest]
+    else:
       return {
-        "latest": latest_json,
-      }, 200
+        "error": "Invalid route"
+      }, 400
+    final_json = {
+      "latest": latest_json,
+    } 
+    r.set(f'latest-{route}-{count}', json.dumps(final_json))
+    r.set(f'latest-{route}-{count}-counter', 10)
+    return final_json, 200

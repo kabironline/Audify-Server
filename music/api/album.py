@@ -2,7 +2,6 @@ from flask_restful import Resource, request
 from flask_jwt_extended import get_jwt_identity, jwt_required, current_user
 import music.services as music_services
 import membership.services as membership_services
-from werkzeug.datastructures import FileStorage
 from datetime import datetime
 
 class AlbumAPI(Resource):

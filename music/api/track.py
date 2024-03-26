@@ -3,17 +3,22 @@ import membership.services as membership_services
 from flask_jwt_extended import jwt_required, current_user
 from flask_restful import Resource, request
 from datetime import datetime
-from werkzeug.datastructures import FileStorage
+from core.db import get_redis
+import json
 
 class TrackAPIV2(Resource):
   def get(self, track_id):
     track = music_services.get_track_by_id(track_id)
     if track is None:
       return {"error": "Track not found"}, 404
-    
-    return {
+    r = get_redis()    
+    if r.get(f'track-{track_id}'):
+      return json.loads(r.get(f'track-{track_id}')), 200
+    final_json = {
       "track": music_services.get_track_dict(track),
-    }, 200
+    }
+    r.set(f'track-{track_id}', json.dumps())
+    return final_json , 200
   @jwt_required()
   def post(self):
     request_data = request.form
