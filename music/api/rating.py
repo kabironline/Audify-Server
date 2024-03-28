@@ -11,11 +11,13 @@ class RatingAPIV2(Resource):
     user_rating = None
     if request.headers.get("Authorization"):
       user_rating = services.get_rating_by_user_and_track_id(current_user.id, track_id)
+      if user_rating is not None:
+        user_rating = user_rating.rating
 
     return {
       "track_id": track_id,
       "rating": rating,
-      user_rating: user_rating
+      "user_rating": user_rating
     }, 200
   
   @jwt_required()
