@@ -12,12 +12,7 @@ class LatestAPI(Resource):
     
     r = get_redis()
     r_latest = r.get(f'latest-{route}-{count}')
-    r_latest_counter= int(r.get(f'latest-{route}-{count}-counter') or 0) 
-    if r_latest and r_latest_counter:
-      if r_latest_counter == 1:
-        r.expire(f'latest-{route}-{count}-counter', 1)
-        r.expire(f'latest-{route}-{count}', 1)
-      r.set(f'latest-{route}-{count}-counter', r_latest_counter - 1)
+    if r_latest:
       return json.loads(r_latest), 200
     
     if route == "albums":
@@ -39,5 +34,4 @@ class LatestAPI(Resource):
       "latest": latest_json,
     } 
     r.set(f'latest-{route}-{count}', json.dumps(final_json))
-    r.set(f'latest-{route}-{count}-counter', 10)
     return final_json, 200

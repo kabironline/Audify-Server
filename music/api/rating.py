@@ -5,11 +5,17 @@ import core
 
 
 class RatingAPIV2(Resource):
+  @jwt_required(optional=True)
   def get(self, track_id):
     rating = services.get_track_rating(track_id)
+    user_rating = None
+    if request.headers.get("Authorization"):
+      user_rating = services.get_rating_by_user_and_track_id(current_user.id, track_id)
+
     return {
       "track_id": track_id,
       "rating": rating,
+      user_rating: user_rating
     }, 200
   
   @jwt_required()
