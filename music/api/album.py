@@ -3,12 +3,22 @@ from flask_jwt_extended import get_jwt_identity, jwt_required, current_user
 import music.services as music_services
 import membership.services as membership_services
 from datetime import datetime
+from core.db import get_redis
+import json
 
 class AlbumAPI(Resource):
   @jwt_required(optional=True)
   def get(self, album_id):
-    album = music_services.get_album_by_id(album_id)
-    if album is None:
+    r = get_redis()
+    album_dict = None
+    if r.get(f"album:{album_id}") is not None:
+      album_dict = json.loads(r.get(f"album:{album_id}"))
+    else:
+      album = music_services.get_album_by_id(album_id)
+      album_dict = music_services.get_album_dict(album)
+      r.set(f"album:{album_id}", json.dumps(album_dict), ex=3600)
+    
+    if album is None and album_dict is None:
       return {"error": "Album not found"}, 404
     
     album_items = music_services.get_album_tracks_by_album_id(album_id)
@@ -22,7 +32,6 @@ class AlbumAPI(Resource):
     for track in album_items:
       track.rating = ratings.get(track.id, None)
     tracks = [music_services.get_track_dict(album_item) for album_item in album_items]
-    album_dict = music_services.get_album_dict(album)
     album_dict["tracks"] = tracks
     return {
       "album": album_dict
@@ -84,6 +93,10 @@ class AlbumAPI(Resource):
       album_art=album_art,
     )
 
+    r = get_redis()
+    r.delete(f"album:{album_id}")
+    r.set(f"album:{album_id}", json.dumps(music_services.get_album_dict(album)), ex=3600)
+
     # deleting all album items and adding new ones
     album_items = music_services.get_album_items_by_album_id(album_id)
     for album_item in album_items:
@@ -120,6 +133,9 @@ class AlbumAPI(Resource):
       music_services.delete_album_item(album_item.id)
 
     music_services.delete_album(album_id, current_user.channel.id, True)
+
+    r = get_redis()
+    r.delete(f"album:{album_id}")
 
     return {"action": "deleted"}, 200
 
