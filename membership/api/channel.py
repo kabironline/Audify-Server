@@ -1,74 +1,139 @@
 import os
 from flask_restful import Resource, request
 import membership.services as services
-from music.services import get_album_dict, get_track_dict, get_tracks_by_channel, get_album_by_user, get_track_rating_for_user
+from music.services import get_album_dict, get_track_dict, get_tracks_by_channel, get_album_by_user, get_track_rating_for_user, get_channel_track_count, get_channel_album_count, get_views_by_channel_id
 from werkzeug.datastructures import FileStorage
 from flask_jwt_extended import jwt_required, get_jwt_identity, current_user
 from admin.services import get_whitelist_by_channel_id
+from core.db import get_redis
+import json
 
 class ChannelAPIV2(Resource):
-  @jwt_required(optional=True)
-  def get(self, channel_id=None):
+  # @jwt_required(optional=True)
+  # def get(self, channel_id=None):
     
-    if channel_id is None:
-      return {"error": "channel_id is required"}, 400
-    if channel_id is not None:
+  #   if channel_id is None:
+  #     return {"error": "channel_id is required"}, 400
+  #   if r.get(f"channel:{channel_id}") is not None:
+  #       channel_dict = json.loads(r.get(f"channel:{channel_id}"))
+  #   else:
+  #     channel_dict = json.dumps({
+  #     "channel": services.get_channel_dict(channel),
+  #     "members": member_dict,
+  #     "action": "retrieved",
+  #   })
+  #   if channel_id is not None:
+  #     channel = services.get_channel_by_id(channel_id)
+  #   if channel is None:
+  #     return {"error": "Channel not found"}, 404
+    
+    
+  #   user_id = None
+  #   if request.headers.get("Authorization"):
+  #     user_id = get_jwt_identity()
+
+  #   whitelist = get_whitelist_by_channel_id(channel.id)
+  #   channel.whitelisted = True if whitelist is not None else False
+
+  #   member = services.get_channel_members(channel.id)
+  #   member_dict = [services.get_member_dict(m) for m in member]
+    
+  #   detail_level = request.args.get("detail")
+  #   if detail_level == "full":
+  #     # get all the tracks and albums of the channel
+  #     albums = get_album_by_user(channel.id, count=6)
+  #     album_dict = [get_album_dict(a) for a in albums]
+  #     return {
+  #       "channel": services.get_channel_dict(channel),
+  #       "members": member_dict,
+  #       "tracks": get_channel_tracks(channel.id, 6, user_id),
+  #       "albums": album_dict,
+  #       "action": "retrieved",
+  #     }, 200
+    
+  #   elif detail_level == "tracks":
+  #     return {
+  #       "channel": services.get_channel_dict(channel),
+  #       "members": member_dict,
+  #       "tracks": get_channel_tracks(channel.id, 30, user_id),
+  #       "action": "retrieved",
+  #     }, 200
+    
+  #   elif detail_level == "albums":
+  #     albums = get_album_by_user(channel.id, count=6)
+  #     album_dict = [get_album_dict(a) for a in albums]
+  #     return {
+  #       "channel": services.get_channel_dict(channel),
+  #       "members": member_dict,
+  #       "albums": album_dict,
+  #       "action": "retrieved",
+  #     }, 200
+    
+  #   else:
+  #     r = get_redis()
+  #     channel_dict = None
+  #     return channel_dict, 200
+  
+  def get(self, channel_id):
+    r = get_redis()
+    channel_dict = None
+    channel = None
+    
+    if r.get(f"channel:{channel_id}") is not None:
+      channel_dict = json.loads(r.get(f"channel:{channel_id}"))
+    else:
       channel = services.get_channel_by_id(channel_id)
-    if channel is None:
-      return {"error": "Channel not found"}, 404
+      if channel is None:
+        return {"error": "Channel not found"}, 404
+      member = services.get_channel_members(channel.id)
+      member_dict = [services.get_member_dict(m) for m in member]
+      is_whitelisted = True if get_whitelist_by_channel_id(channel.id) is not None else False
+      channel.whitelisted = is_whitelisted
+      channel_dict = {
+        "channel": services.get_channel_dict(channel),
+        "members": member_dict,
+        "action": "retrieved",
+      }
+      r.set(f"channel:{channel_id}", json.dumps(channel_dict), ex=3600)
     
+    detail_level = request.args.get("detail") or "default"
     
-    user_id = None
-    if request.headers.get("Authorization"):
-      user_id = get_jwt_identity()
-
-    if user_id is not None:
-      user = current_user
-      if user.is_admin:
-        whitelist = get_whitelist_by_channel_id(channel.id)
-        channel.whitelisted = True if whitelist is not None else False
-
-    member = services.get_channel_members(channel.id)
-    member_dict = [services.get_member_dict(m) for m in member]
-    
-    detail_level = request.args.get("detail")
     if detail_level == "full":
       # get all the tracks and albums of the channel
-      albums = get_album_by_user(channel.id, count=6)
+      albums = get_album_by_user(channel_id, count=6)
       album_dict = [get_album_dict(a) for a in albums]
-      return {
-        "channel": services.get_channel_dict(channel),
-        "members": member_dict,
-        "tracks": get_channel_tracks(channel.id, 6, user_id),
-        "albums": album_dict,
-        "action": "retrieved",
-      }, 200
+      # append the tracks and albums to the channel_dict
+      track_info = get_channel_track_count(channel_id)
+      album_info = get_channel_album_count(channel_id)
+      views = get_views_by_channel_id(channel_id)
+      info = {
+        "tracks": track_info,
+        "albums": album_info,
+        "views": views
+      }
+      channel_dict.update(info)
     
-    elif detail_level == "tracks":
-      return {
-        "channel": services.get_channel_dict(channel),
-        "members": member_dict,
-        "tracks": get_channel_tracks(channel.id, 30, user_id),
-        "action": "retrieved",
-      }, 200
-    
-    elif detail_level == "albums":
-      albums = get_album_by_user(channel.id, count=6)
+      channel_dict["tracks"] = get_channel_tracks(channel_id, 6)
+      albums = get_album_by_user(channel_id, count=6)
       album_dict = [get_album_dict(a) for a in albums]
-      return {
-        "channel": services.get_channel_dict(channel),
-        "members": member_dict,
-        "albums": album_dict,
-        "action": "retrieved",
-      }, 200
-    
-    else:
+      channel_dict["albums"] = album_dict
 
-      return {
-        "channel": services.get_channel_dict(channel),
-        "members": member_dict,
-        "action": "retrieved",
-      }, 200
+      return channel_dict, 200
+    elif detail_level == "tracks":
+      channel_dict["tracks"] = get_channel_tracks(channel_id, 30)
+      return channel_dict, 200
+    elif detail_level == "albums":
+
+      albums = get_album_by_user(channel_id, count=6)
+      album_dict = [get_album_dict(a) for a in albums]
+      channel_dict["albums"] = album_dict
+      return channel_dict, 200
+    elif detail_level == "default":
+      return channel_dict, 200
+    else:
+      return {"error": "Invalid detail level"}, 400
+
+
   @jwt_required()  
   def post(self):
     request_data = request.form
@@ -136,6 +201,10 @@ class ChannelAPIV2(Resource):
       avatar = request.files["avatar"]
 
     services.update_channel(channel_id=channel.id, name=name, description=bio, channel_art=avatar)
+    
+    r = get_redis()
+    r.delete(f"channel:{channel.id}")
+
     return {"message": "Channel updated successfully"}, 200
   
   @jwt_required()  
@@ -144,9 +213,10 @@ class ChannelAPIV2(Resource):
     members = services.get_user_channels(current_user.id)
     if members is None:
       return {"error": "User is not a member of any channel"}, 404
-    
+    r = get_redis()
     for member in members:
       services.deactivate_channel(member.channel_id)
+      r.delete(f"channel:{member.channel_id}")
 
     return {"message": "Channel deleted successfully"}, 200
   

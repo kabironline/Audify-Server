@@ -11,6 +11,7 @@ class AlbumAPI(Resource):
   def get(self, album_id):
     r = get_redis()
     album_dict = None
+    album = None
     if r.get(f"album:{album_id}") is not None:
       album_dict = json.loads(r.get(f"album:{album_id}"))
     else:

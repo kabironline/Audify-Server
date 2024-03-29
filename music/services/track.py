@@ -172,6 +172,22 @@ def get_tracks_by_channel(channel_id, user_id=None, rating=False, count=5):
 
     return tracks
 
+def get_channel_track_count(channel_id):
+    session = get_session()
+    count = (
+        session.query(Track)
+        .join(Channel, Track.channel_id == Channel.id)
+        .filter(
+            Track.channel_id == channel_id,
+            Track.flagged.is_(None),
+            Channel.blacklisted.is_(None),
+            Channel.is_active.is_(None),
+        )
+        .count()
+    )
+    session.close()
+
+    return count
 
 def get_channel_tracks_by_views(channel_id, count=5):
     session = get_session()

@@ -88,6 +88,19 @@ def get_album_by_user(channel_id, count=5):
 
     return album
 
+def get_channel_album_count(channel_id):
+    session = get_session()
+
+    album_count = (
+        session.query(Album)
+        .filter(Album.created_by == channel_id)
+        .count()
+    )
+
+    session.close()
+
+    return album_count
+
 
 def get_latest_albums(limit=5):
     session = get_session()
