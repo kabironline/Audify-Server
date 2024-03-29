@@ -97,11 +97,12 @@ class ChannelAPIV2(Resource):
       r.set(f"channel:{channel_id}", json.dumps(channel_dict), ex=3600)
     
     detail_level = request.args.get("detail") or "default"
-    
     if detail_level == "full":
       # get all the tracks and albums of the channel
       albums = get_album_by_user(channel_id, count=6)
       album_dict = [get_album_dict(a) for a in albums]
+      channel_dict["albums"] = album_dict
+      channel_dict["tracks"] = get_channel_tracks(channel_id, 6)
       # append the tracks and albums to the channel_dict
       track_info = get_channel_track_count(channel_id)
       album_info = get_channel_album_count(channel_id)
@@ -111,13 +112,8 @@ class ChannelAPIV2(Resource):
         "albums": album_info,
         "views": views
       }
-      channel_dict.update(info)
-    
-      channel_dict["tracks"] = get_channel_tracks(channel_id, 6)
-      albums = get_album_by_user(channel_id, count=6)
-      album_dict = [get_album_dict(a) for a in albums]
-      channel_dict["albums"] = album_dict
-
+      channel_dict["info"] = info
+      print(channel_dict)
       return channel_dict, 200
     elif detail_level == "tracks":
       channel_dict["tracks"] = get_channel_tracks(channel_id, 30)
