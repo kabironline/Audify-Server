@@ -69,10 +69,14 @@ class TrackAPIV2(Resource):
 
     return {"action": "Updated"}, 200
   
+  @jwt_required()
   def delete(self, track_id):
     track = music_services.get_track_by_id(track_id)
     if track is None:
       return {"error": "Track not found"}, 404
+    
+    if track.channel_id != current_user.channel.id:
+      return {"error": "You are not the owner of the track"}, 403
     
     music_services.delete_track(track_id)
 
