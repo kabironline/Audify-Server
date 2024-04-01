@@ -110,6 +110,8 @@ class AdminAPI (Resource):
         return {"error": "Track not found"}, 404
       
       if action == "flag":
+        if services.get_whitelist_by_channel_id(track.channel_id):
+          return {"error": "Channel is whitelisted"}, 400
         services.create_track_flag(track.id, admin_user.id)
       elif action == "unflag":
         services.delete_track_flag(track.id, admin_user.id)
