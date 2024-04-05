@@ -17,7 +17,7 @@ class TrackAPIV2(Resource):
     final_json = {
       "track": music_services.get_track_dict(track),
     }
-    r.set(f'track-{track_id}', json.dumps())
+    r.set(f'track-{track_id}', json.dumps(final_json))
     return final_json , 200
   @jwt_required()
   def post(self):
@@ -67,6 +67,9 @@ class TrackAPIV2(Resource):
       track_art=track_art,
     )
 
+    r = get_redis()
+    r.delete(f'track-{track_id}')
+
     return {"action": "Updated"}, 200
   
   @jwt_required()
@@ -80,4 +83,33 @@ class TrackAPIV2(Resource):
     
     music_services.delete_track(track_id)
 
-    return {"action": "Deleted"}, 200
+    r = get_redis()
+    # clear all caches where this track is used
+    r.delete(f'track-{track_id}')
+    
+    if track_in_cache(track_id, "latest-tracks-5"):
+      r.delete("latest-tracks-5")
+    if track_in_cache(track_id, "latest-tracks-30"):
+      r.delete("latest-tracks-30")
+    if track_in_cache(track_id, "top-tracks-16"):
+      r.delete("top-tracks-16")
+    if track_in_cache(track_id, "top-tracks-30"):
+      r.delete("top-tracks-30")
+    if track_in_cache(track_id, "top-rated-tracks-16"):
+      r.delete("top-rated-tracks-16")
+    if track_in_cache(track_id, "top-rated-tracks-30"):
+      r.delete("top-rated-tracks-30")
+
+    r.delete(f"genre-{track.genre_id}-tracks")
+    return {"action": "Deleted"}, 
+
+def track_in_cache(track_id, cache):
+  r = get_redis()
+  if not r.get(cache):
+    return False
+  tracks = json.loads(r.get(cache))
+  # check for the track in the tracks list 
+  for track in tracks["tracks"]:
+    if track["id"] == track_id:
+      return True
+  return False
