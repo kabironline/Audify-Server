@@ -31,7 +31,7 @@ class LatestAPI(Resource):
         "error": "Invalid route"
       }, 400
     final_json = {
-      "latest": latest_json,
+      f"{route}": latest_json,
     } 
     r.set(f'latest-{route}-{count}', json.dumps(final_json))
     return final_json, 200

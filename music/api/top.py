@@ -8,14 +8,17 @@ class TopAPI(Resource):
     count = request.args.get("n", 10)
 
     r = get_redis()
-    r_top = r.get(f'top-{route}-{count}')
-    r_top_counter= int(r.get(f'top-{route}-{count}-counter') or 0)
+    redis_path = f'top-{route}-{count}' if route != "tracks" else f'top-{request.path.split('/')[5]}-{route}-{count}'
+    r_top = r.get(redis_path)
+    r_top_counter= int(r.get(f'{redis_path}-counter') or 0)
+    
     if r_top and r_top_counter:
       if r_top_counter == 1:
-        r.expire(f'top-{route}-{count}-counter', 1)
-        r.expire(f'top-{route}-{count}', 1)
+        r.delete(f'top-{route}-{count}-counter')
+        r.delete(f'top-{route}-{count}')
       r.set(f'top-{route}-{count}-counter', r_top_counter - 1)
       return json.loads(r_top), 200
+    
     if route == "tracks":
       tracks = []
       mode = request.path.split("/")[5]
@@ -33,7 +36,7 @@ class TopAPI(Resource):
       }, 400
     
     final_json = {
-      "top": top_json,
+      f"{route}": top_json,
     }
     r.set(f'top-{route}-{count}', json.dumps(final_json))
     r.set(f'top-{route}-{count}-counter', 10)
