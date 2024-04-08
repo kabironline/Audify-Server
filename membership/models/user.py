@@ -5,7 +5,7 @@ from core.db import db
 class User(db.Model):
     __tablename__ = "User"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.String(50), nullable=False, unique=True, index=True)
+    username = db.Column(db.String(50), nullable=False, unique=True, index=True) # Email
     nickname = db.Column(db.String(50), nullable=False, unique=True, index=True)
     bio = db.Column(db.String(200), nullable=True)
     password = db.Column(db.String(50), nullable=False)

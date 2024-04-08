@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, Response, render_template
+from flask import Flask, redirect, url_for, render_template
 from flask_migrate import Migrate
 from flask_restful import Api
 from flask_cors import CORS
