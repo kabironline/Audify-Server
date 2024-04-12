@@ -1,5 +1,5 @@
 import os
-from core.db import get_session, get_test_session
+from core.db import get_session
 from core import get_current_user
 import membership.models.channel as channel_model
 import membership.services as services

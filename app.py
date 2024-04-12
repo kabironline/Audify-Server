@@ -4,13 +4,14 @@ from flask_restful import Api
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 import os
-import core
 
+from celery.schedules import crontab
+import core
+from core import api
+from core.db import db
 from core.utils import *
 from commands.db import *
 from commands.track import *
-from core.db import db
-from core import api
 from membership.models import User
 import membership.routes
 import membership.api_old
@@ -35,6 +36,8 @@ app.config["SQLALCHEMY_ECHO"] = False
 
 db.init_app(app)
 migrate = Migrate(app, db, render_as_batch=True)
+
+celery = core.create_celery_inst(app)
 
 jwt = JWTManager(app)
 app.config["JWT_SECRET_KEY"] = "6d7f095ee80911f504e7bafaef6ad6169a15870146c604dbb11b7fa7f98809ac"
@@ -525,7 +528,18 @@ app.add_url_rule(
     subdomain="static",
 )
 
+
+@celery.on_after_finalize.connect
+def setup_periodic_tasks(sender, **kwargs):
+    sender.add_periodic_task(10.0, print_helloworld.s(), name="add every 10")
+
+
+@celery.task()
+def print_helloworld():
+    print("Hello World")
+
+
 if __name__ == "__main__":
     from werkzeug.serving import run_simple
-
-    run_simple("localhost", 5000, app, use_reloader=True, use_debugger=True)
+    
+    run_simple("localhost", 5000, app, use_reloader=True)
