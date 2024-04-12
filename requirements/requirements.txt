@@ -11,3 +11,5 @@ plotly==5.18.0
 plotly-express==0.4.
 Flask-JWT-Extended
 redis==5.0.3
+celery==5.3.6
+Flask-Celery==2.4.3

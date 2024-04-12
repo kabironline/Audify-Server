@@ -3,7 +3,7 @@
 # from sqlalchemy.ext.declarative import declarative_base
 from flask_sqlalchemy import SQLAlchemy
 from redis import Redis
-
+from celery import Celery
 
 db = SQLAlchemy()
 test_db = SQLAlchemy()
@@ -30,3 +30,21 @@ def get_test_session():
 def get_redis():
     """Returns the redis object"""
     return redis
+
+def create_celery_inst(app):
+    celery = Celery(app.import_name)
+    celery.conf.update(
+        broker_url='redis://localhost:6379/1',
+        result_backend='redis://localhost:6379/2',
+        timezone='Asia/Kolkata'
+    )
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    celery.Task = ContextTask
+     
+    return celery
+
