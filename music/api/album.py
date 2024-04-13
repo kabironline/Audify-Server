@@ -118,7 +118,6 @@ class AlbumAPI(Resource):
   
   @jwt_required()
   def delete(self, album_id):
-    import pdb; pdb.set_trace()
     album = music_services.get_album_by_id(album_id)
     
     if album is None:
