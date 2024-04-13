@@ -1,10 +1,10 @@
 import music.services as music_services
 import membership.services as membership_services
 from flask_jwt_extended import jwt_required, current_user
-from flask_restful import Resource, request
 from datetime import datetime
 from core.db import get_redis
 import json
+from flask_restful import Resource, request
 
 class TrackAPIV2(Resource):
   def get(self, track_id):

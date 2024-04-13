@@ -19,14 +19,13 @@ def user_avatar(user_id):
     if user is None:
         return None
 
-    avatar_path = "../media/users/" + str(user_id) + "/avatar.png"
+    avatar_path = None
+
 
     # try to read the file
     try:
-        import os
-
-        path =  "../media/users/" + str(user_id) + "/avatar.png"
-        with open(path, "rb") as avatar_file:
+        avatar_path =  os.path.join("..", "media", "users", str(user_id), "avatar.png")
+        with open(avatar_path, "rb") as avatar_file:
             avatar_file.read()
 
     except FileNotFoundError:
@@ -50,8 +49,6 @@ def channel_avatar(channel_id):
 
     # try to read the file
     try:
-        import os
-
         if channel_id == 0:
             raise FileNotFoundError
 

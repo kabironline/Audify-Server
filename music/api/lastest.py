@@ -32,5 +32,5 @@ class LatestAPI(Resource):
     final_json = {
       f"{route}": latest_json,
     } 
-    r.set(f'latest-{route}-{count}', json.dumps(final_json))
+    r.set(f'latest-{route}-{count}', json.dumps(final_json), ex=60)
     return final_json, 200
