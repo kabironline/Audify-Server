@@ -531,13 +531,19 @@ app.add_url_rule(
 
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
-    sender.add_periodic_task(10.0, print_helloworld.s(), name="add every 10")
+    sender.add_periodic_task(crontab(hour=0, minute=0), daily_task.s(), name="Daily User Activity Check")
+    sender.add_periodic_task(0, 0, 1, 0, monthly_task.s(), name="Monthly Channel Report")
+
 
 
 @celery.task()
-def print_helloworld():
-    print("Hello World")
+def daily_task():
+    membership.services.update_cron_monitor_list()
+    membership.services.daily_user_activity_check()
 
+@celery.task()
+def monthly_task():
+    membership.services.monthly_channel_report()
 
 if __name__ == "__main__":
     from werkzeug.serving import run_simple

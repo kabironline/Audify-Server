@@ -1,6 +1,10 @@
 from core.db import get_session
+from core.mail import send_email
 from membership.models import CronMonitor
+from membership.services import get_user_by_id, get_all_users
 from datetime import datetime
+from jinja2 import Template
+import os
 
 def create_cron_monitor_entry(user_id):
     """
@@ -9,7 +13,7 @@ def create_cron_monitor_entry(user_id):
     session = get_session()
     new_cron_monitor = CronMonitor(
         user_id=user_id,
-        last_run_at=datetime.now(),
+        last_active_at=datetime.now(),
         last_notified_at=datetime.now(),
         created_at=datetime.now(),
         last_modified_at=datetime.now(),
@@ -32,19 +36,6 @@ def update_user_activity(user_id):
     else:
         return None 
 
-def notify_user(user_id):
-    """
-    Notifies the user with the given user_id.
-    """
-    session = get_session()
-    cron_monitor = session.query(CronMonitor).filter_by(user_id=user_id).first()
-    if cron_monitor is not None:
-        # TODO: Implement the notification logic here
-        cron_monitor.last_notified_at = datetime.now()
-        session.commit()
-        return cron_monitor
-    else:
-        return None
 
 def get_cron_monitor_entry(user_id):
     """
@@ -73,4 +64,3 @@ def delete_cron_monitor_entry(user_id):
         return True
     else:
         return False
-    

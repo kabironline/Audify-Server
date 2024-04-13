@@ -1,5 +1,6 @@
 from flask_restful import Resource, request
-from music.services import get_top_tracks,get_top_rated_tracks, get_track_dict, get_top_rated_channels, get_channel_dict, get_track_rating_for_user
+from music.services import get_top_tracks,get_top_rated_tracks, get_track_dict, get_top_rated_channels
+from membership.services import get_channel_dict
 from core.db import get_redis
 import json
 class TopAPI(Resource):
