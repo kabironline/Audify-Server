@@ -428,6 +428,55 @@ def get_track_dict(track):
         },
     }
 
+def get_channel_month_top_tracks(channel_id, month, year):
+    session = get_session()
+
+    tracks = (
+        session.query(Track)
+        .join(Channel, Track.channel_id == Channel.id)
+        .options(joinedload(Track.channel))
+        .join(View, Track.id == View.track_id)
+        .filter(
+            Channel.id == channel_id,
+            db.extract("month", View.created_at) == month,
+            db.extract("year", View.created_at) == year,
+            Track.flagged.is_(None),
+            Track.id.in_(
+            session.query(View.track_id)
+            .group_by(View.track_id)
+            .having(func.count(View.id) > 0)
+            .subquery()
+        )
+        )
+        .group_by(Track.id)
+        .order_by(db.func.count(View.id).desc())
+        .limit(5)
+        .all()
+    )
+    session.close()
+
+    return tracks
+
+def get_channel_month_total_views(channel_id, month, year):
+    session = get_session()
+
+    total_views = (
+        # count instead of sum
+        session.query(View)
+        .filter(
+            db.extract("month", View.created_at) == month,
+            db.extract("year", View.created_at) == year,
+            View.track_id.in_(
+                session.query(Track.id)
+                .join(Channel, Track.channel_id == Channel.id)
+                .filter(Channel.id == channel_id)
+            ),
+        )
+    ).count()
+
+    session.close()
+
+    return total_views
 
 def search_tracks(keyword, count=10):
     return TrackSearch.query.filter(TrackSearch.name.match(keyword)).limit(count).all()

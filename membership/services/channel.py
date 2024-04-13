@@ -139,6 +139,9 @@ def deactivate_channel(channel_id):
 
 def get_channel_dict(channel: channel_model.Channel):
 
+    if isinstance(channel, int):
+        channel = get_channel_by_id(channel)
+
     toString  = lambda x: x.strftime("%Y-%m-%d %H:%M:%S") if x is not None else None    
 
     return {
