@@ -6,7 +6,6 @@ import json
 class LatestAPI(Resource):
   def get(self):
     latest_json = {}
-    
     count = request.args.get("n", 5)
     route = request.path.split("/")[3]
     

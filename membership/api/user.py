@@ -3,6 +3,7 @@ from flask_jwt_extended import jwt_required, current_user
 import membership.services as services
 from music.services import get_playlist_by_user, get_playlist_dict
 from werkzeug.datastructures import FileStorage
+from membership.services.cron_monitor import update_user_activity
 import os
 
 class UserAPIV2(Resource):
@@ -36,6 +37,9 @@ class UserAPIV2(Resource):
           channels.append(services.get_channel_dict(channel))
       
       user_dict["channels"] = channels
+
+    if request.path.split("/")[-1] == "me":
+      update_user_activity(user.id)
 
     return user_dict, 200
   

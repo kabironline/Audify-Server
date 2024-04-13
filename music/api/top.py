@@ -9,7 +9,7 @@ class TopAPI(Resource):
     count = request.args.get("n", 10)
 
     r = get_redis()
-    redis_path = f'top-{route}-{count}' if route != "tracks" else f'top-{request.path.split('/')[5]}-{route}-{count}'
+    redis_path = f'top-{route}-{count}' if route != "tracks" else f'top-{request.path.split("/")[5]}-{route}-{count}'
     r_top = r.get(redis_path)
     r_top_counter= int(r.get(f'{redis_path}-counter') or 0)
     
