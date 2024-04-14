@@ -35,7 +35,6 @@ def set_current_user(user: User, channel=None, playlist=[]):
 
     session["user"] = user_dict
     session.permanent = True
-    print(session["user"])
 
 
 def logout():

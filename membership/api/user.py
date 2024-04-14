@@ -2,7 +2,6 @@ from flask_restful import Resource, request
 from flask_jwt_extended import jwt_required, current_user
 import membership.services as services
 from music.services import get_playlist_by_user, get_playlist_dict
-from werkzeug.datastructures import FileStorage
 from membership.services.cron_monitor import update_user_activity
 import os
 
@@ -79,10 +78,13 @@ class UserAPIV2(Resource):
   @jwt_required()
   def put(self):
     request_data = request.form
+    username = request_data.get("username")
     nickname = request_data.get("nickname")
     bio = request_data.get("bio")
     password = request_data.get("password")
     new_password = request_data.get("new_password")
+    if new_password is "undefined":
+      new_password = None
     
     user = current_user
 
@@ -92,7 +94,7 @@ class UserAPIV2(Resource):
     if password != user.password:
       return {"error": "Incorrect password"}, 400
     
-
+    user.username = username or user.username
     user.nickname = nickname or user.nickname
     user.bio = bio or user.bio
     user.password = new_password or user.password

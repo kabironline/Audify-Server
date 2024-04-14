@@ -106,14 +106,14 @@ def update_user(user: user_model.User):
     """
     This function updates the user with the given user object.
     """
-    old_user = get_user_by_id(user.id)
-    old_user.username = user.username if user.username else old_user.username
-    old_user.password = user.password if user.password else old_user.password
+    session = get_session()
+    old_user = session.query(user_model.User).filter_by(id=user.id).first()
+    
+    # old_user.password = user.password if user.password else old_user.password
     old_user.nickname = user.nickname if user.nickname else old_user.nickname
     old_user.bio = user.bio if user.bio else old_user.bio
     old_user.last_modified_at = datetime.datetime.now()
     old_user.last_modified_by = user.id if user.id else old_user.id
-    session = get_session()
     try:
         if user.avatar:
             import os
@@ -125,20 +125,12 @@ def update_user(user: user_model.User):
             user.avatar.save(f"../media/users/{user.id}/avatar.png")
     except:
         pass
-    import core
 
-    # Check if current user is a member of the channel
-    channel = None
-    members = membership_services.get_user_channels(old_user.id)
-    if len(members) > 0:
-        channel = membership_services.get_channel_dict(
-            membership_services.get_channel_by_id(members[0].channel_id)
-        )
-
-    core.set_current_user(old_user, channel=channel)
-
-    session.commit()
-
+    try:
+        session.commit()
+    except Exception as e:
+        print("Error", e)
+        session.rollback()
 
 def get_all_users():
     """
