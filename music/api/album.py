@@ -56,23 +56,32 @@ class AlbumAPI(Resource):
       album_art=album_art,
       channel_id=creator.id,
     )
+    count = 0
     if "album_tracks" in request_data:
       album_tracks = request_data.get("album_tracks")
       if type(album_tracks) == str: album_tracks = [album_tracks]
-      for track_id in album_tracks:
-        track_id = int(track_id)
-        music_services.create_album_item(
-          album_id=album.id,
-          track_id=track_id,
-          user_id=creator.id,
-        )
+      if len(album_tracks) > 0:
+        for track_id in album_tracks:
+          if track_id == "": continue
+          track_id = int(track_id)
+          count += 1
+          music_services.create_album_item(
+            album_id=album.id,
+            track_id=track_id,
+            user_id=creator.id,
+          )
+      if len(album_tracks) == 0 or count == 0:
+        music_services.delete_album(album.id, creator.id, True)
+        return {"error": "No tracks found"}, 400
 
     r = get_redis()
     
     if r.get(f"latest-albums-5"):
       r.delete(f"latest-albums-5")
-    
-    return {"action": "created"}, 201
+
+    album_dict = music_services.get_album_dict(album)
+
+    return {"action": "created", "album":album_dict}, 201
   
   @jwt_required()
   def put(self, album_id):
@@ -147,9 +156,7 @@ class AlbumAPI(Resource):
       latest_albums = json.loads(r.get(f"latest-albums-5"))["albums"]
       for i, album in enumerate(latest_albums):
         if album["id"] == album_id:
-          latest_albums.pop(i)
+          r.delete(f"latest-albums-5")
           break
-      r.set(f"latest-albums-5", json.dumps({"albums": latest_albums}), ex=60)
-
     return {"action": "deleted"}, 200
 

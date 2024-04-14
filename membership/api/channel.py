@@ -52,7 +52,7 @@ class ChannelAPIV2(Resource):
       channel_dict["tracks"] = get_channel_tracks(channel_id, 30)
       return channel_dict, 200
     elif detail_level == "albums":
-      albums = get_album_by_user(channel_id, count=6)
+      albums = get_album_by_user(channel_id, count=60)
       album_dict = [get_album_dict(a) for a in albums]
       channel_dict["albums"] = album_dict
       return channel_dict, 200
