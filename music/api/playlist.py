@@ -55,6 +55,10 @@ class PlaylistAPI(Resource):
       api=True,
     )
 
+    r = get_redis()
+    if r.get(f"latest-playlists-5"):
+      r.delete(f"latest-playlists-5")
+
     return {
       "action": "created",
       "playlist": music_services.get_playlist_dict(playlist),
@@ -104,7 +108,10 @@ class PlaylistAPI(Resource):
     
     music_services.delete_playlist(playlist_id, user_id=current_user.id)
     r = get_redis()
-    r.delete(f"playlist:{playlist_id}")
+    if r.get(f"latest-playlists-5"):
+      r.delete(f"latest-playlists-5")
+    if r.get(f"playlist:{playlist_id}"):
+      r.delete(f"playlist:{playlist_id}")
     return {
       "action": "deleted",
     }, 200

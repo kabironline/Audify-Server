@@ -67,6 +67,11 @@ class AlbumAPI(Resource):
           user_id=creator.id,
         )
 
+    r = get_redis()
+    
+    if r.get(f"latest-albums-5"):
+      r.delete(f"latest-albums-5")
+    
     return {"action": "created"}, 201
   
   @jwt_required()
@@ -136,6 +141,15 @@ class AlbumAPI(Resource):
 
     r = get_redis()
     r.delete(f"album:{album_id}")
+
+    r = get_redis()
+    if r.get(f"latest-albums-5"):
+      latest_albums = json.loads(r.get(f"latest-albums-5"))["albums"]
+      for i, album in enumerate(latest_albums):
+        if album["id"] == album_id:
+          latest_albums.pop(i)
+          break
+      r.set(f"latest-albums-5", json.dumps({"albums": latest_albums}), ex=60)
 
     return {"action": "deleted"}, 200
 

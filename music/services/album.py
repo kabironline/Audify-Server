@@ -187,10 +187,10 @@ def delete_album(album_id, channel_id=0, api=False):
     for album_track in album_tracks:
         delete_album_item(album_track.id)
     try:
-        files = os.listdir(f"../media/albums/{album_id}")
+        files = os.listdir(os.path.join("..", "media", "albums", str(album_id)))
         for file in files:
-            os.remove(f"../media/albums/{album_id}/{file}")
-        os.rmdir(f"../media/albums/{album_id}")
+            os.remove(os.path.join("..", "media", "albums", str(album_id), file))
+        os.rmdir(os.path.join("..", "media", "albums", str(album_id)))
     except FileNotFoundError:
         pass
 
