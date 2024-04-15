@@ -55,7 +55,7 @@ class UserAPIV2(Resource):
     # Checking if the user exists
     user = services.get_user_by_username(username=username)
     if user is not None:
-      return {"error": "Username taken, try another one"}, 400
+      return {"error": "Email taken, try another one"}, 400
     
     # Creating user
 

@@ -52,10 +52,10 @@ def generate_user_channel_distribution_graph(data_only=False):
 
     if data_only:
         return {
-            "labels": ["Users", "Channels"],
-            "values": [len(users), len(channels)],
+            "x": ["Users", "Channels"],
+            "y": [len(users), len(channels)],
             "type": "bar",
-            "backgroundColor": "rgba(0,0,0,0)",
+            "plot_bgcolor": "rgba(0,0,0,0)",
         }
 
     fig = px.pie(
