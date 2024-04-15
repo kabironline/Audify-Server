@@ -16,8 +16,7 @@ class AlbumAPI(Resource):
       album_dict = json.loads(r.get(f"album:{album_id}"))
     else:
       album = music_services.get_album_by_id(album_id)
-      album_dict = music_services.get_album_dict(album)
-      r.set(f"album:{album_id}", json.dumps(album_dict), ex=3600)
+      album_dict = music_services.get_album_dict(album) if album is not None else None
     
     if album is None and album_dict is None:
       return {"error": "Album not found"}, 404
@@ -25,6 +24,7 @@ class AlbumAPI(Resource):
     album_items = music_services.get_album_tracks_by_album_id(album_id)
     ratings = {}    
     
+    r.set(f"album:{album_id}", json.dumps(album_dict), ex=3600)
     auth_header = request.headers.get("Authorization")
     if auth_header != '':
       user_id = get_jwt_identity()

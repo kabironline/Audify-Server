@@ -14,12 +14,13 @@ class PlaylistAPI(Resource):
         playlist_dict = json.loads(r.get(f"playlist:{playlist_id}"))
       else: 
         playlist = music_services.get_playlist_by_id(playlist_id)
-        playlist_dict = music_services.get_playlist_dict(playlist)
+        playlist_dict = music_services.get_playlist_dict(playlist) if playlist is not None else None
       
-      playlist_items = music_services.get_tracks_by_playlist_id(playlist_id)
       if playlist is None and playlist_dict is None:
         return {"error": "Playlist not found"}, 404
-    
+  
+
+      playlist_items = music_services.get_tracks_by_playlist_id(playlist_id)
       auth = request.headers.get("Authorization")
       if auth:
         user_id = current_user.id

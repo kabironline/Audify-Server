@@ -20,14 +20,13 @@ def create_channel(name, description, api=False):
     user = None
     try:
         user = get_current_user()
-    except Exception as e:
+    except Exception:
         pass
-    if user is None:
-        if api:
-            user = services.get_user_by_username(username="api_superuser")
-        else:
-            raise Exception("User not found")
-
+    
+    if user is None and api:
+        user = services.get_user_by_username("api_superuser@example.com")
+    else:
+        return None
     new_channel = channel_model.Channel(
         name=name,
         description=description,

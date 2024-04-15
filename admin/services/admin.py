@@ -54,7 +54,7 @@ def generate_user_channel_distribution_graph(data_only=False):
         return {
             "labels": ["Users", "Channels"],
             "values": [len(users), len(channels)],
-            "type": "pie",
+            "type": "bar",
             "backgroundColor": "rgba(0,0,0,0)",
         }
 
