@@ -532,7 +532,10 @@ app.add_url_rule(
 @celery.on_after_finalize.connect
 def setup_periodic_tasks(sender, **kwargs):
     sender.add_periodic_task(crontab(hour=0, minute=0), daily_task.s(), name="Daily User Activity Check")
-    sender.add_periodic_task(0, 0, 1, 0, monthly_task.s(), name="Monthly Channel Report")
+    sender.add_periodic_task(crontab(day_of_month=1), monthly_task.s(), name="Monthly Channel Report")
+
+    # sender.add_periodic_task(10.0, daily_task.s(), name="Daily User Activity Check")
+    # sender.add_periodic_task(10.0, monthly_task.s(), name="Monthly Channel Report")
 
 
 

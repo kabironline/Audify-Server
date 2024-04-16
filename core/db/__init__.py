@@ -5,7 +5,10 @@ from flask_sqlalchemy import SQLAlchemy
 from redis import Redis
 from celery import Celery
 
-db = SQLAlchemy()
+db = SQLAlchemy(session_options= {
+    "expire_on_commit": False
+}
+)
 test_db = SQLAlchemy()
 
 redis = Redis(host='localhost', port=6379,decode_responses=True)

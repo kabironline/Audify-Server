@@ -15,7 +15,7 @@ def notify_user(user_id):
     cron_monitor = session.query(CronMonitor).filter_by(user_id=user_id).first()
     if cron_monitor is not None:
         # Notify the user if the user has been inactive for a day but if the user has been dont send subsequent notifications for the next 7 days
-
+        # if (cron_monitor.last_active_at - cron_monitor.last_notified_at).seconds >= 1 and (datetime.now() - cron_monitor.last_notified_at).seconds >= 7:
         if (cron_monitor.last_active_at - cron_monitor.last_notified_at).days >= 1 and (datetime.now() - cron_monitor.last_notified_at).days >= 7:
             # Send the notification
             print(f"Sending notification to user {user_id}")
