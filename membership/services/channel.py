@@ -34,6 +34,7 @@ def create_channel(name, description, api=False):
         last_modified_by=user.id,
         created_at=datetime.datetime.now(),
         last_modified_at=datetime.datetime.now(),
+        is_active=True,
     )
     session.add(new_channel)
     session.commit()
@@ -153,7 +154,7 @@ def get_channel_dict(channel: channel_model.Channel):
         "last_modified_at": toString(channel.last_modified_at),
         "blacklisted": channel.blacklisted if channel.blacklisted is not None else False,
         "whitelisted": hasattr(channel, "whitelisted") and channel.whitelisted or False,
-        "is_active": channel.is_active,
+        "is_active": False if channel.is_active is False else True,
     }
 
 

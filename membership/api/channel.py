@@ -29,7 +29,9 @@ class ChannelAPIV2(Resource):
         "action": "retrieved",
       }
       r.set(f"channel:{channel_id}", json.dumps(channel_dict), ex=3600)
-    
+    if channel_dict["channel"]["is_active"] is False:
+      return {"error": "Channel is deactivated"}, 400
+
     detail_level = request.args.get("detail") or "default"
     if detail_level == "full":
       # get all the tracks and albums of the channel
@@ -72,22 +74,15 @@ class ChannelAPIV2(Resource):
     bio = request_data.get("bio")
     password = request_data.get("password")
     user = current_user
+    
+    if user is None:
+      return {"error": "User not found"}, 404
 
     if password is None:
       return {"error": "Password is required"}, 400
     
     if password != user.password:
       return {"error": "Invalid Password"}, 400
-
-
-    if user is None:
-      return {"error": "User not found"}, 404
-    
-    # Checking if the user already a member of a channel
-    # member = services.get_user_channels(user.id)
-    
-    # if member is not None:
-    #   return {"error": "User already has a channel"}, 400
     
     if name is None:
       return {"error": "Name of the Channel is Required"}, 400
@@ -100,20 +95,14 @@ class ChannelAPIV2(Resource):
     services.create_channel(name=name, description=bio, api=True)
 
     channel = services.get_channel_by_name(name=name)
-
+    user = services.get_user_by_id(user.id)
     # Registering the user as a member of the channel
     services.create_member(user.id, channel.id)
 
     # Avatar
     if "avatar" in request.files:
       avatar = request.files["avatar"]
-      try:
-        os.makedirs(os.path.join("media", "channels", f"{channel.id}"))
-        avatar.save(os.path.join("media", "channels",f"{channel.id}", "avatar.png"))
-      except Exception as e:
-        print(e)
-        return {"error": "Error saving the avatar, Channel created successfully."}, 500
-
+      services.update_channel(channel_id=channel.id, name=name, description=bio, channel_art=avatar)
     return {"message": "Channel created successfully"}, 201
   @jwt_required()
   def put(self):

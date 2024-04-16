@@ -25,13 +25,18 @@ class TrackAPIV2(Resource):
     track_name = request_data.get("track_name")
     track_lyrics = request_data.get("track_lyrics")
     release_date = request_data.get("release_date")
-
+    genre = request_data.get("track_genre")
     track_media = request.files.get("track_media")
     track_art = request.files.get("track_cover")
     
     creator = current_user.channel
     
     release_date = datetime.strptime(release_date, "%Y-%m-%d")
+
+    try:
+      genre = int(genre)
+    except ValueError:
+      genre = 10
 
     music_services.create_track(
       name=track_name,
@@ -40,6 +45,7 @@ class TrackAPIV2(Resource):
       media=track_media,
       track_art=track_art,
       channel_id=creator.id,
+      genre_id=genre,
     )
 
     return {"action": "created"}, 201
